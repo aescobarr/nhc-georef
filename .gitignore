@@ -1,0 +1,13 @@
+georef/settings_local.py
+georef/settings_local*
+georef/settings/local.pyc
+*pyc
+*.egg-info
+.idea/*
+*.sublime-project
+*.sublime-workspace
+*.sublime*
+models_mgeneral.py
+models_mgeoreferenciacio.py
+models_mseguretat.py
+models_mzoologia.py
