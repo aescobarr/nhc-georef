@@ -1,30 +1,30 @@
 {% extends "georef/base.html" %}
-{% load material_form %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
-    <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
-    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
-    <style>
-        #map {
-            margin-top: 10px;
-            height: 600px;
-        }
-    </style>
 {% endblock %}
 {% block main %}
-    <main>
-        <div class="container">
-        <div class="section">
-            <div id="map"></div>
+    <div class="container col-md-6 col-md-offset-3">
+        <div class="page-header"></div>
+        <div><h3>La plataforma del museu per a treballs en cartografia i georeferenciació</h3></div>
+        <div>
+            <p class="text-justify">
+                La cartografia està present en gairebé tots els àmbits d’activitat del museu: col•leccions, recerca,
+                publicacions, exposicions, etc. GeoRef és el recurs desenvolupat per donar suport a les necessitats
+                d’indexar i reconèixer recursos cartogràfics útils pels projectes del museu.
+            </p>
+            <p class="text-justify">
+                Un projecte especialment actiu és la georeferenciació retroactiva de les mostres de col•leccions.
+                En l’actualitat la immensa majoria de mostres de col•leccions al museu són anteriors a la generalització
+                del posicionament per satèl•lit i tenen assignada una referència del lloc de recol•lecció basada només
+                en les dades textuals de les etiquetes. Convertir topònims i descripcions de posicionament respecte
+                topònims en un punt de coordenades sobre un mapa és l’acció de qualitat que definim com a georeferenciació.
+            </p>
+            <p class="text-justify">
+                Desar la traça d’aquestes estimacions de georeferenciació garanteix la coherència entre si de les dades
+                de localització de les mostres de col•leccions i eventualment permet revisar la qualitat de la pròpia
+                georeferenciació. La georeferenciació de col•leccions és un projecte capital a GeoRef.
+            </p>
         </div>
     </div>
-    </main>
-{% endblock %}
-{% block extra_js %}
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
-    <script src="{% static 'georef/javascript/leaflet/leaflet.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet_map_consulta.js' %}"></script>
 {% endblock %}

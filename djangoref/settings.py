@@ -141,6 +141,7 @@ BOWER_INSTALLED_APPS = (
     'jquery-ui',
     'datatables.net',
     'datatables.net-dt',
+    'popper.js',
     'bootstrap',
 )
 

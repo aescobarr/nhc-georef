@@ -7,40 +7,7 @@
     <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
-    <style>
-        .caixaCoordenades{
-            position: relative;
-            top:38px;
-            left: 815px;
-            z-index: 1;
-            background-color: #00008B;
-            color: white;
-            padding: 5px;
-            height: 10px;
-            width:140px;
-            font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
-            font-size: 85%;
-        }
-        .controlCapes{
-            display: inline;
-            position: absolute;
-            top: 55px;
-            left: 740px;
-            width: 260px;
-            z-index: 1
-        }
-        .panellInteriorControlCapes{
-            position: relative;
-            height: 469px;
-            overflow: auto;
-        }
-        #map {
-            margin-top: 10px;
-            height: 400px;
-        }
-        table.dataTable tr.odd { background-color: #ceeefd; }
-        table.dataTable tr.even { background-color: white; }
-    </style>
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
 {% endblock %}
 {% block extrahead %}
     <script>
@@ -49,12 +16,13 @@
 {% endblock %}
 {% block main %}
 <main>
+    <div class="page-header"></div>
     <div class="container">
         <div id="map"></div>
     </div>
     <div class="container">
-        <div class="row">
-            <a id="addCondicio" class="waves-effect waves-light btn">Afegir condició</a>
+        <div class="wrapper clear_blue">
+            <button id="addCondicio" type="button" class="btn btn-primary">Afegir condició <i class="fa fa-plus" aria-hidden="true"></i></button>
             <table id="taulafiltre"></table>
         </div>
     </div>
@@ -103,5 +71,36 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
 
     <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>
+    <script>
+        var indexTaula = 0;
+
+        var valorsOperadors = new Array();
+        valorsOperadors[0] = {id : "and", value : "AND"};
+        valorsOperadors[1] = {id : "or", value : "OR" };
+
+        var valorsCondicions = new Array();
+        valorsCondicions[0] = {id : "nom",value : "Nom"};
+        valorsCondicions[1] = {id : "tipus",value : "Tipus"};
+        valorsCondicions[2] = {id : "pais",value : "País"};
+        valorsCondicions[3] = {id : "aquatic",value : "Aquàtic?"};
+        valorsCondicions[4] = {id : "geografic",value : "Filtre geogràfic"};
+
+        var valorsAquatic = new Array();
+        valorsAquatic[0] = {id : "S",value : "Sí"};
+        valorsAquatic[1] = {id : "N",value : "No"};
+
+        var valorsTipus = new Array();
+        {% for tipus in llista_tipus %}
+            valorsTipus.push({id:"{{ tipus.id }}",value:"{{ tipus.nom }}"});
+        {% endfor %}
+
+        var valorsPaisos = new Array();
+        {% for pais in llista_paisos %}
+            valorsPaisos.push({id:"{{ pais.id }}",value:"{{ pais.nom }}"});
+        {% endfor %}
+
+        var txtBotoEsborrarCondicioFiltre = 'Esborrar';
+        var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
+    </script>
     <script src="{% static 'georef/javascript/filtre.js' %}"></script>
 {% endblock %}

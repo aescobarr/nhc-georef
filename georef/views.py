@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 import operator
 import functools
+from georef.models import Tipustoponim, Pais
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -124,4 +125,6 @@ def toponims_datatable_list(request):
 
 @login_required
 def toponims(request):
-    return render(request, 'georef/toponims_list.html', {})
+    llista_tipus = Tipustoponim.objects.order_by('nom')
+    llista_paisos = Pais.objects.order_by('nom')
+    return render(request, 'georef/toponims_list.html', context={ 'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos })
