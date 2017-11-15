@@ -11,4 +11,5 @@ models_mgeneral.py
 models_mgeoreferenciacio.py
 models_mseguretat.py
 models_mzoologia.py
+script_moure_taules_a_public.sql
 static/*
