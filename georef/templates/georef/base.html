@@ -1,0 +1,95 @@
+{% load staticfiles %}
+{% load material_form %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block meta %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% endblock %}
+    {% block title %}
+    <title></title>
+    {% endblock %}
+    {% block basic_css %}
+        {% include 'material/includes/material_css.html' %}
+    {% endblock %}
+    {% block extra_css %}
+    {% endblock %}
+    {% block compat_js %}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% endblock %}
+    {% block extrahead %}
+    {% endblock %}
+</head>
+<body>
+    {% block nav %}
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">DjangoRef!</a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="{% url 'toponims' %}">Llista de topònims</a></li>
+            <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+            </li>
+          </ul>
+
+          <ul id="nav-mobile" class="side-nav">
+            <li><a href="#">Navbar Link 1</a></li>
+            <li><a href="#">Navbar Link 2</a></li>
+            <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+            </li>
+          </ul>
+          <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+    </nav>
+    {% endblock %}
+    {% block main %}
+    {% endblock %}
+    {% block footer %}
+    <footer class="page-footer light-blue lighten-1">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Company Bio</h5>
+                    <p class="grey-text text-lighten-4">bio bio</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+    {% block js %}
+        <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+        {% include 'material/includes/material_js.html' %}
+        <script>
+            (function($){
+              $(function(){
+                $('.button-collapse').sideNav();
+              }); // end of document ready
+            })(jQuery); // end of jQuery name space
+        </script>
+    {% endblock %}
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

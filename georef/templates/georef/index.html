@@ -1,0 +1,30 @@
+{% extends "georef/base.html" %}
+{% load material_form %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
+    <style>
+        #map {
+            margin-top: 10px;
+            height: 600px;
+        }
+    </style>
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="container">
+        <div class="section">
+            <div id="map"></div>
+        </div>
+    </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
+    <script src="{% static 'georef/javascript/leaflet/leaflet.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet_map_consulta.js' %}"></script>
+{% endblock %}
