@@ -17,6 +17,7 @@
         <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
         <link href="{% static 'georef/css/sticky-footer-navbar.css' %}" rel="stylesheet">
         <link href="{% static 'georef/css/font-awesome-4.7.0/css/font-awesome.css' %}" rel="stylesheet">
+        <link href="{% static 'toastr/toastr.min.css' %}" rel="stylesheet">
     {% endblock %}
     {% block extra_css %}
     {% endblock %}
@@ -96,13 +97,15 @@
     {% block footer %}
     <footer class="footer">
       <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
+        <!--<p class="text-muted">Place sticky footer content here.</p>-->
+        <p>Place sticky footer content here.</p>
       </div>
     </footer>
     {% endblock %}
     {% block js %}
         <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
         <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
+        <script src="{% static 'toastr/toastr.min.js' %}"></script>
     {% endblock %}
     {% block extra_js %}
     {% endblock %}

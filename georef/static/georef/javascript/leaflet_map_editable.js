@@ -45,7 +45,17 @@ $(document).ready(function() {
         }
     ];
 
-    var overlays = [];
+    toponims =  L.tileLayer.wms('http://127.0.0.1:8080/geoserver/mzoologia/wms?', { layers: 'mzoologia:toponimsdarreraversio' , opacity: 0.5});
+
+    var overlays = [
+        {
+            groupName: "Toponims",
+            expanded: true,
+            layers: {
+                "Darreres versions": toponims
+            }
+        }
+    ];
 
     /*
     soybeans_sp.StyledLayerControl = {

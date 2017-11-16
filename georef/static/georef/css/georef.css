@@ -7,6 +7,11 @@
     margin-bottom: 10px;
 }
 
+.no_side_margin{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 .caixaCoordenades{
     position: relative;
     top:38px;

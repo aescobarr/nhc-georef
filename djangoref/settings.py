@@ -143,6 +143,7 @@ BOWER_INSTALLED_APPS = (
     'datatables.net-dt',
     'popper.js',
     'bootstrap',
+    'toastr',
 )
 
 REST_FRAMEWORK = {

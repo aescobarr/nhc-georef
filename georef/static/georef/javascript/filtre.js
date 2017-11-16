@@ -52,7 +52,7 @@
     function insertCondicioFiltre(operador,condicio,valor,not,indexTaulaNovaFila){
         var taula = $("#taulafiltre")[0];
         var selectOperador = createSelect(valorsOperadors,operador,'select_operador_'+indexTaulaNovaFila);
-        if(taula.children.length==0){
+        if(taula.children.length==1){
             //només hi ha els titols de les columnes
             selectOperador = "&nbsp;";
         }
@@ -98,8 +98,104 @@
         return boto;
     }
 
+    function extreureJSONDeFiltre(){
+        var json = '{"filtre":[';
+        var trs = document.getElementsByName("trfiltre");
+        var tr;
+        var tds;
+        var fila;
+        var jsonTD;
+        for(var i=0;i<trs.length;i++){
+            fila = '{';
+            tr = trs[i];
+            jsonTD = extreureOperadorJSON(tr.children[0]);
+            fila += jsonTD + ',';
+            jsonTD = extreureNotJSON(tr.children[1]);
+            fila += jsonTD + ',';
+            jsonTD = extreureCondicioJSON(tr.children[2]);
+            fila += jsonTD + ',';
+            jsonTD = extreureValorJSON(tr.children[2],tr.children[3]);
+            fila += jsonTD;
+            fila += '}';
+            json += fila;
+            if(i+1<trs.length)
+                json+=',';
+        }
+        json += ']}';
+        return json;
+    }
+
+    function extreureIdSelect(td){
+        var select = td.children[0];
+        var index = select.selectedIndex;
+        var option = select.options[index];
+        return option.id;
+    }
+
+    function extreureValorSelect(td){
+        var select = td.children[0];
+        var index = select.selectedIndex;
+        var option = select.options[index];
+        return option.text;
+    }
+
+    function extreureValorJSON(tdCondicio,tdValor){
+        var json = '"valor":"';
+        var idCondicio = extreureIdSelect(tdCondicio);
+        if('nom'==idCondicio){
+            var inputTxt = tdValor.children[0];
+            var txt = inputTxt.value;
+            json = '"valor":"'+txt+'"';
+        }else if('tipus'==idCondicio || 'pais'==idCondicio || 'aquatic'==idCondicio){
+            var idValor = extreureIdSelect(tdValor);
+            var etiquetaValor = extreureValorSelect(tdValor);
+            json = '"valor":"'+idValor+'","text_valor":"'+ etiquetaValor +'"';
+        }else if('geografic'==idCondicio){
+            var idValor = getWKTDeObjectesDigitalitzats();
+            json = '"valor":"'+idValor+'"';
+        }else{
+            json = '"valor":""';
+        }
+        return json;
+    }
+
+    function extreureCondicioJSON(td){
+        var select = td.children[0];
+        var index = select.selectedIndex;
+        var option = select.options[index];
+        var json = '"condicio":"'+option.id+'"';
+        return json;
+    }
+
+    function extreureOperadorJSON(td){
+        var operador = "";
+        if(td.children.length>0){
+            var select = td.children[0];
+            var index = select.selectedIndex;
+            var option = select.options[index];
+            operador = option.id;
+        }
+        var json = '"operador":"'+operador+'"';
+        return json;
+    }
+
+    function extreureNotJSON(td){
+        var chck = td.children[0];
+        var not = "N";
+        if(chck.checked)
+            not = "S";
+        var json = '"not":"'+not+'"';
+        return json;
+    }
+
     $( "#addCondicio" ).click(function() {
          afegirCondicioFiltre();
+    });
+
+    $( "#doFilter" ).click(function() {
+        var valorJson = extreureJSONDeFiltre();
+        toastr.warning(valorJson);
+        table.ajax.reload();
     });
 
 

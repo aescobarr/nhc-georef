@@ -1,8 +1,12 @@
 $(document).ready(function() {
-    var table = $('#toponims_list').DataTable( {
+    table = $('#toponims_list').DataTable( {
         "ajax": {
             "url": _toponim_list_url,
-            "dataType": 'json'
+            "dataType": 'json',
+            "data": function(d){
+                //d.mykey = "myvalue";
+                d.filtrejson = extreureJSONDeFiltre();
+            }
         },
         "serverSide": true,
         "processing": true,
