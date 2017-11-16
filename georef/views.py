@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 import operator
 import functools
 from georef.models import Tipustoponim, Pais
+import json
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -53,6 +54,15 @@ def get_filter_clause(params_dict, fields, translation_dict=None):
     return filter_clause
 
 
+def get_q_de_condicio(condicio):
+    query = None
+    if condicio['condicio'] == 'nom':
+        if condicio['not']=='N':
+            query = Q(nom__icontains=condicio['valor'])
+        else:
+            query = ~Q(nom__icontains=condicio['valor'])
+    return query
+
 def generic_datatable_list_endpoint(request,search_field_list,queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None):
     draw = request.query_params.get('draw', -1)
     start = request.query_params.get('start', 0)
@@ -65,10 +75,26 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
 
     filter_clause = get_filter_clause(get_dict, search_field_list, field_translation_dict)
 
+    string_json = get_dict['filtrejson']
+    json_filter_data = json.loads(string_json)
+
+    q = None
+    for condicio in json_filter_data['filtre']:
+        q = get_q_de_condicio(condicio)
+        print(condicio)
+
+    queryset = queryClass.objects.all()
+
+    if q:
+        queryset = queryset.filter(q)
+
     if len(filter_clause) == 0:
-        queryset = queryClass.objects.order_by(*order_clause)
+        #queryset = queryClass.objects.order_by(*order_clause)
+        queryset = queryset.order_by(*order_clause)
     else:
-        queryset = queryClass.objects.order_by(*order_clause).filter(functools.reduce(operator.or_, filter_clause))
+        #queryset = queryClass.objects.order_by(*order_clause).filter(functools.reduce(operator.or_, filter_clause))
+        queryset = queryset.order_by(*order_clause).filter(functools.reduce(operator.or_, filter_clause))
+
 
     paginator = Paginator(queryset, length)
 
