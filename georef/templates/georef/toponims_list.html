@@ -50,6 +50,40 @@
 </main>
 {% endblock %}
 {% block extra_js %}
+    <script>
+        var table;
+        var indexTaula = 0;
+
+        var valorsOperadors = new Array();
+        valorsOperadors[0] = {id : "and", value : "AND"};
+        valorsOperadors[1] = {id : "or", value : "OR" };
+
+        var valorsCondicions = new Array();
+        valorsCondicions[0] = {id : "nom",value : "Nom"};
+        valorsCondicions[1] = {id : "tipus",value : "Tipus"};
+        valorsCondicions[2] = {id : "pais",value : "País"};
+        valorsCondicions[3] = {id : "aquatic",value : "Aquàtic?"};
+        valorsCondicions[4] = {id : "geografic",value : "Filtre geogràfic"};
+
+        var valorsAquatic = new Array();
+        valorsAquatic[0] = {id : "S",value : "Sí"};
+        valorsAquatic[1] = {id : "N",value : "No"};
+
+        var valorsTipus = new Array();
+        {% for tipus in llista_tipus %}
+            valorsTipus.push({id:"{{ tipus.id }}",value:"{{ tipus.nom }}"});
+        {% endfor %}
+
+        var valorsPaisos = new Array();
+        {% for pais in llista_paisos %}
+            valorsPaisos.push({id:"{{ pais.id }}",value:"{{ pais.nom }}"});
+        {% endfor %}
+
+        var txtBotoEsborrarCondicioFiltre = 'Esborrar';
+        var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
+
+        var editableLayers;
+    </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <!--<script src="{% static 'georef/javascript/openlayers-v4.4.2/ol.js' %}"></script>-->
@@ -87,39 +121,8 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Marker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
-
+    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
     <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>
-    <script>
-        var table;
-        var indexTaula = 0;
-
-        var valorsOperadors = new Array();
-        valorsOperadors[0] = {id : "and", value : "AND"};
-        valorsOperadors[1] = {id : "or", value : "OR" };
-
-        var valorsCondicions = new Array();
-        valorsCondicions[0] = {id : "nom",value : "Nom"};
-        valorsCondicions[1] = {id : "tipus",value : "Tipus"};
-        valorsCondicions[2] = {id : "pais",value : "País"};
-        valorsCondicions[3] = {id : "aquatic",value : "Aquàtic?"};
-        valorsCondicions[4] = {id : "geografic",value : "Filtre geogràfic"};
-
-        var valorsAquatic = new Array();
-        valorsAquatic[0] = {id : "S",value : "Sí"};
-        valorsAquatic[1] = {id : "N",value : "No"};
-
-        var valorsTipus = new Array();
-        {% for tipus in llista_tipus %}
-            valorsTipus.push({id:"{{ tipus.id }}",value:"{{ tipus.nom }}"});
-        {% endfor %}
-
-        var valorsPaisos = new Array();
-        {% for pais in llista_paisos %}
-            valorsPaisos.push({id:"{{ pais.id }}",value:"{{ pais.nom }}"});
-        {% endfor %}
-
-        var txtBotoEsborrarCondicioFiltre = 'Esborrar';
-        var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
-    </script>
     <script src="{% static 'georef/javascript/filtre.js' %}"></script>
+    <script src="{% static 'georef/javascript/init_llista_toponims.js' %}"></script>
 {% endblock %}

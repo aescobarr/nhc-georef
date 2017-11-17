@@ -63,6 +63,27 @@ def get_q_de_condicio(condicio):
             query = ~Q(nom__icontains=condicio['valor'])
     return query
 
+
+def crea_query_de_filtre(json_filtre):
+    filter_clause_and = []
+    filter_clause_or = []
+    for condicio in json_filtre:
+        print(condicio)
+        if condicio['condicio'] == 'nom':
+            if condicio['not'] == 'N':
+                filter_clause_and.append(Q(nom__icontains=condicio['valor']))
+            else:
+                filter_clause_and.append(~Q(nom__icontains=condicio['valor']))
+        elif condicio['condicio'] == 'tipus':
+            if condicio['not'] == 'N':
+                filter_clause_and.append(Q(idtipustoponim__id=condicio['valor']))
+            else:
+                filter_clause_and.append(~Q(idtipustoponim__id=condicio['valor']))
+    if len(filter_clause_and) > 0:
+        return functools.reduce(operator.and_, filter_clause_and)
+    return None
+
+
 def generic_datatable_list_endpoint(request,search_field_list,queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None):
     draw = request.query_params.get('draw', -1)
     start = request.query_params.get('start', 0)
@@ -78,10 +99,14 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
     string_json = get_dict['filtrejson']
     json_filter_data = json.loads(string_json)
 
+    '''
     q = None
     for condicio in json_filter_data['filtre']:
         q = get_q_de_condicio(condicio)
         print(condicio)
+    '''
+
+    q = crea_query_de_filtre(json_filter_data['filtre'])
 
     queryset = queryClass.objects.all()
 

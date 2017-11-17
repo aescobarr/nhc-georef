@@ -1,4 +1,8 @@
 from django.db import models
+from django.db.models import Q
+from django.contrib.gis.db import models
+from abc import ABCMeta, abstractmethod
+import json
 
 
 # Create your models here.
@@ -12,12 +16,21 @@ class Toponim(models.Model):
 '''
 
 
+class CriteriFiltreComplex:
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def genera_query_complex(self, filtrejson):
+        pass
+
+
 class Tipustoponim(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
     nom = models.CharField(max_length=100)
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'tipustoponim'
 
     def __str__(self):
@@ -29,7 +42,7 @@ class Pais(models.Model):
     nom = models.CharField(max_length=200)
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'pais'
 
     def __str__(self):
@@ -41,7 +54,7 @@ class Qualificadorversio(models.Model):
     qualificador = models.CharField(max_length=500)
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'qualificadorversio'
 
 
@@ -53,7 +66,7 @@ class Sistemareferenciarecurs(models.Model):
     conversio = models.CharField(max_length=250, blank=True, null=True)
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'sistemareferenciarecurs'
 
 
@@ -69,7 +82,7 @@ class Toponim(models.Model):
     linia_fitxer_importacio = models.TextField(blank=True, null=True)
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'toponim'
 
     @property
@@ -83,6 +96,19 @@ class Toponim(models.Model):
     def __str__(self):
         return '%s - %s (%s) (%s)' % (self.nom, self.idpais, self.idtipustoponim, self.aquatic)
 
+'''
+    def genera_query_complex(self, stringjson):
+        json_filter_data = json.loads(stringjson)
+        query = None
+        for condicio in json_filter_data['filtre']:
+            if condicio['condicio'] == 'nom':
+                if condicio['not'] == 'N':
+                    query = Q(nom__icontains=condicio['valor'])
+                else:
+                    query = ~Q(nom__icontains=condicio['valor'])
+        print(condicio)
+        return query
+'''
 
 class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200)
@@ -113,8 +139,7 @@ class Toponimversio(models.Model):
 
     class Meta:
         managed = False
-        #db_table = 'toponimversio'
-
+        db_table = 'toponimversio'
 
 
 class Versions(models.Model):
