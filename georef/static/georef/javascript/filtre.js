@@ -1,5 +1,19 @@
 //$(document).ready(function() {
 
+    function crearTaulaFiltre(jsonStringFiltre){
+        var taula = $("#taulafiltre")[0];
+        while (1<taula.children.length){
+            taula.removeChild(taula.lastChild);
+        }
+        var jsonFiltre = JSON.parse(jsonStringFiltre);
+        var condicions = jsonFiltre.filtre;
+        for (var i=0; i<condicions.length; i++){
+            insertCondicioFiltre(condicions[i].operador,condicions[i].condicio,condicions[i].valor,condicions[i].not,i);
+            indexTaula++;
+        }
+
+    }
+
     function createSelect(valors,idselected,idselect,onchange){
         var htmlSelect = '<select class="input-field"';
         if(idselect!=null && idselect!=undefined)
@@ -195,9 +209,10 @@
     $( "#doFilter" ).click(function() {
         var valorJson = extreureJSONDeFiltre();
         toastr.warning(valorJson);
+        setCookie("filtre_t",valorJson,1);
         table.ajax.reload();
+        /*console.log(JSON.stringify(editableLayers.toGeoJSON()));*/
     });
-
 
 
 //});

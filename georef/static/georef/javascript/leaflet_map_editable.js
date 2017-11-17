@@ -80,7 +80,7 @@ $(document).ready(function() {
         }
     });
 
-    var editableLayers = new L.FeatureGroup();
+    editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
 
 	var draw_options = {
@@ -139,4 +139,14 @@ $(document).ready(function() {
 
         editableLayers.addLayer(layer);
     });
+
+    /*
+    var jsonTest = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-14.941406,55.578345],[-1.230469,61.438767],[9.667969,55.178868],[-2.988281,44.339565],[-13.886719,50.958427],[-14.941406,55.578345]]]}}]};
+
+    var geoJSONLayer = L.geoJson(jsonTest);
+    geoJSONLayer.eachLayer(
+        function(l){
+            editableLayers.addLayer(l);
+    });
+    */
 });

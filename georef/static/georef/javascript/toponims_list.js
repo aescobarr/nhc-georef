@@ -5,7 +5,13 @@ $(document).ready(function() {
             "dataType": 'json',
             "data": function(d){
                 //d.mykey = "myvalue";
-                d.filtrejson = extreureJSONDeFiltre();
+                //d.filtrejson = extreureJSONDeFiltre();
+                var valorFiltre = getCookie("filtre_t");
+                if(valorFiltre){
+                    d.filtrejson = valorFiltre;
+                }else{
+                    d.filtrejson = extreureJSONDeFiltre();
+                }
             }
         },
         "serverSide": true,
