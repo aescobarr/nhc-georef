@@ -12,6 +12,11 @@
 {% block extrahead %}
     <script>
         var _toponim_list_url = "{% url 'toponims_datatable_list' %}";
+        var _filtres_list_url = "{% url 'filtres-list' %}";
+        var _filtres_delete_url = "{% url 'filtres-list' %}";
+        var _filtres_update_url = "{% url 'filtres-list' %}";
+        var _filtres_create_url = "{% url 'filtres-list' %}";
+        var _check_filtre_url = "{% url 'check_filtre' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -36,13 +41,17 @@
             </table>
             <div class="row container no_side_margin">
                 <button id="doFilter" type="button" class="btn btn-primary">Filtrar <i class="fa fa-filter" aria-hidden="true"></i></button>
+                <button id="doClear" type="button" class="btn btn-danger">Netejar filtre <i class="fa fa-close" aria-hidden="true"></i></button>
             </div>
             <div class="row container no_side_margin">
                 <label for="saveDoFilter">Carregar filtre</label>
-                <input type="text">
+                <input id="autoc_filtres" type="text">
                 <button id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
             </div>
         </div>
+    </div>
+    <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Ja hi ha un filtre amb aquest nom, el vols sobreescriure?</p>
     </div>
     <div class="container">
         <table id="toponims_list" style="width:100%;"></table>
@@ -83,6 +92,7 @@
         var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
 
         var editableLayers;
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
@@ -122,6 +132,7 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js' %}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
     <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>
     <script src="{% static 'georef/javascript/filtre.js' %}"></script>
     <script src="{% static 'georef/javascript/init_llista_toponims.js' %}"></script>

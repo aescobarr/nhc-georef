@@ -8,6 +8,8 @@
 }
 
 .no_side_margin{
+    margin-top: 15px;
+    margin-bottom: 15px;
     margin-left: 0px;
     margin-right: 0px;
 }
@@ -141,3 +143,6 @@ table.dataTable tr.even { background-color: white; }
           color: #333;
     }
 }
+
+
+.ui-dialog { z-index: 1000 !important ;}

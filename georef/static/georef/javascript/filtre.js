@@ -206,13 +206,16 @@
          afegirCondicioFiltre();
     });
 
-    $( "#doFilter" ).click(function() {
+    function clearTaula(idtaula){
+        $('#' + idtaula).find("tr[id*='fila_']").remove()
+    };
+
+    function filter(){
         var valorJson = extreureJSONDeFiltre();
-        toastr.warning(valorJson);
+        //toastr.warning(valorJson);
         setCookie("filtre_t",valorJson,1);
         table.ajax.reload();
-        /*console.log(JSON.stringify(editableLayers.toGeoJSON()));*/
-    });
+    }
 
 
 //});

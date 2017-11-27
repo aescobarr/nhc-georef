@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from georef.forms import ToponimsForm
 from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer
-from georef.models import Toponim
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer
+from django.shortcuts import get_object_or_404
+from georef.models import Toponim, Filtrejson
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
 from rest_framework.response import Response
@@ -65,23 +66,44 @@ def get_q_de_condicio(condicio):
 
 
 def crea_query_de_filtre(json_filtre):
-    filter_clause_and = []
-    filter_clause_or = []
+    accum_query = None
     for condicio in json_filtre:
-        print(condicio)
         if condicio['condicio'] == 'nom':
-            if condicio['not'] == 'N':
-                filter_clause_and.append(Q(nom__icontains=condicio['valor']))
+            if condicio['not'] == 'S':
+                accum_query = append_chain_query(accum_query, ~Q(nom__icontains=condicio['valor']),condicio)
             else:
-                filter_clause_and.append(~Q(nom__icontains=condicio['valor']))
+                accum_query = append_chain_query(accum_query, Q(nom__icontains=condicio['valor']), condicio)
         elif condicio['condicio'] == 'tipus':
-            if condicio['not'] == 'N':
-                filter_clause_and.append(Q(idtipustoponim__id=condicio['valor']))
+            if condicio['not'] == 'S':
+                accum_query = append_chain_query(accum_query, ~Q(idtipustoponim__id=condicio['valor']), condicio)
             else:
-                filter_clause_and.append(~Q(idtipustoponim__id=condicio['valor']))
-    if len(filter_clause_and) > 0:
-        return functools.reduce(operator.and_, filter_clause_and)
-    return None
+                accum_query = append_chain_query(accum_query, Q(idtipustoponim__id=condicio['valor']), condicio)
+        elif condicio['condicio'] == 'pais':
+            if condicio['not'] == 'S':
+                accum_query = append_chain_query(accum_query, ~Q(idpais__id=condicio['valor']), condicio)
+            else:
+                accum_query = append_chain_query(accum_query, Q(idpais__id=condicio['valor']), condicio)
+        elif condicio['condicio'] == 'aquatic':
+            if condicio['not'] == 'S':
+                accum_query = append_chain_query(accum_query, ~Q(aquatic=condicio['valor']), condicio)
+            else:
+                accum_query = append_chain_query(accum_query, Q(aquatic=condicio['valor']), condicio)
+    return accum_query
+
+
+def append_chain_query(accum_query, current_clause, condicio):
+    join_op = None
+    if accum_query is None:
+        accum_query = current_clause
+    else:
+        if condicio['operador'] == 'and':
+            join_op = operator.and_
+        elif condicio['operador'] == 'or':
+            join_op = operator.or_
+        else:
+            pass
+        accum_query = join_op(accum_query,current_clause)
+    return accum_query
 
 
 def generic_datatable_list_endpoint(request,search_field_list,queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None):
@@ -162,6 +184,36 @@ class ToponimViewSet(viewsets.ModelViewSet):
         if term is not None:
             queryset = queryset.filter(nom__icontains=term)
         return queryset
+
+
+class FiltrejsonViewSet(viewsets.ModelViewSet):
+    serializer_class = FiltrejsonSerializer
+
+    def get_queryset(self):
+        queryset = Filtrejson.objects.all()
+        term = self.request.query_params.get('term', None)
+        if term is not None:
+            queryset = queryset.filter(nomfiltre__icontains=term)
+        return queryset
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+@api_view(['GET'])
+def check_filtre(request):
+    if request.method == 'GET':
+        nomfiltre = request.query_params.get('nomfiltre', None)
+        if nomfiltre is None:
+            content = {'status': 'KO', 'detail':'mandatory param missing'}
+            return Response(data=content,status=400)
+        else:
+            try:
+                f = Filtrejson.objects.get(nomfiltre=nomfiltre)
+                content = {'status': 'KO', 'detail': f.idfiltre}
+                return Response(data=content, status=400)
+            except Filtrejson.DoesNotExist:
+                content = {'status': 'KO', 'detail': 'exists_not'}
+                return Response(data=content, status=200)
 
 
 @api_view(['GET'])

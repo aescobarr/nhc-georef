@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.contrib.gis.db import models
 from abc import ABCMeta, abstractmethod
 import json
+import uuid
 
 
 # Create your models here.
@@ -14,6 +15,9 @@ class Toponim(models.Model):
     #text = models.CharField(max_length=150)
     #approved = models.BooleanField(default=False)
 '''
+
+def pkgen():
+    return str(uuid.uuid4())
 
 
 class CriteriFiltreComplex:
@@ -149,3 +153,14 @@ class Versions(models.Model):
     class Meta:
         managed = False
         db_table = 'versions'
+
+
+class Filtrejson(models.Model):
+    idfiltre = models.CharField(primary_key=True, max_length=100, default=pkgen)
+    json = models.TextField()
+    modul = models.CharField(max_length=100)
+    nomfiltre = models.CharField(max_length=200)
+
+    class Meta:
+        managed = False
+        db_table = 'filtrejson'
