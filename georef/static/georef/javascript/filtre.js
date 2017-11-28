@@ -55,9 +55,13 @@
         return htmlChck;
     }
 
+    function clearFeaturesMapa(){
+        editableLayers.clearLayers();
+    }
+
     function esborrarFilaFiltre(indexTaulaAEsborrar){
         var fila = document.getElementById("fila_"+indexTaulaAEsborrar);
-        if($('#select_condicio_'+indexTaulaAEsborrar).val()=='Geogràfic'){
+        if($('#select_condicio_'+indexTaulaAEsborrar).val()=='Filtre geogràfic'){
             clearFeaturesMapa();
         }
         fila.parentNode.removeChild(fila);
@@ -75,6 +79,7 @@
         var checkNot = createCheckNot(not);
         /*var botoEsborrar = "<input class='btn btn-danger' type='button' onclick='javascript:esborrarFilaFiltre("+indexTaulaNovaFila+");return false;' value='Esborrar'/>" +
                 "<a href=\"#\" class=\"botoinfo\" title=\""+txtBotoEsborrarCondicioFiltre+"\">&nbsp;</a>";*/
+        var botoEsborrar = '<button id="addCondicio" onclick="javascript:esborrarFilaFiltre('+indexTaulaNovaFila+');return false;" type="button" class="btn btn-danger">Esborrar <i class="fa fa-times" aria-hidden="true"></i></button>';
         var botoEsborrar = '<button id="addCondicio" onclick="javascript:esborrarFilaFiltre('+indexTaulaNovaFila+');return false;" type="button" class="btn btn-danger">Esborrar <i class="fa fa-times" aria-hidden="true"></i></button>';
         var fila = "<td>"+selectOperador+"</td>";
         fila += "<td>"+checkNot+"</td>";
@@ -102,11 +107,24 @@
         tdValue.innerHTML = valorCondicio;
     }
 
+    function mostrarGeoJSON(valor){
+        var geoJSONLayer = L.geoJson(valor);
+        geoJSONLayer.eachLayer(
+            function(l){
+                editableLayers.addLayer(l);
+        });
+    }
+
+    function centrarMapaADigitalitzacio(valor){
+        map.fitBounds(editableLayers.getBounds())
+    }
+
     function createImportCartoButton(valor){
         var boto = txtFuncionamentFiltreCarto;
         if(valor!=null && ''!=valor){
+            mostrarGeoJSON(valor);
             //mostrarWTK(valor);
-            //centrarMapaADigitalitzacio();
+            centrarMapaADigitalitzacio();
             //filtarCQLMapa(valor);
         }
         return boto;
@@ -153,6 +171,10 @@
         return option.text;
     }
 
+    function getGeoJSONDeObjectesDigitalitzats(){
+        return JSON.stringify(editableLayers.toGeoJSON());
+    }
+
     function extreureValorJSON(tdCondicio,tdValor){
         var json = '"valor":"';
         var idCondicio = extreureIdSelect(tdCondicio);
@@ -165,8 +187,9 @@
             var etiquetaValor = extreureValorSelect(tdValor);
             json = '"valor":"'+idValor+'","text_valor":"'+ etiquetaValor +'"';
         }else if('geografic'==idCondicio){
-            var idValor = getWKTDeObjectesDigitalitzats();
-            json = '"valor":"'+idValor+'"';
+            var idValor = getGeoJSONDeObjectesDigitalitzats();
+            //json = '"valor":"'+idValor+'"';
+            json = '"valor":' + idValor;
         }else{
             json = '"valor":""';
         }

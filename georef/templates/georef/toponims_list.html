@@ -21,7 +21,15 @@
 {% endblock %}
 {% block main %}
 <main>
-    <div class="page-header"></div>
+    <div class="page-header">
+    </div>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+            <li class="breadcrumb-item">Topònims</li>
+            <li class="breadcrumb-item active">Llistat</li>
+        </ol>
+    </div>
     <div class="container">
         <div id="map"></div>
     </div>
@@ -131,6 +139,7 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Marker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
+    <script src="{% static 'georef/javascript/OpenLayers2.12.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js' %}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
     <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>

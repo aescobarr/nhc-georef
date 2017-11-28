@@ -4,8 +4,14 @@
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
 {% endblock %}
 {% block main %}
+<main>
+    <div class="page-header"></div>
+    <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">Inici</li>
+            </ol>
+    </div>
     <div class="container col-md-6 col-md-offset-3">
-        <div class="page-header"></div>
         <div><h3>La plataforma del museu per a treballs en cartografia i georeferenciació</h3></div>
         <div>
             <p class="text-justify">
@@ -27,4 +33,5 @@
             </p>
         </div>
     </div>
+</main>
 {% endblock %}

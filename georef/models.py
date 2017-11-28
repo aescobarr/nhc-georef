@@ -134,7 +134,7 @@ class Toponimversio(models.Model):
     observacions = models.TextField(blank=True, null=True)
     #idlimitcartooriginal = models.ForeignKey('Documents', models.DO_NOTHING, db_column='idlimitcartooriginal', blank=True, null=True)
     #idrecursgeoref = models.ForeignKey(Recursgeoref, models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)
-    idtoponim = models.ForeignKey(Toponim, models.DO_NOTHING, db_column='idtoponim', blank=True, null=True)
+    idtoponim = models.ForeignKey(Toponim, models.DO_NOTHING, db_column='idtoponim', blank=True, null=True, related_name='versions')
     numero_versio = models.IntegerField(blank=True, null=True)
     idqualificador = models.ForeignKey(Qualificadorversio, models.DO_NOTHING, db_column='idqualificador', blank=True, null=True)
     coordenada_x_centroide = models.CharField(max_length=50, blank=True, null=True)
@@ -146,6 +146,7 @@ class Toponimversio(models.Model):
         db_table = 'toponimversio'
 
 
+'''
 class Versions(models.Model):
     idtoponim = models.ForeignKey(Toponim, models.DO_NOTHING, db_column='idtoponim', blank=True, null=True)
     idversio = models.ForeignKey(Toponimversio, models.DO_NOTHING, db_column='idversio', blank=True, null=True)
@@ -153,7 +154,7 @@ class Versions(models.Model):
     class Meta:
         managed = False
         db_table = 'versions'
-
+'''
 
 class Filtrejson(models.Model):
     idfiltre = models.CharField(primary_key=True, max_length=100, default=pkgen)

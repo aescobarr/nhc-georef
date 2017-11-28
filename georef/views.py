@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 import operator
 import functools
 from georef.models import Tipustoponim, Pais
+from django.contrib.gis.geos import GEOSGeometry
 import json
 
 
@@ -68,6 +69,7 @@ def get_q_de_condicio(condicio):
 def crea_query_de_filtre(json_filtre):
     accum_query = None
     for condicio in json_filtre:
+        #print(condicio)
         if condicio['condicio'] == 'nom':
             if condicio['not'] == 'S':
                 accum_query = append_chain_query(accum_query, ~Q(nom__icontains=condicio['valor']),condicio)
@@ -88,6 +90,15 @@ def crea_query_de_filtre(json_filtre):
                 accum_query = append_chain_query(accum_query, ~Q(aquatic=condicio['valor']), condicio)
             else:
                 accum_query = append_chain_query(accum_query, Q(aquatic=condicio['valor']), condicio)
+        elif condicio['condicio'] == 'geografic':
+            # Es passa al constructor unicament el geometry del json
+            # geo = GEOSGeometry('{"type":"Polygon","coordinates":[[[-5.800781,32.546813],[12.480469,41.508577],[-6.855469,48.224673],[-5.800781,32.546813]]]}')
+            # geometria = GEOSGeometry(condicio['valor'])
+            geometria = GEOSGeometry(json.dumps(condicio['valor']['features'][0]['geometry']))
+            if condicio['not'] == 'S':
+                accum_query = append_chain_query(accum_query, ~Q(versions__geometries__geometria__within=geometria), condicio)
+            else:
+                accum_query = append_chain_query(accum_query, Q(versions__geometries__geometria__within=geometria), condicio)
     return accum_query
 
 
