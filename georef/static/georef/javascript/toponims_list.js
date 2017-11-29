@@ -66,6 +66,7 @@ $(document).ready(function() {
             var list_id = ui.item.value;
             toastr.info(ui.item);
             crearTaulaFiltre(ui.item.json);
+            filterCQL(ui.item.json);
             $('#autoc_filtres').val(listname);
             return false;
         }

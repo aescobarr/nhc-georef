@@ -8,6 +8,7 @@
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
 {% endblock %}
 {% block extrahead %}
     <script>
@@ -17,6 +18,8 @@
         var _filtres_update_url = "{% url 'filtres-list' %}";
         var _filtres_create_url = "{% url 'filtres-list' %}";
         var _check_filtre_url = "{% url 'check_filtre' %}";
+        var csrf_token = '{{ csrf_token }}';
+        var _ajax_upload_url = "{% url 'ajax_upload' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -32,6 +35,9 @@
     </div>
     <div class="container">
         <div id="map"></div>
+    </div>
+    <div class="container">
+        <div id="fileuploader"></div>
     </div>
     <div class="container">
         <div class="wrapper clear_blue">
@@ -140,9 +146,12 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
     <script src="{% static 'georef/javascript/OpenLayers2.12.js' %}"></script>
+    <script src="{% static 'georef/javascript/wicket.min.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js' %}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
-    <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>
     <script src="{% static 'georef/javascript/filtre.js' %}"></script>
+    <script src="{% static 'georef/javascript/filtrecql.js' %}"></script>
+    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>
     <script src="{% static 'georef/javascript/init_llista_toponims.js' %}"></script>
 {% endblock %}

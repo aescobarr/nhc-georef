@@ -1,11 +1,63 @@
 function transformarJSONACQL(jsonStringFiltre){
     var filtre = null;
-    var jsonFiltre = JSON.stringify(jsonStringFiltre);
+    var jsonFiltre = JSON.parse(jsonStringFiltre);
     var condicions = jsonFiltre.filtre;
     for (var i=0; i<condicions.length; i++){
         filtre = transformarCondicioFiltreJSONACQL(filtre,condicions[i].operador,condicions[i].condicio,condicions[i].valor,condicions[i].not);
 
     }
+    return filtre;
+}
+
+function transformarCondicioPaisACQL(idpais){
+    var filtre = new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: "idpais",
+        value: idpais
+    });
+    return filtre;
+}
+
+function transformarCondicioTipusACQL(idtipus){
+    var filtre = new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: "idtipustoponim",
+        value: idtipus
+    });
+    return filtre;
+}
+
+function transformarNotCQL(filtre){
+    var filtreNou = new OpenLayers.Filter.Logical({
+        type: OpenLayers.Filter.Logical.NOT,
+        filters: [filtre] });
+    return filtreNou;
+}
+
+function transformarCondicioPartNomACQL(partnomtoponim){
+    var filtre = new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.LIKE,
+                                property: "nomtoponim",
+                                value: "%"+partnomtoponim+"%"
+                            });
+    return filtre;
+}
+
+function transformarCondicioAquaticACQL(idaquatic){
+    var filtre = new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: "aquatic",
+        value: idaquatic
+    });
+    return filtre;
+}
+
+function transformarCondicioGeograficACQL(geometria){
+    var filtre = new OpenLayers.Filter.Spatial({
+        type: OpenLayers.Filter.Spatial.INTERSECTS,
+        property: "carto_epsg23031",
+        value: geometria
+    });
     return filtre;
 }
 
@@ -38,25 +90,24 @@ function transformarCondicioFiltreJSONACQL(filtreAnterior,operador,condicio,valo
             filtreNou = transformarCondicioAquaticACQL(valor);
         }
     }else if('geografic'==condicio){
+        var wktReader = new OpenLayers.Format.WKT();
+        var features = wktReader.read(valor);
         var elem;
         var filtreGeoNou,filtreGeoTotal;
-        for(i=0;i<vectors.features.length;i++){
-            elem = vectors.features[i].geometry;
-            elemFiltre = elem.clone();
-            elemFiltre.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
-            if('S'==not){
-                filtreGeoNou = transformarNotCQL(transformarCondicioGeograficACQL(elemFiltre));
-            }else{
-                filtreGeoNou = transformarCondicioGeograficACQL(elemFiltre);
-            }
-            if(filtreGeoTotal!=null){
-                filtreGeoTotal = new OpenLayers.Filter.Logical({
-                    type: OpenLayers.Filter.Logical.OR,
-                    filters: [filtreGeoTotal,filtreGeoNou]
-                });
-            }else{
-                filtreGeoTotal = filtreGeoNou;
-            }
+        elem = features.geometry;
+        elemFiltre = elem.clone();
+        if('S'==not){
+            filtreGeoNou = transformarNotCQL(transformarCondicioGeograficACQL(elemFiltre));
+        }else{
+            filtreGeoNou = transformarCondicioGeograficACQL(elemFiltre);
+        }
+        if(filtreGeoTotal!=null){
+            filtreGeoTotal = new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.OR,
+                filters: [filtreGeoTotal,filtreGeoNou]
+            });
+        }else{
+            filtreGeoTotal = filtreGeoNou;
         }
         filtreNou = filtreGeoTotal;
     }

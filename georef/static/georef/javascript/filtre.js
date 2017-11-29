@@ -108,7 +108,9 @@
     }
 
     function mostrarGeoJSON(valor){
-        var geoJSONLayer = L.geoJson(valor);
+        var wkt = new Wkt.Wkt();
+        wkt.read(valor);
+        var geoJSONLayer = L.geoJson(wkt.toJson());
         geoJSONLayer.eachLayer(
             function(l){
                 editableLayers.addLayer(l);
@@ -123,7 +125,6 @@
         var boto = txtFuncionamentFiltreCarto;
         if(valor!=null && ''!=valor){
             mostrarGeoJSON(valor);
-            //mostrarWTK(valor);
             centrarMapaADigitalitzacio();
             //filtarCQLMapa(valor);
         }
@@ -171,6 +172,36 @@
         return option.text;
     }
 
+    function getWKTDeObjectesDigitalitzats(){
+        var geoJSON = editableLayers.toGeoJSON();
+        var wkts = [];
+        var accum;
+        //var wkt = new Wkt.Wkt();
+        for(var i=0; i<geoJSON.features.length; i++){
+            geometry_n = geoJSON.features[i];
+            //wkt.read( JSON.stringify(geometry_n) );
+            var wkt = new Wkt.Wkt(JSON.stringify(geometry_n));
+            wkts.push(wkt);
+            //wkt.merge( new Wkt.Wkt(JSON.stringify(geometry_n)) );
+        }
+        for(var i = 0; i < wkts.length; i++){
+            if(i == 0){
+                accum = wkts[0];
+            }else{
+                if (i + 1 > wkts.length ){
+                    return accum.write();
+                }else{
+                    accum = accum.merge(wkts[i]);
+                }
+            }
+        }
+        if(accum){
+            return accum.write();
+        }else{
+            return '';
+        }
+    }
+
     function getGeoJSONDeObjectesDigitalitzats(){
         return JSON.stringify(editableLayers.toGeoJSON());
     }
@@ -187,9 +218,9 @@
             var etiquetaValor = extreureValorSelect(tdValor);
             json = '"valor":"'+idValor+'","text_valor":"'+ etiquetaValor +'"';
         }else if('geografic'==idCondicio){
-            var idValor = getGeoJSONDeObjectesDigitalitzats();
-            //json = '"valor":"'+idValor+'"';
-            json = '"valor":' + idValor;
+            //var idValor = getGeoJSONDeObjectesDigitalitzats();
+            var idValor = getWKTDeObjectesDigitalitzats();
+            json = '"valor":"'+idValor+'"';
         }else{
             json = '"valor":""';
         }
@@ -235,9 +266,21 @@
 
     function filter(){
         var valorJson = extreureJSONDeFiltre();
-        //toastr.warning(valorJson);
         setCookie("filtre_t",valorJson,1);
+        filterCQL(valorJson);
         table.ajax.reload();
+    }
+
+    function filterCQL(valorJson){
+        var cql = transformarJSONACQL(valorJson);
+        if(cql == null){
+            toponims.setParams({cql_filter:'1=1'});
+        }else{
+            var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+            toastr.info(cql_filter_text);
+            toponims.setParams({cql_filter:cql_filter_text});
+        }
+
     }
 
 

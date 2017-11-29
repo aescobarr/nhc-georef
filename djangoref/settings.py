@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'georef',
     'georef_addenda',
     'djangobower',
+    'ajaxuploader',
 ]
 
 MIDDLEWARE = [

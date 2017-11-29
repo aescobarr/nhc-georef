@@ -4,7 +4,10 @@ from django.contrib.gis.db import models
 from abc import ABCMeta, abstractmethod
 import json
 import uuid
-
+from django.dispatch import receiver
+from ajaxuploader.views import AjaxFileUploader
+from ajaxuploader.signals import file_uploaded
+import zipfile
 
 # Create your models here.
 '''
@@ -165,3 +168,12 @@ class Filtrejson(models.Model):
     class Meta:
         managed = False
         db_table = 'filtrejson'
+
+
+@receiver(file_uploaded, sender=AjaxFileUploader)
+def create_on_upload(sender, backend, request, **kwargs):
+    print(sender)
+    print(backend)
+    zip_ref = zipfile.ZipFile('/home/webuser/dev/django/djangoref/' + backend.path, 'r')
+    zip_ref.extractall('kk')
+    zip_ref.close()

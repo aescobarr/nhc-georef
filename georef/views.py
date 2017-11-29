@@ -1,3 +1,7 @@
+from django.middleware.csrf import get_token
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from georef.forms import ToponimsForm
@@ -69,7 +73,6 @@ def get_q_de_condicio(condicio):
 def crea_query_de_filtre(json_filtre):
     accum_query = None
     for condicio in json_filtre:
-        #print(condicio)
         if condicio['condicio'] == 'nom':
             if condicio['not'] == 'S':
                 accum_query = append_chain_query(accum_query, ~Q(nom__icontains=condicio['valor']),condicio)
@@ -93,12 +96,13 @@ def crea_query_de_filtre(json_filtre):
         elif condicio['condicio'] == 'geografic':
             # Es passa al constructor unicament el geometry del json
             # geo = GEOSGeometry('{"type":"Polygon","coordinates":[[[-5.800781,32.546813],[12.480469,41.508577],[-6.855469,48.224673],[-5.800781,32.546813]]]}')
-            # geometria = GEOSGeometry(condicio['valor'])
-            geometria = GEOSGeometry(json.dumps(condicio['valor']['features'][0]['geometry']))
-            if condicio['not'] == 'S':
-                accum_query = append_chain_query(accum_query, ~Q(versions__geometries__geometria__within=geometria), condicio)
-            else:
-                accum_query = append_chain_query(accum_query, Q(versions__geometries__geometria__within=geometria), condicio)
+            if condicio['valor'] != '':
+                geometria = GEOSGeometry(condicio['valor'])
+                # geometria = GEOSGeometry(json.dumps(condicio['valor']['features'][0]['geometry']))
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(versions__geometries__geometria__within=geometria), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(versions__geometries__geometria__within=geometria), condicio)
     return accum_query
 
 
@@ -163,27 +167,10 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
     serializer = classSerializer(paginator.page(page), many=True)
     return Response({'draw': draw, 'recordsTotal': recordsTotal, 'recordsFiltered': recordsFiltered, 'data': serializer.data})
 
-# Create your views here.
+
 def index(request):
     return render(request, 'georef/index.html')
-    # if this is a POST request we need to process the form data
-    # if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-    # form = ToponimsForm(request.POST)
-        # check whether it's valid:
-    # if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-    # form.save()
-    # return HttpResponseRedirect('/thanks/')
 
-    # if a GET (or any other method) we'll create a blank form
-    # else:
-    # form = ToponimsForm()
-
-    # return render(request, 'georef/index.html', {'form': form})
-    #return render(request, 'georef/index.html', {'form': form})
 
 
 class ToponimViewSet(viewsets.ModelViewSet):
@@ -239,6 +226,10 @@ def toponims_datatable_list(request):
 
 @login_required
 def toponims(request):
+    csrf_token = get_token(request)
     llista_tipus = Tipustoponim.objects.order_by('nom')
     llista_paisos = Pais.objects.order_by('nom')
-    return render(request, 'georef/toponims_list.html', context={ 'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos })
+    return render(request, 'georef/toponims_list.html', context={ 'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token })
+
+
+import_uploader = AjaxFileUploader()

@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^datatabletoponims/list$', views.toponims_datatable_list, name='toponims_datatable_list'),
     url(r'^filtres/check$', views.check_filtre, name='check_filtre'),
     url(r'^toponims', views.toponims, name='toponims'),
+    url(r'ajax-upload$', views.import_uploader, name='ajax_upload'),
 ]

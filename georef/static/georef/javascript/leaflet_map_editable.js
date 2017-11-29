@@ -45,7 +45,8 @@ $(document).ready(function() {
         }
     ];
 
-    toponims =  L.tileLayer.wms('http://127.0.0.1:8080/geoserver/mzoologia/wms?', { layers: 'mzoologia:toponimsdarreraversio' , opacity: 0.5});
+    //toponims =  L.tileLayer.wms('http://127.0.0.1:8080/geoserver/mzoologia/wms?', { layers: 'mzoologia:toponimsdarreraversio' , opacity: 0.5});
+    toponims =  L.tileLayer.wms('http://127.0.0.1:8080/geoserver/mzoologia/wms?', { layers: 'mzoologia:toponimsdarreraversio' ,format: 'image/png', transparent: true});
 
     var overlays = [
         {
