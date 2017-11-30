@@ -45,7 +45,6 @@ $(document).ready(function() {
         }
     ];
 
-    //toponims =  L.tileLayer.wms('http://127.0.0.1:8080/geoserver/mzoologia/wms?', { layers: 'mzoologia:toponimsdarreraversio' , opacity: 0.5});
     toponims =  L.tileLayer.wms('http://127.0.0.1:8080/geoserver/mzoologia/wms?', { layers: 'mzoologia:toponimsdarreraversio' ,format: 'image/png', transparent: true});
 
     var overlays = [
@@ -57,12 +56,6 @@ $(document).ready(function() {
             }
         }
     ];
-
-    /*
-    soybeans_sp.StyledLayerControl = {
-		removable : true,
-		visible : false
-	}*/
 
 	var options = {
 		container_width 	: "180px",
@@ -127,8 +120,8 @@ $(document).ready(function() {
     /*control_layers = L.control.layers(baseMaps,overlays);
     control_layers.addTo(map);*/
 
-    var control = L.Control.styledLayerControl(baseMaps, overlays, options);
-	map.addControl(control);
+    controlCapes = L.Control.styledLayerControl(baseMaps, overlays, options);
+	map.addControl(controlCapes);
 
 	/*map.on(L.Draw.Event.CREATED, function (e) {
         var type = e.layerType,
@@ -150,4 +143,65 @@ $(document).ready(function() {
             editableLayers.addLayer(l);
     });
     */
+    var showGetFeatureInfo = function (err, latlng, content) {
+        if (err) { console.log(err); return; } // do nothing if there's an error
+        // Otherwise show the content in a popup, or something.
+        L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(content).openOn(map);
+    }
+
+    var getFeatureInfo = function(evt,querylayers){
+        // Make an AJAX request to the server and hope for the best
+        var url = getFeatureInfoUrl(evt.latlng,querylayers);
+        $.ajax({
+          url: url,
+          success: function (data, status, xhr) {
+            var err = typeof data === 'string' ? null : data;
+            showGetFeatureInfo(err, evt.latlng, data);
+          },
+          error: function (xhr, status, error) {
+            showGetFeatureInfo(error);
+          }
+        });
+    }
+
+    var getFeatureInfoUrl = function(latlng,querylayers){
+        var point = map.latLngToContainerPoint(latlng, map.getZoom());
+        var size = map.getSize();
+
+        var params = {
+          request: 'GetFeatureInfo',
+          service: 'WMS',
+          srs: 'EPSG:4326',
+          styles: '',
+          transparent: true,
+          version: '1.1.1',
+          format: 'image/jpeg',
+          bbox: map.getBounds().toBBoxString(),
+          height: size.y,
+          width: size.x,
+          layers: querylayers,
+          query_layers: querylayers,
+          info_format: 'text/html',
+          feature_count: 10
+        };
+
+        params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
+        params[params.version === '1.3.0' ? 'j' : 'y'] = point.y;
+
+        return wms_url + L.Util.getParamString(params, wms_url, true);
+    };
+
+    map.on('click', function(evt){
+        var layers_in_control = [];
+        layers_in_control.push(toponims);
+        if(layers_in_control.length > 0){
+            var param_layers = [];
+            for(var i=0; i < layers_in_control.length; i++){
+                param_layers.push( layers_in_control[i].wmsParams.layers );
+            };
+            var querylayers = param_layers.join(',');
+            getFeatureInfo(evt,querylayers);
+        }
+    });
+
 });

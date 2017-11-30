@@ -1,35 +1,29 @@
-from django.db import models
 from django.db.models import Q
 from django.contrib.gis.db import models
-from abc import ABCMeta, abstractmethod
-import json
 import uuid
-from django.dispatch import receiver
-from ajaxuploader.views import AjaxFileUploader
-from ajaxuploader.signals import file_uploaded
-import zipfile
+import operator
+from django.contrib.gis.geos import GEOSGeometry
 
 # Create your models here.
-'''
-class Toponim(models.Model):
-    codi = models.CharField(max_length=150)
-    nom = models.CharField(max_length=250)
-    aquatic = models.CharField(max_length=1)
-    #text = models.CharField(max_length=150)
-    #approved = models.BooleanField(default=False)
-'''
+
+
+def append_chain_query(accum_query, current_clause, condicio):
+    join_op = None
+    if accum_query is None:
+        accum_query = current_clause
+    else:
+        if condicio['operador'] == 'and':
+            join_op = operator.and_
+        elif condicio['operador'] == 'or':
+            join_op = operator.or_
+        else:
+            pass
+        accum_query = join_op(accum_query,current_clause)
+    return accum_query
+
 
 def pkgen():
     return str(uuid.uuid4())
-
-
-class CriteriFiltreComplex:
-
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def genera_query_complex(self, filtrejson):
-        pass
 
 
 class Tipustoponim(models.Model):
@@ -100,22 +94,45 @@ class Toponim(models.Model):
     def nom_str(self):
         return '%s - %s (%s) (%s)' % (self.nom, self.idpais, self.idtipustoponim, self.aquatic)
 
+    def crea_query_de_filtre(json_filtre):
+        accum_query = None
+        for condicio in json_filtre:
+            if condicio['condicio'] == 'nom':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(nom__icontains=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(nom__icontains=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'tipus':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(idtipustoponim__id=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(idtipustoponim__id=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'pais':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(idpais__id=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(idpais__id=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'aquatic':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(aquatic=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(aquatic=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'geografic':
+                # Es passa al constructor unicament el geometry del json
+                # geo = GEOSGeometry('{"type":"Polygon","coordinates":[[[-5.800781,32.546813],[12.480469,41.508577],[-6.855469,48.224673],[-5.800781,32.546813]]]}')
+                if condicio['valor'] != '':
+                    geometria = GEOSGeometry(condicio['valor'])
+                    # geometria = GEOSGeometry(json.dumps(condicio['valor']['features'][0]['geometry']))
+                    if condicio['not'] == 'S':
+                        accum_query = append_chain_query(accum_query,~Q(versions__geometries__geometria__within=geometria),condicio)
+                    else:
+                        accum_query = append_chain_query(accum_query,Q(versions__geometries__geometria__within=geometria), condicio)
+        return accum_query
+
     def __str__(self):
         return '%s - %s (%s) (%s)' % (self.nom, self.idpais, self.idtipustoponim, self.aquatic)
 
-'''
-    def genera_query_complex(self, stringjson):
-        json_filter_data = json.loads(stringjson)
-        query = None
-        for condicio in json_filter_data['filtre']:
-            if condicio['condicio'] == 'nom':
-                if condicio['not'] == 'N':
-                    query = Q(nom__icontains=condicio['valor'])
-                else:
-                    query = ~Q(nom__icontains=condicio['valor'])
-        print(condicio)
-        return query
-'''
+
 
 class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200)

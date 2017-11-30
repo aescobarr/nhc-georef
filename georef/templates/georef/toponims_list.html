@@ -21,6 +21,7 @@
         var csrf_token = '{{ csrf_token }}';
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
+        var wms_url = "{{ wms_url }}";
     </script>
 {% endblock %}
 {% block main %}
@@ -107,6 +108,7 @@
         var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
 
         var editableLayers;
+        var controlCapes;
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>

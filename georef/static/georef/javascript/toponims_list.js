@@ -245,5 +245,8 @@ $(document).ready(function() {
             'csrf_xname': 'X-CSRFToken',
         }
     });
+});
 
+$(window).bind('beforeunload', function(){
+    setCookie('layers_t','un_valor');
 });
