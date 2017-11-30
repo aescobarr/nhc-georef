@@ -169,7 +169,7 @@ class Filtrejson(models.Model):
         managed = False
         db_table = 'filtrejson'
 
-
+'''
 @receiver(file_uploaded, sender=AjaxFileUploader)
 def create_on_upload(sender, backend, request, **kwargs):
     print(sender)
@@ -177,3 +177,4 @@ def create_on_upload(sender, backend, request, **kwargs):
     zip_ref = zipfile.ZipFile('/home/webuser/dev/django/djangoref/' + backend.path, 'r')
     zip_ref.extractall('kk')
     zip_ref.close()
+'''

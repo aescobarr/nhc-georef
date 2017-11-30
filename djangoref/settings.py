@@ -154,3 +154,5 @@ REST_FRAMEWORK = {
 }
 
 from djangoref.settings_local import *
+
+UPLOAD_DIR = BASE_DIR + "/uploads"

@@ -194,4 +194,56 @@ $(document).ready(function() {
         $('#autoc_filtres').val('');
     });
 
+    var importa_shapefile = function(filepath){
+        $.ajax({
+            url: _import_shapefile_url,
+            data: "path=" + encodeURI(filepath),
+            method: "GET",
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                 toastr.success("Importació amb èxit!");
+                 editableLayers.clearLayers();
+                 var geoJson = JSON.parse(data.detail);
+                 var geoJSONLayer = L.geoJson(geoJson);
+                 geoJSONLayer.eachLayer(
+                    function(l){
+                        editableLayers.addLayer(l);
+                    }
+                );
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error("Error important fitxer:" + textStatus);
+            }
+        });
+    }
+
+    var uploader = new qq.FileUploader({
+        action: _ajax_upload_url,
+        element: $('#fileuploader')[0],
+        multiple: false,
+        onComplete: function(id, fileName, responseJSON) {
+            if(responseJSON.success) {
+                //alert("success!");
+                importa_shapefile(responseJSON.path);
+            } else {
+                alert("upload failed!");
+            }
+        },
+        template:'<div class="qq-uploader">' +
+            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile</div>' +
+            '<ul class="qq-upload-list"></ul>' +
+            '</div>',
+        params: {
+            'csrf_token': csrf_token,
+            'csrf_name': 'csrfmiddlewaretoken',
+            'csrf_xname': 'X-CSRFToken',
+        }
+    });
+
 });

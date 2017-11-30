@@ -20,6 +20,13 @@ import functools
 from georef.models import Tipustoponim, Pais
 from django.contrib.gis.geos import GEOSGeometry
 import json
+from json import dumps
+import magic
+import zipfile
+from djangoref.settings import *
+import glob,os
+import ntpath
+import shapefile
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -222,6 +229,48 @@ def toponims_datatable_list(request):
         field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom' : 'idtipustoponim__nom' }
         response = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,field_translation_list,sort_translation_list)
         return response
+
+
+@api_view(['GET'])
+def process_shapefile(request):
+    if request.method == 'GET':
+        path = request.query_params.get('path', None)
+        if path is None:
+            content = {'success': False, 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            filepath = path
+            filename = ntpath.basename(os.path.splitext(filepath)[0])
+            presumed_zipfile = magic.from_file(filepath)
+            if not presumed_zipfile.lower().startswith('zip archive'):
+                content = {'success': False, 'detail': 'Fitxer zip incorrecte'}
+                return Response(data=content, status=400)
+            else:
+                #Extract file
+                zip_ref = zipfile.ZipFile(filepath, 'r')
+                zip_ref.extractall(BASE_DIR + "/uploads/" + filename)
+                zip_ref.close()
+                #Find and import shapefile
+                os.chdir(BASE_DIR + "/uploads/" + filename)
+                for file in glob.glob("*.shp"):
+                    presumed_shapefile = magic.from_file(BASE_DIR + "/uploads/" + filename + "/" + file)
+                    if presumed_shapefile.lower().startswith('esri shapefile'):
+                        sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
+                        fields = sf.fields[1:]
+                        field_names = [field[0] for field in fields]
+                        buffer = []
+                        for sr in sf.shapeRecords():
+                            atr = dict(zip(field_names, sr.record))
+                            geom = sr.shape.__geo_interface__
+                            buffer.append(dict(type="Feature", geometry=geom, properties=atr))
+                        geojson = dumps({"type": "FeatureCollection", "features": buffer})
+                        content = {'success': True, 'detail': geojson}
+                        return Response(data=content, status=200)
+                    else:
+                        content = {'success': False, 'detail': 'El fitxer shapefile té un format incorrecte'}
+                        return Response(data=content, status=200)
+                content = {'success': False, 'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
+
 
 
 @login_required

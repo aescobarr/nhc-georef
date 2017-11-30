@@ -130,7 +130,7 @@ $(document).ready(function() {
     var control = L.Control.styledLayerControl(baseMaps, overlays, options);
 	map.addControl(control);
 
-	map.on(L.Draw.Event.CREATED, function (e) {
+	/*map.on(L.Draw.Event.CREATED, function (e) {
         var type = e.layerType,
             layer = e.layer;
 
@@ -139,7 +139,7 @@ $(document).ready(function() {
         }
 
         editableLayers.addLayer(layer);
-    });
+    });*/
 
     /*
     var jsonTest = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-14.941406,55.578345],[-1.230469,61.438767],[9.667969,55.178868],[-2.988281,44.339565],[-13.886719,50.958427],[-14.941406,55.578345]]]}}]};

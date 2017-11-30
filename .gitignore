@@ -1,6 +1,7 @@
 georef/settings_local.py
 georef/settings_local*
 georef/settings/local.pyc
+uploads/
 *pyc
 *.egg-info
 .idea/*
