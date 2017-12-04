@@ -1,10 +1,12 @@
 function transformarJSONACQL(jsonStringFiltre){
     var filtre = null;
-    var jsonFiltre = JSON.parse(jsonStringFiltre);
-    var condicions = jsonFiltre.filtre;
-    for (var i=0; i<condicions.length; i++){
-        filtre = transformarCondicioFiltreJSONACQL(filtre,condicions[i].operador,condicions[i].condicio,condicions[i].valor,condicions[i].not);
+    if(jsonStringFiltre != ''){
+        var jsonFiltre = JSON.parse(jsonStringFiltre);
+        var condicions = jsonFiltre.filtre;
+        for (var i=0; i<condicions.length; i++){
+            filtre = transformarCondicioFiltreJSONACQL(filtre,condicions[i].operador,condicions[i].condicio,condicions[i].valor,condicions[i].not);
 
+        }
     }
     return filtre;
 }

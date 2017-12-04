@@ -73,10 +73,13 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
 
     filter_clause = get_filter_clause(get_dict, search_field_list, field_translation_dict)
 
-    string_json = get_dict['filtrejson']
-    json_filter_data = json.loads(string_json)
-
-    q = queryClass.crea_query_de_filtre(json_filter_data['filtre'])
+    q = None
+    try:
+        string_json = get_dict['filtrejson']
+        json_filter_data = json.loads(string_json)
+        q = queryClass.crea_query_de_filtre(json_filter_data['filtre'])
+    except KeyError:
+        pass
 
     queryset = queryClass.objects.all()
 
@@ -155,6 +158,14 @@ def toponims_datatable_list(request):
 
 
 @api_view(['GET'])
+def toponimfilters_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nomfiltre',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Filtrejson, FiltrejsonSerializer)
+        return response
+
+
+@api_view(['GET'])
 def process_shapefile(request):
     if request.method == 'GET':
         path = request.query_params.get('path', None)
@@ -194,6 +205,13 @@ def process_shapefile(request):
                         return Response(data=content, status=200)
                 content = {'success': False, 'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
                 return Response(data=content, status=200)
+
+
+@login_required
+def toponimfilters(request):
+    csrf_token = get_token(request)
+    return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token})
+
 
 @login_required
 def toponims(request):

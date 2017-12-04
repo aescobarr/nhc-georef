@@ -56,7 +56,7 @@
     }
 
     function clearFeaturesMapa(){
-        editableLayers.clearLayers();
+        djangoRef.Map.editableLayers.clearLayers();
     }
 
     function esborrarFilaFiltre(indexTaulaAEsborrar){
@@ -113,12 +113,12 @@
         var geoJSONLayer = L.geoJson(wkt.toJson());
         geoJSONLayer.eachLayer(
             function(l){
-                editableLayers.addLayer(l);
+                djangoRef.Map.editableLayers.addLayer(l);
         });
     }
 
     function centrarMapaADigitalitzacio(valor){
-        map.fitBounds(editableLayers.getBounds())
+        map.fitBounds(djangoRef.Map.editableLayers.getBounds())
     }
 
     function createImportCartoButton(valor){
@@ -173,7 +173,7 @@
     }
 
     function getWKTDeObjectesDigitalitzats(){
-        var geoJSON = editableLayers.toGeoJSON();
+        var geoJSON = djangoRef.Map.editableLayers.toGeoJSON();
         var wkts = [];
         var accum;
         //var wkt = new Wkt.Wkt();
@@ -203,7 +203,7 @@
     }
 
     function getGeoJSONDeObjectesDigitalitzats(){
-        return JSON.stringify(editableLayers.toGeoJSON());
+        return JSON.stringify(djangoRef.Map.editableLayers.toGeoJSON());
     }
 
     function extreureValorJSON(tdCondicio,tdValor){
@@ -267,18 +267,22 @@
     function filter(){
         var valorJson = extreureJSONDeFiltre();
         setCookie("filtre_t",valorJson,1);
-        filterCQL(valorJson);
+        var activeOverlays = djangoRef.Map.getActiveOverlays();
+        for(var i = 0; i < activeOverlays.length; i++){
+            var layer = activeOverlays[i];
+            filterCQL(valorJson,layer);
+        }
         table.ajax.reload();
     }
 
-    function filterCQL(valorJson){
+    function filterCQL(valorJson,layer){
         var cql = transformarJSONACQL(valorJson);
         if(cql == null){
-            toponims.setParams({cql_filter:'1=1'});
+            layer.setParams({cql_filter:'1=1'});
         }else{
             var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
-            toastr.info(cql_filter_text);
-            toponims.setParams({cql_filter:cql_filter_text});
+            //toastr.info(cql_filter_text);
+            layer.setParams({cql_filter:cql_filter_text});
         }
 
     }

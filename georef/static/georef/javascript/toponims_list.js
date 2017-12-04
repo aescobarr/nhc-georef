@@ -64,9 +64,12 @@ $(document).ready(function() {
             //log( "Selected: " + ui.item.value + " aka " + ui.item.id );
             var listname = ui.item.label;
             var list_id = ui.item.value;
-            toastr.info(ui.item);
             crearTaulaFiltre(ui.item.json);
-            filterCQL(ui.item.json);
+            var activeOverlays = djangoRef.Map.getActiveOverlays();
+            for(var i = 0; i < activeOverlays.length; i++){
+                var layer = activeOverlays[i];
+                filterCQL(ui.item.json,layer);
+            }
             $('#autoc_filtres').val(listname);
             return false;
         }
@@ -245,8 +248,73 @@ $(document).ready(function() {
             'csrf_xname': 'X-CSRFToken',
         }
     });
+
+    var toponims =  {
+        name: 'toponims',
+        layer : L.tileLayer.wms(
+        'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            {
+                layers: 'mzoologia:toponimsdarreraversio',
+                format: 'image/png',
+                transparent: true
+            }
+        )
+    };
+
+    var overlay_list = [];
+    overlay_list.push(toponims);
+
+    var overlays_control_config = [
+        {
+            groupName: "Toponims",
+            expanded: true,
+            layers: {
+                "Darreres versions": toponims.layer
+            }
+        }
+    ];
+
+    map_options = {
+        editable:true,
+        overlays: overlay_list,
+        overlays_control_config: overlays_control_config,
+        wms_url: wms_url
+    };
+
+    var valorView = getCookie("view_t");
+    if(valorView){
+        var jsonView = JSON.parse(valorView);
+        map_options.center = jsonView.center;
+        map_options.zoom = jsonView.zoom;
+    }
+
+    var valorEstat = getCookie("layers_t");
+    var state;
+    if(valorEstat){
+        var jsonState = JSON.parse(valorEstat);
+        map_options.state = jsonState;
+    }else{
+        map_options.state = {
+            overlays: [toponims.name],
+            base: 'djangoRef.Map.roads',
+            view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
+        };
+    }
+
+    map_options.consultable = [toponims.layer];
+
+    map = new djangoRef.Map.createMap(map_options);
+
 });
 
 $(window).bind('beforeunload', function(){
-    setCookie('layers_t','un_valor');
+    var state = djangoRef.Map.getState();
+    var state_string = JSON.stringify(state);
+    setCookie('layers_t', state_string);
+    var view = {};
+    var center = djangoRef.Map.map.getCenter();
+    var zoom = djangoRef.Map.map.getZoom();
+    view = {center: center, zoom: zoom};
+    var view_string = JSON.stringify(view);
+    setCookie('view_t', view_string);
 });

@@ -3,7 +3,6 @@
 {% block extra_css %}
     <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
-    <!--<link href="{% static 'georef/javascript/openlayers-v4.4.2/ol.css' %}" rel="stylesheet">-->
     <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
@@ -113,11 +112,9 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <!--<script src="{% static 'georef/javascript/openlayers-v4.4.2/ol.js' %}"></script>-->
     <script src="{% static 'georef/javascript/leaflet/leaflet.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet_map_editable.js' %}"></script>
 
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Leaflet.draw.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Leaflet.Draw.Event.js' %}"></script>
@@ -156,5 +153,7 @@
     <script src="{% static 'georef/javascript/filtrecql.js' %}"></script>
     <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
     <script src="{% static 'georef/javascript/toponims_list.js' %}"></script>
+    <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
     <script src="{% static 'georef/javascript/init_llista_toponims.js' %}"></script>
+    <!--<script src="{% static 'georef/javascript/leaflet_map_editable.js' %}"></script>-->
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _filtrestoponims_list_url = "{% url 'toponimfilters_datatable_list' %}";
+    </script>
+{% endblock %}
+{% block main %}
+<main>
+    <div class="page-header">
+    </div>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+            <li class="breadcrumb-item">Topònims</li>
+            <li class="breadcrumb-item active">Llistat de filtres de topònims</li>
+        </ol>
+    </div>
+    <div class="container">
+        <table id="toponimsfilter_list" style="width:100%;"></table>
+    </div>
+</main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponimfilters_list.js' %}"></script>
+{% endblock %}
