@@ -20,7 +20,8 @@ $(document).ready(function() {
         },
         "columns": [
             { "data": "nomfiltre" }
-            ,{ "data": "idfiltre" }
+            ,{ "data": "description" }
+            ,{ "data": "button_delete" }
         ],
         "columnDefs": [
             {
@@ -29,8 +30,70 @@ $(document).ready(function() {
             },
             {
                 "targets":1,
-                "title": "Id"
+                "title": "Descripció",
+                "render": function(value){
+                    var retVal = "";
+                    retVal += '<span class="label label-warning">' + value + '</span><br>';
+                    return retVal;
+                },
+                "sortable": false
+            },
+            {
+                "targets": -1,
+                "data": null,
+                "defaultContent": "<button class=\"delete_button btn btn-danger\">Esborrar</button>",
+                "sortable": false
             }
         ]
     } );
+
+    var delete_toponimfilter = function(id){
+        $.ajax({
+            url: _toponimsfilter_delete_url + id,
+            method: "DELETE",
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                 toastr.success("Esborrat amb èxit!");
+                 table.ajax.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error("Error esborrant");
+            }
+        });
+    };
+
+    var confirmDialog = function(message,id){
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>'+message+'</h6></div>')
+            .dialog({
+                modal: true, title: 'Esborrant filtre de topònims...', zIndex: 10000, autoOpen: true,
+                width: 'auto', resizable: false,
+                buttons: {
+                    Yes: function () {
+                        delete_toponimfilter(id);
+                        $(this).dialog("close");
+                    },
+                    No: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+        });
+    };
+
+    $('#toponimsfilter_list tbody').on('click', 'td button.delete_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().idfiltre
+        //alert(id);
+        confirmDialog("Segur que vols esborrar?",id);
+    });
+
 });

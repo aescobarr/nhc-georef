@@ -14,8 +14,10 @@ urlpatterns = [
     url(r'^datatabletoponims/list$', views.toponims_datatable_list, name='toponims_datatable_list'),
     url(r'^datatabletoponimfilters/list$', views.toponimfilters_datatable_list, name='toponimfilters_datatable_list'),
     url(r'^filtres/check$', views.check_filtre, name='check_filtre'),
-    url(r'^toponims', views.toponims, name='toponims'),
-    url(r'^toponimfilters', views.toponimfilters, name='toponimfilters'),
+    url(r'^toponims$', views.toponims, name='toponims'),
+    url(r'^toponimstree$', views.toponimstree, name='toponimstree'),
+    url(r'^toponimstree/(?P<node_id>[\w\-]+)/$', views.toponimstreenode, name='toponimstreenode'),
+    url(r'^toponimfilters$', views.toponimfilters, name='toponimfilters'),
     url(r'ajax-upload$', views.import_uploader, name='ajax_upload'),
-    url(r'ajax-process-shapefile', views.process_shapefile, name='process_shapefile'),
+    url(r'ajax-process-shapefile$', views.process_shapefile, name='process_shapefile'),
 ]

@@ -7,6 +7,7 @@
 {% block extrahead %}
     <script>
         var _filtrestoponims_list_url = "{% url 'toponimfilters_datatable_list' %}";
+        var _toponimsfilter_delete_url = "{% url 'filtres-list' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -27,6 +28,7 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
     <script src="{% static 'georef/javascript/toponimfilters_list.js' %}"></script>
 {% endblock %}

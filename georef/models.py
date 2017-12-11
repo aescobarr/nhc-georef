@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 import uuid
 import operator
 from django.contrib.gis.geos import GEOSGeometry
+import json
 
 # Create your models here.
 
@@ -181,6 +182,30 @@ class Filtrejson(models.Model):
     json = models.TextField()
     modul = models.CharField(max_length=100)
     nomfiltre = models.CharField(max_length=200)
+
+    @property
+    def description(self):
+        retval = 'Filtre buit!'
+        if self.json and self.json != '':
+            json_val = json.loads(self.json)
+            filtre = json_val['filtre']
+            filtre_text = []
+            if len(filtre) > 0 :
+                retVal = ''
+                for elem in filtre:
+                    op = elem['operador']
+                    filtre_text.append(op)
+                    negate = '' if elem['not'] == 'N' else 'NOT'
+                    filtre_text.append(negate)
+                    cond = elem['condicio']
+                    filtre_text.append(cond)
+                    filtre_text.append('=')
+                    if cond.lower() == 'geografic' or cond.lower() == 'geografic_geo':
+                        filtre_text.append('Poligon')
+                    else:
+                        filtre_text.append(elem['valor'])
+            retval = ' '.join(filtre_text)
+        return retval
 
     class Meta:
         managed = False

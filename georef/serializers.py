@@ -16,6 +16,8 @@ class ToponimSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class FiltrejsonSerializer(serializers.ModelSerializer):
+    description = serializers.ReadOnlyField()
     class Meta:
         model = Filtrejson
-        fields = '__all__'
+        #fields = '__all__'
+        fields = ('idfiltre', 'json', 'modul', 'nomfiltre', 'description')

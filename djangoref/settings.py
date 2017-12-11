@@ -146,6 +146,7 @@ BOWER_INSTALLED_APPS = (
     'popper.js',
     'bootstrap',
     'toastr',
+    'jstree',
 )
 
 REST_FRAMEWORK = {

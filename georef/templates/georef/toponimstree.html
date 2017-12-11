@@ -1,0 +1,35 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
+    <style>
+        .jstree {
+            height: 200px;
+        }
+    </style>
+{% endblock %}
+{% block extrahead %}
+
+{% endblock %}
+{% block main %}
+<main>
+    <div class="page-header">
+    </div>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+            <li class="breadcrumb-item">Topònims</li>
+            <li class="breadcrumb-item active">Arbre</li>
+        </ol>
+    </div>
+    <div class="container">
+        <div id="jstree"></div>
+    </div>
+</main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponimstree.js' %}"></script>
+{% endblock %}

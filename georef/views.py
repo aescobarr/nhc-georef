@@ -22,6 +22,8 @@ import glob,os
 import ntpath
 import shapefile
 import djangoref.settings as conf
+from django.core import serializers
+
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -220,6 +222,26 @@ def toponims(request):
     llista_tipus = Tipustoponim.objects.order_by('nom')
     llista_paisos = Pais.objects.order_by('nom')
     return render(request, 'georef/toponims_list.html', context={ 'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token, 'wms_url':wms_url })
+
+
+@login_required
+def toponimstree(request):
+    return render(request, 'georef/toponimstree.html')
+
+
+@api_view(['GET'])
+def toponimstreenode(request,node_id):
+    if request.method == 'GET':
+        toponims = None
+        data = []
+        if node_id == '-1':
+            toponims = Toponim.objects.filter(idpare__isnull=True)
+        else:
+            toponims = Toponim.objects.filter(idpare=node_id)
+        for toponim in toponims:
+            elem = { 'text' : toponim.nom_str, 'id': toponim.id, 'parent': '#' if toponim.idpare is None else toponim.idpare.id}
+            data.append(elem)
+        return Response(data=data, status=200)
 
 
 import_uploader = AjaxFileUploader()
