@@ -1,3 +1,17 @@
+/*
+$.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            if($('#lletresllistat a.selected')){
+                var inicial = $('#lletresllistat a.selected')[0].firstChild.data;
+                if(inicial == 'Totes'){
+                    return true;
+                }
+                var nom = data[0];
+                return nom.startsWith(inicial);
+            }
+        }
+    );
+*/
 $(document).ready(function() {
     table = $('#toponims_list').DataTable( {
         "ajax": {
@@ -19,6 +33,7 @@ $(document).ready(function() {
         "pagingType": "full_numbers",
         "bLengthChange": false,
         stateSave: true,
+        //"dom": '<"toolbar"><"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
         "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
         stateSaveCallback: function(settings,data) {
             localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) )
@@ -33,6 +48,18 @@ $(document).ready(function() {
         ],
         "columnDefs": [
             {
+                "targets": 3,
+                "data": null,
+                "defaultContent": "<button class=\"delete_button btn btn-danger\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></button>",
+                "sortable": false
+            },
+            {
+                "targets": 4,
+                "data": null,
+                "defaultContent": "<button class=\"edit_button btn btn-info\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></button>",
+                "sortable": false
+            },
+            {
                 "targets":0,
                 "title": "Topònim"
             },
@@ -46,6 +73,38 @@ $(document).ready(function() {
             }
         ]
     } );
+
+    /*
+    $("div.toolbar").html('<div id="lletresllistat">' +
+        '<a class="selected" href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'\');return false;">Totes</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'A\');return false;">A</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'B\');return false;">B</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'C\');return false;">C</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'D\');return false;">D</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'E\');return false;">E</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'F\');return false;">F</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'G\');return false;">G</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'H\');return false;">H</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'I\');return false;">I</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'J\');return false;">J</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'K\');return false;">K</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'L\');return false;">L</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'M\');return false;">M</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'N\');return false;">N</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'O\');return false;">O</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'P\');return false;">P</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'Q\');return false;">Q</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'R\');return false;">R</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'S\');return false;">S</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'T\');return false;">T</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'U\');return false;">U</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'V\');return false;">V</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'W\');return false;">W</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'X\');return false;">X</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'Y\');return false;">Y</a>' +
+        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'Z\');return false;">Z</a>' +
+        '</div>');
+        */
 
     $( "#autoc_filtres" ).autocomplete({
         source: function(request,response){
@@ -183,6 +242,14 @@ $(document).ready(function() {
         });
     };
 
+    $('#toponims_list tbody').on('click', 'td button.edit_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().id
+        url = "/toponims/update/" + id
+        window.location.href = url;
+    });
+
     $( "#saveDoFilter" ).click(function() {
         check_nomfiltre();
     });
@@ -305,7 +372,15 @@ $(document).ready(function() {
 
     map = new djangoRef.Map.createMap(map_options);
 
+
 });
+
+var filtrarPerLletra = function(elem, lletra){
+    $('#lletresllistat a.selected').removeClass('selected');
+    $(elem).addClass('selected');
+    table.draw();
+};
+
 
 $(window).bind('beforeunload', function(){
     var state = djangoRef.Map.getState();

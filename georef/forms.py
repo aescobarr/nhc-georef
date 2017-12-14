@@ -1,6 +1,8 @@
 from django import forms
 from material import *
 from georef.models import *
+from django.forms import ModelForm
+from django.forms import inlineformset_factory
 
 '''
 class ToponimsForm(forms.Form):
@@ -32,3 +34,22 @@ class ToponimsForm(forms.Form):
     idtipustoponim = forms.ModelChoiceField(queryset=Tipustoponim.objects.extra(order_by=['nom']))
     idpais = forms.ModelChoiceField(queryset=Pais.objects.extra(order_by=['nom']))
     idpare = forms.ModelChoiceField(queryset=Toponim.objects.all())
+
+
+AQUATIC_CHOICES = (
+    ('S','Sí'),
+    ('N','No'),
+)
+
+class ToponimsUpdateForm(ModelForm):
+
+    aquatic = forms.ChoiceField(choices=AQUATIC_CHOICES,widget=forms.RadioSelect, label='Aquàtic?')
+    idtipustoponim = forms.ModelChoiceField(queryset=Tipustoponim.objects.all().order_by('nom'),widget=forms.Select, label='Tipus topònim')
+    idpais = forms.ModelChoiceField(queryset=Pais.objects.all().order_by('nom'), widget=forms.Select, label='País')
+
+    class Meta:
+        model = Toponim
+        exclude = ['id','codi', 'idpare', 'nom_fitxer_importacio', 'linia_fitxer_importacio']
+        widgets = {
+            'idpare': forms.HiddenInput(),
+        }

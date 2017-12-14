@@ -23,7 +23,11 @@ import ntpath
 import shapefile
 import djangoref.settings as conf
 from django.core import serializers
-
+from django.shortcuts import render, get_object_or_404
+from django import forms
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from georef.forms import ToponimsUpdateForm
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -229,19 +233,44 @@ def toponimstree(request):
     return render(request, 'georef/toponimstree.html')
 
 
+def get_node_from_toponim(toponim):
+    if Toponim.objects.filter(idpare=toponim.id).exists():
+        toponim_node = { 'text' : toponim.nom_str, 'id': toponim.id, 'children':True}
+    else:
+        toponim_node = {'text': toponim.nom_str, 'id': toponim.id}
+    return toponim_node
+
+
 @api_view(['GET'])
-def toponimstreenode(request,node_id):
+def toponimstreenode(request):
     if request.method == 'GET':
         toponims = None
         data = []
-        if node_id == '-1':
-            toponims = Toponim.objects.filter(idpare__isnull=True)
+        node_id = request.query_params.get('id', None)
+        if node_id == '#':
+            elem = {'text': 'Tots els topònims', 'id': '1', 'parent': '#', 'children' : True }
+            return Response(data=elem, status=200)
+        elif node_id == '1':
+            toponims = Toponim.objects.filter(idpare__isnull=True).order_by('nom')
         else:
-            toponims = Toponim.objects.filter(idpare=node_id)
+            toponims = Toponim.objects.filter(idpare=node_id).order_by('nom')
         for toponim in toponims:
-            elem = { 'text' : toponim.nom_str, 'id': toponim.id, 'parent': '#' if toponim.idpare is None else toponim.idpare.id}
+            elem = get_node_from_toponim(toponim)
             data.append(elem)
         return Response(data=data, status=200)
+
+
+@login_required
+def toponims_update(request, id=None):
+    if id:
+        toponim = get_object_or_404(Toponim,pk=id)
+    else:
+        raise forms.ValidationError("No existeix aquest topònim")
+    form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(reverse('toponims'))
+    return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id})
 
 
 import_uploader = AjaxFileUploader()

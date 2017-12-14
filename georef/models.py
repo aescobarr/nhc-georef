@@ -93,7 +93,7 @@ class Toponim(models.Model):
 
     @property
     def nom_str(self):
-        return '%s - %s (%s) (%s)' % (self.nom, self.idpais, self.idtipustoponim, self.aquatic)
+        return '%s - %s (%s) (%s)' % (self.nom, '' if self.idpais is None else self.idpais, self.idtipustoponim, 'Aquàtic' if self.aquatic=='S' else 'Terrestre')
 
     def crea_query_de_filtre(json_filtre):
         accum_query = None

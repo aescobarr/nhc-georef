@@ -146,3 +146,32 @@ table.dataTable tr.even { background-color: white; }
 
 
 .ui-dialog { z-index: 1000 !important ;}
+
+div#lletresllistat a{
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+div#lletresllistat a.selected{
+    background-color:#337ab7;
+    color: white;
+}
+
+table#toponim_edit tbody tr td ul{
+	list-style-type: none;
+}
+
+table#toponim_edit tbody tr td ul li{
+	float: left;
+}
+
+.separador_seccio {
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.separador_seccio p{
+    background: #4598ea;
+    text-color: 000#;
+    padding-left: 10px;
+}
