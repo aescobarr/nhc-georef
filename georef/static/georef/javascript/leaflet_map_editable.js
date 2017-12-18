@@ -1,15 +1,15 @@
 $(document).ready(function() {
     var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-	osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 12, attribution: osmAttrib});
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 12, attribution: osmAttrib});
 
     map = new L.Map('map',{
         layers: [osm]
     });
 
-	map.setView(new L.LatLng(40.58, -3.25),2);
+    map.setView(new L.LatLng(40.58, -3.25),2);
 
-	roads = L.gridLayer.googleMutant({
+    roads = L.gridLayer.googleMutant({
         type: 'roadmap' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
     });
 
@@ -27,20 +27,20 @@ $(document).ready(function() {
 
     var baseMaps = [
         {
-            groupName: "Open Street Maps",
+            groupName: 'Open Street Maps',
             expanded: true,
             layers: {
-                "Open Street Map": osm
+                'Open Street Map': osm
             }
         },
         {
-            groupName: "Google Base Maps",
+            groupName: 'Google Base Maps',
             expanded: true,
             layers: {
-                "Google roads": roads,
-                "Google satellite": satellite,
-                "Google terrain": terrain,
-                "Google hybrid": hybrid
+                'Google roads': roads,
+                'Google satellite': satellite,
+                'Google terrain': terrain,
+                'Google hybrid': hybrid
             }
         }
     ];
@@ -49,23 +49,23 @@ $(document).ready(function() {
 
     var overlays = [
         {
-            groupName: "Toponims",
+            groupName: 'Toponims',
             expanded: true,
             layers: {
-                "Darreres versions": toponims
+                'Darreres versions': toponims
             }
         }
     ];
 
-	var options = {
-		container_width 	: "180px",
-		container_height    : "500px",
-		container_maxHeight : "500px",
-		group_maxHeight     : "120px",
-		exclusive       	: false
-	};
+    var options = {
+        container_width 	: '180px',
+        container_height    : '500px',
+        container_maxHeight : '500px',
+        group_maxHeight     : '120px',
+        exclusive       	: false
+    };
 
-	var MyCustomMarker = L.Icon.extend({
+    var MyCustomMarker = L.Icon.extend({
         options: {
             shadowUrl: null,
             iconAnchor: new L.Point(12, 12),
@@ -77,7 +77,7 @@ $(document).ready(function() {
     editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
 
-	var draw_options = {
+    var draw_options = {
         position: 'topleft',
         draw: {
             polyline: {
@@ -121,9 +121,9 @@ $(document).ready(function() {
     control_layers.addTo(map);*/
 
     controlCapes = L.Control.styledLayerControl(baseMaps, overlays, options);
-	map.addControl(controlCapes);
+    map.addControl(controlCapes);
 
-	/*map.on(L.Draw.Event.CREATED, function (e) {
+    /*map.on(L.Draw.Event.CREATED, function (e) {
         var type = e.layerType,
             layer = e.layer;
 
@@ -144,45 +144,46 @@ $(document).ready(function() {
     });
     */
     var showGetFeatureInfo = function (err, latlng, content) {
-        if (err) { console.log(err); return; } // do nothing if there's an error
+        //if (err) { console.log(err); return; }
+        // do nothing if there's an error
         // Otherwise show the content in a popup, or something.
         L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(content).openOn(map);
-    }
+    };
 
     var getFeatureInfo = function(evt,querylayers){
         // Make an AJAX request to the server and hope for the best
         var url = getFeatureInfoUrl(evt.latlng,querylayers);
         $.ajax({
-          url: url,
-          success: function (data, status, xhr) {
-            var err = typeof data === 'string' ? null : data;
-            showGetFeatureInfo(err, evt.latlng, data);
-          },
-          error: function (xhr, status, error) {
-            showGetFeatureInfo(error);
-          }
+            url: url,
+            success: function (data, status, xhr) {
+                var err = typeof data === 'string' ? null : data;
+                showGetFeatureInfo(err, evt.latlng, data);
+            },
+            error: function (xhr, status, error) {
+                showGetFeatureInfo(error);
+            }
         });
-    }
+    };
 
     var getFeatureInfoUrl = function(latlng,querylayers){
         var point = map.latLngToContainerPoint(latlng, map.getZoom());
         var size = map.getSize();
 
         var params = {
-          request: 'GetFeatureInfo',
-          service: 'WMS',
-          srs: 'EPSG:4326',
-          styles: '',
-          transparent: true,
-          version: '1.1.1',
-          format: 'image/jpeg',
-          bbox: map.getBounds().toBBoxString(),
-          height: size.y,
-          width: size.x,
-          layers: querylayers,
-          query_layers: querylayers,
-          info_format: 'text/html',
-          feature_count: 10
+            request: 'GetFeatureInfo',
+            service: 'WMS',
+            srs: 'EPSG:4326',
+            styles: '',
+            transparent: true,
+            version: '1.1.1',
+            format: 'image/jpeg',
+            bbox: map.getBounds().toBBoxString(),
+            height: size.y,
+            width: size.x,
+            layers: querylayers,
+            query_layers: querylayers,
+            info_format: 'text/html',
+            feature_count: 10
         };
 
         params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
@@ -198,7 +199,7 @@ $(document).ready(function() {
             var param_layers = [];
             for(var i=0; i < layers_in_control.length; i++){
                 param_layers.push( layers_in_control[i].wmsParams.layers );
-            };
+            }
             var querylayers = param_layers.join(',');
             getFeatureInfo(evt,querylayers);
         }

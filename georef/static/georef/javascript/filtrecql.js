@@ -14,7 +14,7 @@ function transformarJSONACQL(jsonStringFiltre){
 function transformarCondicioPaisACQL(idpais){
     var filtre = new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-        property: "idpais",
+        property: 'idpais',
         value: idpais
     });
     return filtre;
@@ -23,7 +23,7 @@ function transformarCondicioPaisACQL(idpais){
 function transformarCondicioTipusACQL(idtipus){
     var filtre = new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-        property: "idtipustoponim",
+        property: 'idtipustoponim',
         value: idtipus
     });
     return filtre;
@@ -38,17 +38,17 @@ function transformarNotCQL(filtre){
 
 function transformarCondicioPartNomACQL(partnomtoponim){
     var filtre = new OpenLayers.Filter.Comparison({
-                                type: OpenLayers.Filter.Comparison.LIKE,
-                                property: "nomtoponim",
-                                value: "%"+partnomtoponim+"%"
-                            });
+        type: OpenLayers.Filter.Comparison.LIKE,
+        property: 'nomtoponim',
+        value: '%'+partnomtoponim+'%'
+    });
     return filtre;
 }
 
 function transformarCondicioAquaticACQL(idaquatic){
     var filtre = new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-        property: "aquatic",
+        property: 'aquatic',
         value: idaquatic
     });
     return filtre;
@@ -57,7 +57,7 @@ function transformarCondicioAquaticACQL(idaquatic){
 function transformarCondicioGeograficACQL(geometria){
     var filtre = new OpenLayers.Filter.Spatial({
         type: OpenLayers.Filter.Spatial.INTERSECTS,
-        property: "carto_epsg23031",
+        property: 'carto_epsg23031',
         value: geometria
     });
     return filtre;
@@ -116,14 +116,14 @@ function transformarCondicioFiltreJSONACQL(filtreAnterior,operador,condicio,valo
 
     if(filtreAnterior!=null && 'and'==operador){
         filtre = new OpenLayers.Filter.Logical({
-        type: OpenLayers.Filter.Logical.AND,
-        filters: [filtreAnterior,filtreNou]
-            });
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [filtreAnterior,filtreNou]
+        });
     }else if(filtreAnterior!=null && 'or'==operador){
         filtre = new OpenLayers.Filter.Logical({
-        type: OpenLayers.Filter.Logical.OR,
-        filters: [filtreAnterior,filtreNou]
-            });
+            type: OpenLayers.Filter.Logical.OR,
+            filters: [filtreAnterior,filtreNou]
+        });
     }else{
         filtre = filtreNou;
     }

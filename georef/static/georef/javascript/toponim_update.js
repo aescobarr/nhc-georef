@@ -25,44 +25,43 @@ var init_ariadna = function(){
         var nom = node_list_full[i].split('$')[1];
         var linkVisualitzar;
         if(i == 0){
-            linkVisualitzar = "<li><a href='#' title=\""+nom+"\" onclick=\"javascript:visualitzar('"+id+"')\">" + nom + "</a></li>";
+            linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")">' + nom + '</a></li>';
         }else{
-            linkVisualitzar = "<li><a href='#' title=\""+nom+"\" onclick=\"javascript:visualitzar('"+id+"')\">-> " + nom + "</a></li>";
+            linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")">' + nom + '</a></li>';
         }
-        $("#ariadna ul").append(linkVisualitzar);
+        $('#ariadna ul').append(linkVisualitzar);
     }
-}
+};
 
 $(document).ready(function() {
 
     $('#jstree')
-    .on("loaded.jstree", function(event, data) {
-       if(node_list != null && node_list.length>1 && node_list[0]!="1"){
-           data.instance.load_node(node_list[0],node_load_callback);
-       }else{
-           data.instance.select_node(node_list[0]);
-       }
-    })
-    .jstree({
-    'plugins' : [
-        "checkbox"
-    ],
-    'core' : {
-        'multiple' : false,
-        'data' : {
-                "url" : function (node) {
-                    return node.id === '#' ? '/toponimstree/' : '/toponimstree/?id=' + node.id;
-                },
-                "data" : function (node) {
-                    if(node.id=="#"){
-                        return { "id" : node_ini };
-                    }else{
-                        return { "id" : node.id };
+        .on('loaded.jstree', function(event, data) {
+            if(node_list != null && node_list.length>1 && node_list[0]!='1'){
+                data.instance.load_node(node_list[0],node_load_callback);
+            }else{
+                data.instance.select_node(node_list[0]);
+            }
+        }).jstree({
+            'plugins' : [
+                'checkbox'
+            ],
+            'core' : {
+                'multiple' : false,
+                'data' : {
+                    'url' : function (node) {
+                        return node.id === '#' ? '/toponimstree/' : '/toponimstree/?id=' + node.id;
+                    },
+                    'data' : function (node) {
+                        if(node.id=='#'){
+                            return { 'id' : node_ini };
+                        }else{
+                            return { 'id' : node.id };
+                        }
                     }
                 }
             }
-        }
-    });
+        });
 
     init_ariadna();
 });
