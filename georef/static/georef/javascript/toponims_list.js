@@ -14,11 +14,11 @@ $.fn.dataTable.ext.search.push(
 */
 $(document).ready(function() {
     table = $('#toponims_list').DataTable( {
-        "ajax": {
-            "url": _toponim_list_url,
-            "dataType": 'json',
-            "data": function(d){
-                var valorFiltre = getCookie("filtre_t");
+        'ajax': {
+            'url': _toponim_list_url,
+            'dataType': 'json',
+            'data': function(d){
+                var valorFiltre = getCookie('filtre_t');
                 if(valorFiltre){
                     d.filtrejson = valorFiltre;
                 }else{
@@ -26,50 +26,50 @@ $(document).ready(function() {
                 }
             }
         },
-        "serverSide": true,
-        "processing": true,
+        'serverSide': true,
+        'processing': true,
         //"language": opcions_llenguatge_catala,
-        "pageLength": 25,
-        "pagingType": "full_numbers",
-        "bLengthChange": false,
+        'pageLength': 25,
+        'pagingType': 'full_numbers',
+        'bLengthChange': false,
         stateSave: true,
         //"dom": '<"toolbar"><"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
-        "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+        'dom': '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
         stateSaveCallback: function(settings,data) {
-            localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) )
+            localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) );
         },
         stateLoadCallback: function(settings) {
-            return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) )
+            return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) );
         },
-        "columns": [
-            { "data": "nom_str" }
-            ,{ "data": "aquatic_str" }
-            ,{ "data": "idtipustoponim.nom" }
+        'columns': [
+            { 'data': 'nom_str' }
+            ,{ 'data': 'aquatic_str' }
+            ,{ 'data': 'idtipustoponim.nom' }
         ],
-        "columnDefs": [
+        'columnDefs': [
             {
-                "targets": 3,
-                "data": null,
-                "defaultContent": "<button class=\"delete_button btn btn-danger\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></button>",
-                "sortable": false
+                'targets': 3,
+                'data': null,
+                'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>',
+                'sortable': false
             },
             {
-                "targets": 4,
-                "data": null,
-                "defaultContent": "<button class=\"edit_button btn btn-info\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></button>",
-                "sortable": false
+                'targets': 4,
+                'data': null,
+                'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>',
+                'sortable': false
             },
             {
-                "targets":0,
-                "title": "Topònim"
+                'targets':0,
+                'title': 'Topònim'
             },
             {
-                "targets":1,
-                "title": "Aquàtic"
+                'targets':1,
+                'title': 'Aquàtic'
             },
             {
-                "targets":2,
-                "title": "Tipus"
+                'targets':2,
+                'title': 'Tipus'
             }
         ]
     } );
@@ -106,9 +106,9 @@ $(document).ready(function() {
         '</div>');
         */
 
-    $( "#autoc_filtres" ).autocomplete({
+    $( '#autoc_filtres' ).autocomplete({
         source: function(request,response){
-            $.getJSON( _filtres_list_url + "?term=" + request.term, function(data){
+            $.getJSON( _filtres_list_url + '?term=' + request.term, function(data){
                 response($.map(data.results, function(item){
                     return {
                         label: item.nomfiltre,
@@ -122,7 +122,6 @@ $(document).ready(function() {
         select: function( event, ui ) {
             //log( "Selected: " + ui.item.value + " aka " + ui.item.id );
             var listname = ui.item.label;
-            var list_id = ui.item.value;
             crearTaulaFiltre(ui.item.json);
             var activeOverlays = djangoRef.Map.getActiveOverlays();
             for(var i = 0; i < activeOverlays.length; i++){
@@ -136,105 +135,105 @@ $(document).ready(function() {
 
     var add_filtre = function(json,modul,nomfiltre){
         var data = {
-            "json": json,
-            "modul": modul,
-            "nomfiltre": nomfiltre
+            'json': json,
+            'modul': modul,
+            'nomfiltre': nomfiltre
         };
         $.ajax({
             url: _filtres_create_url,
-            method: "POST",
+            method: 'POST',
             data: data,
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
                     var csrftoken = getCookie('csrftoken');
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 toastr.success("Filtre desat amb èxit!");
+                toastr.success('Filtre desat amb èxit!');
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error esborrant filtre!");
+                toastr.error('Error esborrant filtre!');
             }
         });
-    }
+    };
 
     var update_filtre = function(json, nomfiltre, idfiltre, modul){
         var data = {
-            "json": json,
-            "modul": modul,
-            "nomfiltre": nomfiltre
+            'json': json,
+            'modul': modul,
+            'nomfiltre': nomfiltre
         };
         $.ajax({
-            url: _filtres_update_url + idfiltre + "/",
+            url: _filtres_update_url + idfiltre + '/',
             data: data,
-            method: "PUT",
+            method: 'PUT',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
                     var csrftoken = getCookie('csrftoken');
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 toastr.success("Filtre actualitzat amb èxit!");
-                 filter();
+                toastr.success('Filtre actualitzat amb èxit!');
+                filter();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error actualitzant filtre");
+                toastr.error('Error actualitzant filtre');
             }
         });
-    }
+    };
 
     var delete_filtre = function(id){
         $.ajax({
             url: _filtres_delete_url + id,
-            method: "DELETE",
+            method: 'DELETE',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
                     var csrftoken = getCookie('csrftoken');
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 toastr.success("Filtre esborrat amb èxit!");
+                toastr.success('Filtre esborrat amb èxit!');
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error esborrant");
+                toastr.error('Error esborrant');
             }
         });
     };
 
     var check_nomfiltre = function(){
         var json = extreureJSONDeFiltre();
-        var nomfiltre = $("#autoc_filtres").val();
-        var modul = "TOPONIMS";
+        var nomfiltre = $('#autoc_filtres').val();
+        var modul = 'TOPONIMS';
         $.ajax({
             url: _check_filtre_url,
-            data: "nomfiltre=" + encodeURI(nomfiltre),
-            method: "GET",
+            data: 'nomfiltre=' + encodeURI(nomfiltre),
+            method: 'GET',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
                     var csrftoken = getCookie('csrftoken');
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 add_filtre(json,modul,nomfiltre);
+                add_filtre(json,modul,nomfiltre);
             },
             error: function(jqXHR, textStatus, errorThrown){
                 var idfiltre = jqXHR.responseJSON.detail;
-                $( "#dialog-confirm" ).dialog({
+                $( '#dialog-confirm' ).dialog({
                     resizable: false,
-                    height: "auto",
+                    height: 'auto',
                     width: 400,
                     modal: true,
                     buttons: {
-                        "Sobreescriure i filtrar": function() {
+                        'Sobreescriure i filtrar': function() {
                             update_filtre(json,nomfiltre,idfiltre,modul);
-                            $( this ).dialog( "close" );
+                            $( this ).dialog( 'close' );
                         },
                         Cancel: function() {
-                            $( this ).dialog( "close" );
+                            $( this ).dialog( 'close' );
                         }
                     }
                 });
@@ -245,20 +244,20 @@ $(document).ready(function() {
     $('#toponims_list tbody').on('click', 'td button.edit_button', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
-        var id = row.data().id
-        url = "/toponims/update/" + id
+        var id = row.data().id;
+        url = '/toponims/update/' + id;
         window.location.href = url;
     });
 
-    $( "#saveDoFilter" ).click(function() {
+    $( '#saveDoFilter' ).click(function() {
         check_nomfiltre();
     });
 
-    $( "#doFilter" ).click(function() {
+    $( '#doFilter' ).click(function() {
         filter();
     });
 
-    $( "#doClear" ).click(function() {
+    $( '#doClear' ).click(function() {
         clearTaula('taulafiltre');
         filter();
         $('#autoc_filtres').val('');
@@ -267,30 +266,30 @@ $(document).ready(function() {
     var importa_shapefile = function(filepath){
         $.ajax({
             url: _import_shapefile_url,
-            data: "path=" + encodeURI(filepath),
-            method: "GET",
+            data: 'path=' + encodeURI(filepath),
+            method: 'GET',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
                     var csrftoken = getCookie('csrftoken');
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 toastr.success("Importació amb èxit!");
-                 editableLayers.clearLayers();
-                 var geoJson = JSON.parse(data.detail);
-                 var geoJSONLayer = L.geoJson(geoJson);
-                 geoJSONLayer.eachLayer(
+                toastr.success('Importació amb èxit!');
+                editableLayers.clearLayers();
+                var geoJson = JSON.parse(data.detail);
+                var geoJSONLayer = L.geoJson(geoJson);
+                geoJSONLayer.eachLayer(
                     function(l){
                         editableLayers.addLayer(l);
                     }
                 );
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error important fitxer:" + textStatus);
+                toastr.error('Error important fitxer:' + textStatus);
             }
         });
-    }
+    };
 
     var uploader = new qq.FileUploader({
         action: _ajax_upload_url,
@@ -301,7 +300,7 @@ $(document).ready(function() {
                 //alert("success!");
                 importa_shapefile(responseJSON.path);
             } else {
-                alert("upload failed!");
+                alert('upload failed!');
             }
         },
         template:'<div class="qq-uploader">' +
@@ -319,7 +318,7 @@ $(document).ready(function() {
     var toponims =  {
         name: 'toponims',
         layer : L.tileLayer.wms(
-        'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
             {
                 layers: 'mzoologia:toponimsdarreraversio',
                 format: 'image/png',
@@ -333,10 +332,10 @@ $(document).ready(function() {
 
     var overlays_control_config = [
         {
-            groupName: "Toponims",
+            groupName: 'Toponims',
             expanded: true,
             layers: {
-                "Darreres versions": toponims.layer
+                'Darreres versions': toponims.layer
             }
         }
     ];
@@ -348,15 +347,14 @@ $(document).ready(function() {
         wms_url: wms_url
     };
 
-    var valorView = getCookie("view_t");
+    var valorView = getCookie('view_t');
     if(valorView){
         var jsonView = JSON.parse(valorView);
         map_options.center = jsonView.center;
         map_options.zoom = jsonView.zoom;
     }
 
-    var valorEstat = getCookie("layers_t");
-    var state;
+    var valorEstat = getCookie('layers_t');
     if(valorEstat){
         var jsonState = JSON.parse(valorEstat);
         map_options.state = jsonState;
@@ -375,11 +373,13 @@ $(document).ready(function() {
 
 });
 
+/*
 var filtrarPerLletra = function(elem, lletra){
     $('#lletresllistat a.selected').removeClass('selected');
     $(elem).addClass('selected');
     table.draw();
 };
+*/
 
 
 $(window).bind('beforeunload', function(){

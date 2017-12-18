@@ -82,6 +82,7 @@ class Toponim(models.Model):
     idpare = models.ForeignKey('self', models.DO_NOTHING, db_column='idpare', blank=True, null=True)
     nom_fitxer_importacio = models.CharField(max_length=255, blank=True, null=True)
     linia_fitxer_importacio = models.TextField(blank=True, null=True)
+    denormalized_toponimtree = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -94,6 +95,19 @@ class Toponim(models.Model):
     @property
     def nom_str(self):
         return '%s - %s (%s) (%s)' % (self.nom, '' if self.idpais is None else self.idpais, self.idtipustoponim, 'Aquàtic' if self.aquatic=='S' else 'Terrestre')
+
+    def get_denormalized_toponimtree(self):
+        stack = []
+        stack = self.denormalized_toponimtree.split('#')
+        return stack
+
+    def get_denormalized_toponimtree_clean(self):
+        stack = self.get_denormalized_toponimtree()
+        stack_clean = []
+        for elem in stack:
+            stack_clean.append(elem.split('$')[0])
+        return stack_clean
+
 
     def crea_query_de_filtre(json_filtre):
         accum_query = None

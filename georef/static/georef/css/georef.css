@@ -175,3 +175,20 @@ table#toponim_edit tbody tr td ul li{
     text-color: 000#;
     padding-left: 10px;
 }
+
+#ariadna ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#ariadna ul li {
+    float: left;
+    padding: 5px;
+}
+
+.scroll_jstree{
+    height: 200px;
+    overflow: auto;
+}

@@ -270,7 +270,7 @@ def toponims_update(request, id=None):
     if request.POST and form.is_valid():
         form.save()
         return HttpResponseRedirect(reverse('toponims'))
-    return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id})
+    return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id, 'nodelist_full': toponim.get_denormalized_toponimtree(), 'nodelist': toponim.get_denormalized_toponimtree_clean()})
 
 
 import_uploader = AjaxFileUploader()

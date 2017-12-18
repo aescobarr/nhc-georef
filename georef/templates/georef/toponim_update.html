@@ -5,6 +5,13 @@
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
 {% endblock %}
+{% block extrahead %}
+<script>
+    var node_list_full = {{ nodelist_full|safe }};
+    var node_list = {{ nodelist|safe }};
+    var node_ini = "1";
+</script>
+{% endblock %}
 {% block main %}
 <main>
     <div class="page-header">
@@ -52,8 +59,10 @@
                     </table>
                 </div>
                 <div class="col-sm-6">
+                    <label>Jerarquia del topònim:</label>
+                    <div id="ariadna"><ul></ul></div>
                     <label>Topònim pare:</label>
-                    <div id="jstree"></div>
+                    <div class="scroll_jstree" id="jstree"></div>
                 </div>
             </div>
         </div>
