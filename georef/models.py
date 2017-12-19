@@ -4,6 +4,8 @@ import uuid
 import operator
 from django.contrib.gis.geos import GEOSGeometry
 import json
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -72,6 +74,21 @@ class Sistemareferenciarecurs(models.Model):
         db_table = 'sistemareferenciarecurs'
 
 
+def append_string_to_toponim(toponim, current_elements):
+    if toponim.idpare:
+        current_elements.append(toponim.idpare.id + '$' + toponim.idpare.nom)
+        append_string_to_toponim(toponim.idpare, current_elements)
+    else:
+        pass
+
+
+def compute_denormalized_toponim_tree_val(toponim):
+        stack = []
+        append_string_to_toponim(toponim, stack)
+        denormalized_val = '#'.join(list(reversed(stack)))
+        return denormalized_val
+
+
 class Toponim(models.Model):
     id = models.CharField(primary_key=True, max_length=200)
     codi = models.CharField(max_length=50, blank=True, null=True)
@@ -107,7 +124,6 @@ class Toponim(models.Model):
         for elem in stack:
             stack_clean.append(elem.split('$')[0])
         return stack_clean
-
 
     def crea_query_de_filtre(json_filtre):
         accum_query = None
@@ -225,12 +241,8 @@ class Filtrejson(models.Model):
         managed = False
         db_table = 'filtrejson'
 
-'''
-@receiver(file_uploaded, sender=AjaxFileUploader)
-def create_on_upload(sender, backend, request, **kwargs):
-    print(sender)
-    print(backend)
-    zip_ref = zipfile.ZipFile('/home/webuser/dev/django/djangoref/' + backend.path, 'r')
-    zip_ref.extractall('kk')
-    zip_ref.close()
-'''
+
+@receiver(pre_save)
+def my_callback(sender, instance, *args, **kwargs):
+    recalc_denormalized_toponim_tree = compute_denormalized_toponim_tree_val(instance)
+    instance.denormalized_toponimtree = recalc_denormalized_toponim_tree

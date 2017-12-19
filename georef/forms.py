@@ -49,7 +49,7 @@ class ToponimsUpdateForm(ModelForm):
 
     class Meta:
         model = Toponim
-        exclude = ['id','codi', 'idpare', 'nom_fitxer_importacio', 'linia_fitxer_importacio']
+        exclude = ['id','codi', 'nom_fitxer_importacio', 'linia_fitxer_importacio']
         widgets = {
             'idpare': forms.HiddenInput(),
         }

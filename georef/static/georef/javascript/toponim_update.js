@@ -1,18 +1,16 @@
 var counter = 0;
 var node_load_callback = function(node,status){
     counter=counter+1;
-    //this.open_node(node);
     if(counter < node_list.length ){
         if(!this.is_loaded(node_list[counter])){
             this.load_node(node_list[counter],node_load_callback);
         }
     }
-    //Aquesta condició es dona al carregar el darrer node
+    //This condition should only activate on second-to-last node
     if(counter == node_list.length - 1){
-        //El true/true és per evitar que al seleccionar el node més profund,
-        //es seleccioni tota la taula
-        this.select_node(node_list[counter],true,true);
-        //Des del node més profund amunt, anem desplegant carpetes
+        //true/true avoids full selection when selecting deepest node
+        this.select_node(node_list[counter],true,false);
+        //From deepest node upwards, expand folders
         for(var i = node_list.length-2 ; i >= 0; i--){
             this.open_node(node_list[i]);
         }
@@ -25,9 +23,11 @@ var init_ariadna = function(){
         var nom = node_list_full[i].split('$')[1];
         var linkVisualitzar;
         if(i == 0){
-            linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")">' + nom + '</a></li>';
+            //linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")">' + nom + '</a></li>';
+            linkVisualitzar = '<li><a href="/toponims/update/' + id + '" title="'+nom+'">' + nom + '</a></li>';
         }else{
-            linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")">' + nom + '</a></li>';
+            //linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")"> <- ' + nom + '</a></li>';
+            linkVisualitzar = '<li><a href="/toponims/update/' + id + '" title="'+nom+'"> <- ' + nom + '</a></li>';
         }
         $('#ariadna ul').append(linkVisualitzar);
     }
@@ -42,7 +42,22 @@ $(document).ready(function() {
             }else{
                 data.instance.select_node(node_list[0]);
             }
-        }).jstree({
+        })
+        .on('select_node.jstree', function (e, data) {
+                //top_selected_node = data.instance.get_top_selected()[0];
+                $('#id_idpare').val(data.instance.get_top_selected()[0]);
+            }
+        )
+        .on('deselect_node.jstree', function (e, data) {
+            if(data.instance.get_top_selected().length > 1){
+                //top_selected_node = "";
+                $('#id_idpare').val('');
+            }else{
+                //top_selected_node = data.instance.get_top_selected()[0];
+                $('#id_idpare').val(data.instance.get_top_selected()[0]);
+            }
+        })
+        .jstree({
             'plugins' : [
                 'checkbox'
             ],
