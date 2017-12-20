@@ -17,10 +17,39 @@ var node_load_callback = function(node,status){
     }
 };
 
-var init_ariadna = function(){
-    for(var i = 0; i < node_list_full.length; i++){
-        var id = node_list_full[i].split('$')[0];
-        var nom = node_list_full[i].split('$')[1];
+/* Undetermined nodes in jstree checkbox are those nodes selected because there is at least one
+selected child node - it renders as a square in the checkbox */
+var get_undetermined_nodes = function(){
+    var checked_ids = [];
+    $("#jstree")
+    .find(".jstree-undetermined")
+    .each(function (i, element) {
+        var node_elem = '';
+        var node_id = $(element).closest('.jstree-node').attr("id");
+        var node_txt = $(element).closest('.jstree-node')[0].innerText.split('-')[0].trim();
+        checked_ids.push(node_id+'$'+node_txt);
+    });
+    return checked_ids;
+}
+
+var get_top_selected_node = function(){
+    var top_selected_node_id = $('#jstree').jstree().get_top_selected()[0];
+    var node_text = $('#' + top_selected_node_id)[0].innerText.split('-')[0].trim();
+    return top_selected_node_id + '$' + node_text;
+}
+
+var get_full_selection_array = function(){
+    var checked = get_undetermined_nodes();
+    var top_selected = get_top_selected_node();
+    checked.push(top_selected);
+    return checked;
+}
+
+var init_ariadna = function(nodes){
+    $('#ariadna ul').empty();
+    for(var i = 0; i < nodes.length; i++){
+        var id = nodes[i].split('$')[0];
+        var nom = nodes[i].split('$')[1];
         var linkVisualitzar;
         if(i == 0){
             //linkVisualitzar = '<li><a href="#" title="'+nom+'" onclick="javascript:visualitzar("'+id+'")">' + nom + '</a></li>';
@@ -78,5 +107,11 @@ $(document).ready(function() {
             }
         });
 
-    init_ariadna();
+    init_ariadna(node_list_full);
+    $('#testbutton').click(function(){
+        var checked = get_undetermined_nodes();
+        var top_selected = get_top_selected_node();
+        checked.push(top_selected);
+        console.log(checked);
+    });
 });

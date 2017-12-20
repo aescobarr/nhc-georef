@@ -28,6 +28,7 @@
         <div class="container">
             <a role="button" class="btn btn-success" href="{% url 'toponims' %}">Cancel·lar</a>
             <input role="button" class="btn btn-success" type="submit" value="Desar" />
+            <input id="testbutton" role="button" class="btn btn-success" value="Test" />
         </div>
         <div class="container separador_seccio">
             <p><strong>Dades bàsiques:</strong></p>
@@ -68,6 +69,23 @@
             </div>
         </div>
     </form>
+    <div class="container separador_seccio">
+        <p><strong>Dades versió:</strong></p>
+    </div>
+    <div class="container">
+        <table id="toponimversio_edit">
+            <tr>
+                <th><label for="numero_versio">Número de versió <a class="botoinfo" title="Numeració de les versions de cada topònim, des de l’ 1 i creixement progressiu; útil només per identificar versions"><i class="fa fa-info" aria-hidden="true"></i></a> :</label></th>
+                <td><input id="numero_versio" type="text"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th><label for="qualificador_versio">Qualificador de versió:</label></th>
+                <td><select id="qualificador_versio"></select></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
 </main>
 {% endblock %}
 {% block extra_js %}

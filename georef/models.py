@@ -164,6 +164,73 @@ class Toponim(models.Model):
         return '%s - %s (%s) (%s)' % (self.nom, self.idpais, self.idtipustoponim, self.aquatic)
 
 
+class Tipusunitats(models.Model):
+    id = models.CharField(primary_key=True, max_length=100)
+    tipusunitat = models.CharField(max_length=500)
+
+    class Meta:
+        managed = False
+        db_table = 'tipusunitats'
+
+
+class Tipusrecursgeoref(models.Model):
+    id = models.CharField(primary_key=True, max_length=100)
+    nom = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'tipusrecursgeoref'
+
+
+class Suport(models.Model):
+    id = models.CharField(primary_key=True, max_length=100)
+    nom = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'suport'
+
+
+class Sistemareferenciamm(models.Model):
+    id = models.CharField(primary_key=True, max_length=100)
+    nom = models.CharField(max_length=500)
+
+    class Meta:
+        managed = False
+        db_table = 'sistemareferenciamm'
+
+
+class Recursgeoref(models.Model):
+    id = models.CharField(primary_key=True, max_length=100)
+    nom = models.CharField(max_length=500)
+    idtipusrecursgeoref = models.ForeignKey('Tipusrecursgeoref', models.DO_NOTHING, db_column='idtipusrecursgeoref', blank=True, null=True)
+    comentarisnoambit = models.CharField(max_length=500, blank=True, null=True)
+    campidtoponim = models.CharField(max_length=500, blank=True, null=True)
+    versio = models.CharField(max_length=100, blank=True, null=True)
+    fitxergraficbase = models.CharField(max_length=100, blank=True, null=True)
+    idsuport = models.ForeignKey('Suport', models.DO_NOTHING, db_column='idsuport', blank=True, null=True)
+    urlsuport = models.CharField(max_length=250, blank=True, null=True)
+    ubicaciorecurs = models.CharField(max_length=200, blank=True, null=True)
+    actualitzaciosuport = models.CharField(max_length=250, blank=True, null=True)
+    mapa = models.CharField(max_length=100, blank=True, null=True)
+    comentariinfo = models.TextField(blank=True, null=True)
+    comentariconsulta = models.TextField(blank=True, null=True)
+    comentariqualitat = models.TextField(blank=True, null=True)
+    classificacio = models.CharField(max_length=300, blank=True, null=True)
+    divisiopoliticoadministrativa = models.CharField(max_length=300, blank=True, null=True)
+    idambit = models.ForeignKey('Toponimversio', models.DO_NOTHING, db_column='idambit', blank=True, null=True)
+    acronim = models.CharField(max_length=100, blank=True, null=True)
+    idsistemareferenciamm = models.ForeignKey('Sistemareferenciamm', models.DO_NOTHING, db_column='idsistemareferenciamm', blank=True, null=True)
+    idtipusunitatscarto = models.ForeignKey('Tipusunitats', models.DO_NOTHING, db_column='idtipusunitatscarto', blank=True, null=True)
+    #idgeometria = models.ForeignKey('Geometria', models.DO_NOTHING, db_column='idgeometria', blank=True, null=True)
+    base_url_wms = models.CharField(max_length=255, blank=True, null=True)
+    capes_wms_json = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'recursgeoref'
+        #unique_together = (('id', 'id'),)
+
 
 class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200)
@@ -184,7 +251,7 @@ class Toponimversio(models.Model):
     idpersona = models.CharField(max_length=100, blank=True, null=True)
     observacions = models.TextField(blank=True, null=True)
     #idlimitcartooriginal = models.ForeignKey('Documents', models.DO_NOTHING, db_column='idlimitcartooriginal', blank=True, null=True)
-    #idrecursgeoref = models.ForeignKey(Recursgeoref, models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)
+    idrecursgeoref = models.ForeignKey(Recursgeoref, models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)
     idtoponim = models.ForeignKey(Toponim, models.DO_NOTHING, db_column='idtoponim', blank=True, null=True, related_name='versions')
     numero_versio = models.IntegerField(blank=True, null=True)
     idqualificador = models.ForeignKey(Qualificadorversio, models.DO_NOTHING, db_column='idqualificador', blank=True, null=True)
@@ -242,7 +309,7 @@ class Filtrejson(models.Model):
         db_table = 'filtrejson'
 
 
-@receiver(pre_save)
+@receiver(pre_save, sender=Toponim)
 def my_callback(sender, instance, *args, **kwargs):
     recalc_denormalized_toponim_tree = compute_denormalized_toponim_tree_val(instance)
     instance.denormalized_toponimtree = recalc_denormalized_toponim_tree

@@ -158,6 +158,14 @@
             });
         }
 
+        map.on(L.Draw.Event.CREATED, function (e) {
+            // Do whatever else you need to. (save to db, add to map etc)
+            //map.addLayer(layer);
+            //console.log(e);
+            var type = e.layerType,layer = e.layer;
+            djangoRef.Map.editableLayers.addLayer(layer);
+        });
+
         if(options.overlays && options.overlays.length > 0){
             register_overlays(options.overlays);
         }

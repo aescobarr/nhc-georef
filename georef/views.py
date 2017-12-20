@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 import operator
 import functools
-from georef.models import Tipustoponim, Pais
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio
 import json
 from json import dumps
 import magic
@@ -27,7 +27,8 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from georef.forms import ToponimsUpdateForm
+from georef.forms import ToponimsUpdateForm, ToponimversioForm
+from django.forms import formset_factory
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -260,6 +261,7 @@ def toponimstreenode(request):
         return Response(data=data, status=200)
 
 
+'''
 @login_required
 def toponims_update(request, id=None):
     if id:
@@ -271,6 +273,42 @@ def toponims_update(request, id=None):
         form.save()
         return HttpResponseRedirect(reverse('toponims'))
     return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id, 'nodelist_full': toponim.get_denormalized_toponimtree(), 'nodelist': toponim.get_denormalized_toponimtree_clean()})
+'''
 
+@login_required
+def toponims_update(request, id=None):
+    toponim = get_object_or_404(Toponim, pk=id)
+    ToponimversioFormSet = formset_factory(ToponimversioForm)
+    toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
+    toponimsversio_data = [
+        {
+            'numero_versio': versio.numero_versio,
+            'idqualificador': versio.idqualificador.id if versio.idqualificador else None,
+            'idrecursgeoref': versio.idrecursgeoref.id if versio.idrecursgeoref else None,
+            'nom': versio.nom,
+            'datacaptura': versio.datacaptura,
+            'coordenada_x_origen': versio.coordenada_x_origen,
+            'coordenada_y_origen': versio.coordenada_y_origen,
+            'coordenada_z_origen': versio.coordenada_z_origen,
+            'precisio_z_origen': versio.precisio_z_origen
+        } for versio in toponimsversio
+    ]
+    toponim_form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+    if request.method == 'POST':
+        if toponim_form.is_valid():
+            toponim_form.save()
+            return HttpResponseRedirect(reverse('toponims'))
+    return render(request, 'georef/toponim_update.html',{'form': toponim_form, 'id': id, 'nodelist_full': toponim.get_denormalized_toponimtree(),'nodelist': toponim.get_denormalized_toponimtree_clean()})
+    '''
+    if id:
+        toponim = get_object_or_404(Toponim,pk=id)
+    else:
+        raise forms.ValidationError("No existeix aquest topònim")
+    form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(reverse('toponims'))
+    return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id, 'nodelist_full': toponim.get_denormalized_toponimtree(), 'nodelist': toponim.get_denormalized_toponimtree_clean()})
+    '''
 
 import_uploader = AjaxFileUploader()
