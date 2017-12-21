@@ -55,6 +55,8 @@ class ToponimsUpdateForm(ModelForm):
         }
 
 class ToponimversioForm(ModelForm):
+    idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select)
+    idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select)
     class Meta:
         model = Toponimversio
         fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen']

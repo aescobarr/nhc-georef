@@ -61,6 +61,9 @@ class Qualificadorversio(models.Model):
         managed = False
         db_table = 'qualificadorversio'
 
+    def __str__(self):
+        return '%s' % (self.qualificador)
+
 
 class Sistemareferenciarecurs(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
@@ -231,9 +234,12 @@ class Recursgeoref(models.Model):
         db_table = 'recursgeoref'
         #unique_together = (('id', 'id'),)
 
+    def __str__(self):
+        return '%s' % (self.nom)
+
 
 class Toponimversio(models.Model):
-    id = models.CharField(primary_key=True, max_length=200)
+    id = models.CharField(primary_key=True, max_length=200,default=uuid.uuid4)
     codi = models.CharField(max_length=50, blank=True, null=True)
     nom = models.CharField(max_length=250)
     datacaptura = models.DateField(blank=True, null=True)

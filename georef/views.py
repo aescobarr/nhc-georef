@@ -29,6 +29,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from georef.forms import ToponimsUpdateForm, ToponimversioForm
 from django.forms import formset_factory
+from django.db import IntegrityError, transaction
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -278,13 +279,14 @@ def toponims_update(request, id=None):
 @login_required
 def toponims_update(request, id=None):
     toponim = get_object_or_404(Toponim, pk=id)
-    ToponimversioFormSet = formset_factory(ToponimversioForm)
+    desat_amb_exit = False
+    ToponimversioFormSet = formset_factory(ToponimversioForm,extra=0)
     toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
     toponimsversio_data = [
         {
             'numero_versio': versio.numero_versio,
-            'idqualificador': versio.idqualificador.id if versio.idqualificador else None,
-            'idrecursgeoref': versio.idrecursgeoref.id if versio.idrecursgeoref else None,
+            'idqualificador': versio.idqualificador,
+            'idrecursgeoref': versio.idrecursgeoref,
             'nom': versio.nom,
             'datacaptura': versio.datacaptura,
             'coordenada_x_origen': versio.coordenada_x_origen,
@@ -294,21 +296,46 @@ def toponims_update(request, id=None):
         } for versio in toponimsversio
     ]
     toponim_form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+    toponimversio_form = ToponimversioFormSet(request.POST or None, initial=toponimsversio_data)
+    nodelist_full = None
+    nodelist = None
     if request.method == 'POST':
-        if toponim_form.is_valid():
+        if toponim_form.is_valid() and toponimversio_form.is_valid():
             toponim_form.save()
-            return HttpResponseRedirect(reverse('toponims'))
-    return render(request, 'georef/toponim_update.html',{'form': toponim_form, 'id': id, 'nodelist_full': toponim.get_denormalized_toponimtree(),'nodelist': toponim.get_denormalized_toponimtree_clean()})
-    '''
-    if id:
-        toponim = get_object_or_404(Toponim,pk=id)
-    else:
-        raise forms.ValidationError("No existeix aquest topònim")
-    form = ToponimsUpdateForm(request.POST or None, instance=toponim)
-    if request.POST and form.is_valid():
-        form.save()
-        return HttpResponseRedirect(reverse('toponims'))
-    return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id, 'nodelist_full': toponim.get_denormalized_toponimtree(), 'nodelist': toponim.get_denormalized_toponimtree_clean()})
-    '''
+            versions = []
+            for form in toponimversio_form:
+                #toponimversio = form.instance
+                toponimversio = Toponimversio(
+                    numero_versio=form.cleaned_data.get('numero_versio'),
+                    idqualificador=form.cleaned_data.get('idqualificador'),
+                    idrecursgeoref=form.cleaned_data.get('idrecursgeoref'),
+                    nom=form.cleaned_data.get('nom'),
+                    datacaptura=form.cleaned_data.get('datacaptura'),
+                    coordenada_x_origen=form.cleaned_data.get('coordenada_x_origen'),
+                    coordenada_y_origen=form.cleaned_data.get('coordenada_y_origen'),
+                    coordenada_z_origen=form.cleaned_data.get('coordenada_z_origen'),
+                    precisio_z_origen=form.cleaned_data.get('precisio_z_origen'),
+                    idtoponim=toponim
+                )
+                versions.append(toponimversio)
+                try:
+                    with transaction.atomic():
+                        Toponimversio.objects.filter(idtoponim=toponim).delete()
+                        Toponimversio.objects.bulk_create(versions)
+                        desat_amb_exit = True
+                except IntegrityError as e:
+                    print(e)
+        else:
+            nodelist_full = []
+            nodelist = []
+    context = {
+        'form': toponim_form,
+        'tv_form': toponimversio_form,
+        'id': id,
+        'nodelist_full': toponim.get_denormalized_toponimtree(),
+        'nodelist': toponim.get_denormalized_toponimtree_clean(),
+        'saved_success': desat_amb_exit
+    }
+    return render(request, 'georef/toponim_update.html',context)
 
 import_uploader = AjaxFileUploader()

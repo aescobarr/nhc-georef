@@ -192,3 +192,11 @@ table#toponim_edit tbody tr td ul li{
     height: 200px;
     overflow: auto;
 }
+
+.add_toponimversio{
+    background-color:blue;
+}
+
+.remove_toponimversio{
+    background-color:red;
+}
