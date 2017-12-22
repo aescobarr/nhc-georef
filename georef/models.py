@@ -6,6 +6,7 @@ from django.contrib.gis.geos import GEOSGeometry
 import json
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
 
 # Create your models here.
 
@@ -77,21 +78,6 @@ class Sistemareferenciarecurs(models.Model):
         db_table = 'sistemareferenciarecurs'
 
 
-def append_string_to_toponim(toponim, current_elements):
-    if toponim.idpare:
-        current_elements.append(toponim.idpare.id + '$' + toponim.idpare.nom)
-        append_string_to_toponim(toponim.idpare, current_elements)
-    else:
-        pass
-
-
-def compute_denormalized_toponim_tree_val(toponim):
-        stack = []
-        append_string_to_toponim(toponim, stack)
-        denormalized_val = '#'.join(list(reversed(stack)))
-        return denormalized_val
-
-
 class Toponim(models.Model):
     id = models.CharField(primary_key=True, max_length=200)
     codi = models.CharField(max_length=50, blank=True, null=True)
@@ -117,16 +103,10 @@ class Toponim(models.Model):
         return '%s - %s (%s) (%s)' % (self.nom, '' if self.idpais is None else self.idpais, self.idtipustoponim, 'Aquàtic' if self.aquatic=='S' else 'Terrestre')
 
     def get_denormalized_toponimtree(self):
-        stack = []
-        stack = self.denormalized_toponimtree.split('#')
-        return stack
-
-    def get_denormalized_toponimtree_clean(self):
-        stack = self.get_denormalized_toponimtree()
-        stack_clean = []
-        for elem in stack:
-            stack_clean.append(elem.split('$')[0])
-        return stack_clean
+        #stack = []
+        #stack = self.denormalized_toponimtree.split('#')
+        #return stack
+        return format_denormalized_toponimtree(self.denormalized_toponimtree)
 
     def crea_query_de_filtre(json_filtre):
         accum_query = None

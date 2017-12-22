@@ -8,7 +8,10 @@
 {% block extrahead %}
 <script>
     var node_list_full = {{ nodelist_full|safe }};
-    var node_list = {{ nodelist|safe }};
+    var node_list = [];
+    for(var i = 0; i < node_list_full.length; i++){
+        node_list.push(node_list_full[i].split('$')[0]);
+    }
     var node_ini = "1";
 </script>
 {% endblock %}
@@ -138,7 +141,13 @@
                 addText: 'Afegir versió',
                 deleteText: 'Eliminar versió',
                 addCssClass: 'btn btn-primary',
-                deleteCssClass: 'btn btn-danger'
+                deleteCssClass: 'btn btn-danger',
+                removed: function(row){
+                    var conf = confirm('Realment vols esborrar la versió?');
+                    if(conf == false){
+                        return;
+                    }
+                }
             }
         );
     </script>

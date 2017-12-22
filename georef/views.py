@@ -2,7 +2,7 @@ from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer, FiltrejsonSerializer
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer
 from georef.models import Toponim, Filtrejson
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
@@ -30,6 +30,7 @@ from django.core.urlresolvers import reverse
 from georef.forms import ToponimsUpdateForm, ToponimversioForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
+from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -137,6 +138,10 @@ class FiltrejsonViewSet(viewsets.ModelViewSet):
 
     def put(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class RecursGeoRefViewSet(viewsets.ModelViewSet):
+    serializer_class = RecursgeorefSerializer
 
 @api_view(['GET'])
 def check_filtre(request):
@@ -279,6 +284,7 @@ def toponims_update(request, id=None):
 @login_required
 def toponims_update(request, id=None):
     toponim = get_object_or_404(Toponim, pk=id)
+    nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
     desat_amb_exit = False
     ToponimversioFormSet = formset_factory(ToponimversioForm,extra=0)
     toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
@@ -297,8 +303,6 @@ def toponims_update(request, id=None):
     ]
     toponim_form = ToponimsUpdateForm(request.POST or None, instance=toponim)
     toponimversio_form = ToponimversioFormSet(request.POST or None, initial=toponimsversio_data)
-    nodelist_full = None
-    nodelist = None
     if request.method == 'POST':
         if toponim_form.is_valid() and toponimversio_form.is_valid():
             toponim_form.save()
@@ -325,15 +329,11 @@ def toponims_update(request, id=None):
                         desat_amb_exit = True
                 except IntegrityError as e:
                     print(e)
-        else:
-            nodelist_full = []
-            nodelist = []
     context = {
         'form': toponim_form,
         'tv_form': toponimversio_form,
         'id': id,
-        'nodelist_full': toponim.get_denormalized_toponimtree(),
-        'nodelist': toponim.get_denormalized_toponimtree_clean(),
+        'nodelist_full': nodelist_full,
         'saved_success': desat_amb_exit
     }
     return render(request, 'georef/toponim_update.html',context)

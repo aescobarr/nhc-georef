@@ -7,6 +7,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'toponims', views.ToponimViewSet, base_name='toponims')
 router.register(r'filtres', views.FiltrejsonViewSet, base_name='filtres')
+router.register(r'recursgeoref', views.RecursGeoRefViewSet, base_name='recursgeoref')
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

@@ -1,10 +1,19 @@
-from georef.models import Toponim
-from georef.models import compute_denormalized_toponim_tree_val
+def append_string_to_toponim(toponim, current_elements):
+    if toponim.idpare:
+        current_elements.append(toponim.idpare.id + '$' + toponim.idpare.nom)
+        append_string_to_toponim(toponim.idpare, current_elements)
+    else:
+        pass
 
 
-def update_all_denormalized_toponim_tree():
-    for toponim in Toponim.objects.all():
-        denormalized_val = compute_denormalized_toponim_tree_val(toponim)
-        if denormalized_val != toponim.denormalized_toponimtree:
-            toponim.denormalized_toponimtree = denormalized_val
-            toponim.save()
+def compute_denormalized_toponim_tree_val(toponim):
+        stack = []
+        append_string_to_toponim(toponim, stack)
+        denormalized_val = '#'.join(list(reversed(stack)))
+        return denormalized_val
+
+
+def format_denormalized_toponimtree(denormalized_toponimtree_str):
+    stack = []
+    stack = denormalized_toponimtree_str.split('#')
+    return stack
