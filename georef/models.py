@@ -7,6 +7,7 @@ import json
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
+import datetime
 
 # Create your models here.
 
@@ -222,7 +223,7 @@ class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200,default=uuid.uuid4)
     codi = models.CharField(max_length=50, blank=True, null=True)
     nom = models.CharField(max_length=250)
-    datacaptura = models.DateField(blank=True, null=True)
+    datacaptura = models.DateField(blank=True, null=True, default=datetime.date.today)
     coordenada_x = models.FloatField(blank=True, null=True)
     coordenada_y = models.FloatField(blank=True, null=True)
     coordenada_z = models.FloatField(blank=True, null=True)

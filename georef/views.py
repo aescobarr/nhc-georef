@@ -282,6 +282,29 @@ def toponims_update(request, id=None):
 '''
 
 @login_required
+def toponims_update_2(request, idtoponim=None, idversio=None):
+    if request.method == 'GET':
+        toponim = get_object_or_404(Toponim, pk=idtoponim)
+        nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
+        if idversio == '-1':
+            toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
+            if (len(toponimsversio) > 0):
+                versio = toponimsversio[0]
+        else:
+            versio = get_object_or_404(Toponim, pk=idversio)
+        toponim_form = ToponimsUpdateForm(request.GET or None, instance=toponim)
+        toponimversio_form = ToponimversioForm(request.GET or None, instance=versio)
+        context = {
+            'form': toponim_form,
+            'toponimversio_form': toponimversio_form,
+            'idtoponim': idtoponim,
+            'idversio': idversio,
+            'nodelist_full': nodelist_full,
+            'versions': toponimsversio
+        }
+    return render(request, 'georef/toponim_update_2.html', context)
+
+@login_required
 def toponims_update(request, id=None):
     toponim = get_object_or_404(Toponim, pk=id)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
@@ -334,7 +357,8 @@ def toponims_update(request, id=None):
         'tv_form': toponimversio_form,
         'id': id,
         'nodelist_full': nodelist_full,
-        'saved_success': desat_amb_exit
+        'saved_success': desat_amb_exit,
+        'wms_url': conf.GEOSERVER_WMS_URL
     }
     return render(request, 'georef/toponim_update.html',context)
 

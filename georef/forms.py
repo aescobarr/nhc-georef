@@ -3,6 +3,7 @@ from material import *
 from georef.models import *
 from django.forms import ModelForm
 from django.forms import inlineformset_factory
+#from datetimewidget.widgets import DateWidget
 
 '''
 class ToponimsForm(forms.Form):
@@ -57,6 +58,19 @@ class ToponimsUpdateForm(ModelForm):
 class ToponimversioForm(ModelForm):
     idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select)
     idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select)
+    datacaptura = forms.DateField(input_formats=['%d/%m/%Y'])
+    '''
+    dateTimeOptions = {
+        'format': 'dd/mm/yyyy'
+    }
+    datacaptura = forms.DateField(input_formats=['%d/%m/%Y'],widget=DateWidget(bootstrap_version=3, options=dateTimeOptions))
+    '''
+
     class Meta:
         model = Toponimversio
         fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen']
+        '''
+        widgets = {
+            'datacaptura': DateWidget(bootstrap_version=3, options=dateTimeOptions)
+        }
+        '''

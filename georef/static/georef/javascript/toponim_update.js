@@ -109,4 +109,5 @@ $(document).ready(function() {
         var top_selected = get_top_selected_node();
         checked.push(top_selected);
     });
+
 });

@@ -194,7 +194,9 @@ table#toponim_edit tbody tr td ul li{
 }
 
 .add_toponimversio{
-    background-color:blue;
+    /*background-color:blue;*/
+    margin-left: 15px;
+    margin-top: 10px;
 }
 
 .remove_toponimversio{

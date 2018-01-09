@@ -6,11 +6,6 @@
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
 {% endblock %}
 {% block extrahead %}
-    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
-    <script src="{% static 'toastr/toastr.min.js' %}"></script>
-    {{ tv_form.media }}
     <script>
         var node_list_full = {{ nodelist_full|safe }};
         var node_list = [];
@@ -35,11 +30,10 @@
         </ol>
     </div>
     <div class="container">
-        <form action="{% url 'toponims_update' id %}" method="post">
+        <form action="{% url 'toponims_update_2' idtoponim idversio %}" method="post">
             {% csrf_token %}
             <div class="container">
                 <a role="button" class="btn btn-success" href="{% url 'toponims' %}">Cancel·lar</a>
-                <input role="button" class="btn btn-success" type="submit" value="Desar" />
             </div>
             <div class="container separador_seccio">
                 <p><strong>Dades bàsiques:</strong></p>
@@ -79,8 +73,29 @@
                     </div>
                 </div>
             </div>
-            {{ tv_form.management_form }}
-            {% for versio in tv_form %}
+            <div class="container">
+                <input role="button" class="btn btn-success" type="submit" value="Desar Topònim" />
+            </div>
+        </form>
+        <div class="container separador_seccio">
+            <p><strong>Versions:</strong></p>
+            <table>
+                <tr>
+                    <td><strong>#</strong></td>
+                    <td><strong>Qualificador</strong></td>
+                    <td><strong>Data</strong></td>
+                </tr>
+                {% for versio in versions %}
+                <tr>
+                    <td>{{ versio.numero_versio }}</td>
+                    <td>{{ versio.idqualificador.qualificador }}</td>
+                    <td>{{ versio.datacaptura }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <form action="{% url 'toponims_update_2' idtoponim idversio %}" method="post">
+            {% csrf_token %}
             <div class="container form-container">
                 <div class="separador_seccio">
                     <p><strong>Dades versió:</strong></p>
@@ -88,80 +103,63 @@
                 {{ versio.id.as_hidden }}
                 <table id="toponimversio_edit">
                     <tr>
-                        <th><label for="{{ form.numero_versio.id_for_label }}">Número de versió <a class="botoinfo" title="Numeració de les versions de cada topònim, des de l’ 1 i creixement progressiu; útil només per identificar versions"><i class="fa fa-info" aria-hidden="true"></i></a> :</label></th>
-                        <td>{{ versio.numero_versio }}</td>
-                        <td>{{ versio.numero_versio.errors }}</td>
+                        <th><label for="{{ toponimversio_form.numero_versio.id_for_label }}">Número de versió <a class="botoinfo" title="Numeració de les versions de cada topònim, des de l’ 1 i creixement progressiu; útil només per identificar versions"><i class="fa fa-info" aria-hidden="true"></i></a> :</label></th>
+                        <td>{{ toponimversio_form.numero_versio }}</td>
+                        <td>{{ toponimversio_form.numero_versio.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.idqualificador.id_for_label }}">Qualificador de versió:</label></th>
-                        <td>{{ versio.idqualificador }}</td>
-                        <td>{{ versio.idqualificador.errors }}</td>
+                        <th><label for="{{ toponimversio_form.idqualificador.id_for_label }}">Qualificador de versió:</label></th>
+                        <td>{{ toponimversio_form.idqualificador }}</td>
+                        <td>{{ toponimversio_form.idqualificador.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.idrecursgeoref.id_for_label }}">Versió capturada del recurs:</label></th>
-                        <td>{{ versio.idrecursgeoref }}</td>
-                        <td>{{ versio.idrecursgeoref.errors }}</td>
+                        <th><label for="{{ toponimversio_form.idrecursgeoref.id_for_label }}">Versió capturada del recurs:</label></th>
+                        <td>{{ toponimversio_form.idrecursgeoref }}</td>
+                        <td>{{ toponimversio_form.idrecursgeoref.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.nom.id_for_label }}">Nom del topònim al recurs:</label></th>
-                        <td>{{ versio.nom }}</td>
-                        <td>{{ versio.nom.errors }}</td>
+                        <th><label for="{{ toponimversio_form.nom.id_for_label }}">Nom del topònim al recurs:</label></th>
+                        <td>{{ toponimversio_form.nom }}</td>
+                        <td>{{ toponimversio_form.nom.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.datacaptura.id_for_label }}">Data:</label></th>
-                        <td>{{ versio.datacaptura }}</td>
-                        <td>{{ versio.datacaptura.errors }}</td>
+                        <th><label for="{{ toponimversio_form.datacaptura.id_for_label }}">Data:</label></th>
+                        <td>{{ toponimversio_form.datacaptura }}</td>
+                        <td>{{ toponimversio_form.datacaptura.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.coordenada_x_origen.id_for_label }}">Coordenada X original:</label></th>
-                        <td>{{ versio.coordenada_x_origen }}</td>
-                        <td>{{ versio.coordenada_x_origen.errors }}</td>
+                        <th><label for="{{ toponimversio_form.coordenada_x_origen.id_for_label }}">Coordenada X original:</label></th>
+                        <td>{{ toponimversio_form.coordenada_x_origen }}</td>
+                        <td>{{ toponimversio_form.coordenada_x_origen.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.coordenada_y_origen.id_for_label }}">Coordenada Y original:</label></th>
-                        <td>{{ versio.coordenada_y_origen }}</td>
-                        <td>{{ versio.coordenada_y_origen.errors }}</td>
+                        <th><label for="{{ toponimversio_form.coordenada_y_origen.id_for_label }}">Coordenada Y original:</label></th>
+                        <td>{{ toponimversio_form.coordenada_y_origen }}</td>
+                        <td>{{ toponimversio_form.coordenada_y_origen.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.coordenada_z_origen.id_for_label }}">Coordenada Z:</label></th>
-                        <td>{{ versio.coordenada_z_origen }}</td>
-                        <td>{{ versio.coordenada_z_origen.errors }}</td>
+                        <th><label for="{{ toponimversio_form.coordenada_z_origen.id_for_label }}">Coordenada Z:</label></th>
+                        <td>{{ toponimversio_form.coordenada_z_origen }}</td>
+                        <td>{{ toponimversio_form.coordenada_z_origen.errors }}</td>
                     </tr>
                     <tr>
-                        <th><label for="{{ form.precisio_z_origen.id_for_label }}">Incertesa d'altitud(m):</label></th>
-                        <td>{{ versio.precisio_z_origen }}</td>
-                        <td>{{ versio.precisio_z_origen.errors }}</td>
+                        <th><label for="{{ toponimversio_form.precisio_z_origen.id_for_label }}">Incertesa d'altitud(m):</label></th>
+                        <td>{{ toponimversio_form.precisio_z_origen }}</td>
+                        <td>{{ toponimversio_form.precisio_z_origen.errors }}</td>
                     </tr>
                 </table>
             </div>
-            {% endfor %}
+            <div class="container">
+                <input role="button" class="btn btn-success" type="submit" value="Desar Versió" />
+                <input role="button" class="btn btn-danger" value="Esborrar Versió" />
+            </div>
         </form>
     </div>
 </main>
 {% endblock %}
-{% block js %}
-
-{% endblock %}
 {% block extra_js %}
     <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
     <script src="{% static 'georef/javascript/toponim_update.js' %}"></script>
-    <script src="{% static 'georef/javascript/jquery.formset.js' %}"></script>
-    <script>
-        $('.form-container').formset(
-            {
-                addText: 'Afegir versió',
-                deleteText: 'Eliminar versió',
-                addCssClass: 'btn btn-primary add_toponimversio',
-                deleteCssClass: 'btn btn-danger',
-                removed: function(row){
-                    var conf = confirm('Realment vols esborrar la versió?');
-                    if(conf == false){
-                        return;
-                    }
-                }
-            }
-        );
-    </script>
     <script>
         {% if saved_success %}
             toastr.success('Desat amb èxit!');

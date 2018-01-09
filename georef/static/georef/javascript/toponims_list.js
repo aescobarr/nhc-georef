@@ -245,7 +245,7 @@ $(document).ready(function() {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().id;
-        url = '/toponims/update/' + id;
+        url = '/toponims/update/' + id + '/-1';
         window.location.href = url;
     });
 
