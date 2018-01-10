@@ -3,7 +3,7 @@ from material import *
 from georef.models import *
 from django.forms import ModelForm
 from django.forms import inlineformset_factory
-#from datetimewidget.widgets import DateWidget
+from datetimewidget.widgets import DateWidget
 
 '''
 class ToponimsForm(forms.Form):
@@ -44,9 +44,9 @@ AQUATIC_CHOICES = (
 
 class ToponimsUpdateForm(ModelForm):
 
-    aquatic = forms.ChoiceField(choices=AQUATIC_CHOICES,widget=forms.RadioSelect, label='Aquàtic?')
+    aquatic = forms.ChoiceField(choices=AQUATIC_CHOICES,widget=forms.RadioSelect, label='Aquàtic?', required=False)
     idtipustoponim = forms.ModelChoiceField(queryset=Tipustoponim.objects.all().order_by('nom'),widget=forms.Select, label='Tipus topònim')
-    idpais = forms.ModelChoiceField(queryset=Pais.objects.all().order_by('nom'), widget=forms.Select, label='País')
+    idpais = forms.ModelChoiceField(queryset=Pais.objects.all().order_by('nom'), widget=forms.Select, label='País', required=False)
 
     class Meta:
         model = Toponim
@@ -58,13 +58,10 @@ class ToponimsUpdateForm(ModelForm):
 class ToponimversioForm(ModelForm):
     idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select)
     idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select)
-    datacaptura = forms.DateField(input_formats=['%d/%m/%Y'])
-    '''
     dateTimeOptions = {
         'format': 'dd/mm/yyyy'
     }
     datacaptura = forms.DateField(input_formats=['%d/%m/%Y'],widget=DateWidget(bootstrap_version=3, options=dateTimeOptions))
-    '''
 
     class Meta:
         model = Toponimversio

@@ -80,10 +80,10 @@ class Sistemareferenciarecurs(models.Model):
 
 
 class Toponim(models.Model):
-    id = models.CharField(primary_key=True, max_length=200)
+    id = models.CharField(primary_key=True, max_length=200, default=pkgen)
     codi = models.CharField(max_length=50, blank=True, null=True)
     nom = models.CharField(max_length=250)
-    aquatic = models.CharField(max_length=1, blank=True, null=True)
+    aquatic = models.CharField(max_length=1, blank=True, null=True, default='N')
     idtipustoponim = models.ForeignKey(Tipustoponim, models.DO_NOTHING, db_column='idtipustoponim')
     idpais = models.ForeignKey(Pais, models.DO_NOTHING, db_column='idpais', blank=True, null=True)
     idpare = models.ForeignKey('self', models.DO_NOTHING, db_column='idpare', blank=True, null=True)

@@ -263,6 +263,11 @@ $(document).ready(function() {
         $('#autoc_filtres').val('');
     });
 
+    $( '#addToponim' ).click(function() {
+        var url = '/toponims/create/';
+        window.location.href = url;
+    });
+
     var importa_shapefile = function(filepath){
         $.ajax({
             url: _import_shapefile_url,

@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^toponims$', views.toponims, name='toponims'),
     url(r'^toponims/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.toponims_update, name='toponims_update'),
     url(r'^toponims/update/(?P<idtoponim>[0-9A-Za-z_\-]+)/(?P<idversio>[0-9A-Za-z_\-]+)/$', views.toponims_update_2, name='toponims_update_2'),
+    url(r'^toponims/create/$', views.toponims_create, name='toponims_create'),
     url(r'^toponimstree$', views.toponimstree, name='toponimstree'),
     #url(r'^toponimstree/(?P<node_id>[\w\-]+)/$', views.toponimstreenode, name='toponimstreenode'),
     url(r'^toponimstree/$', views.toponimstreenode, name='toponimstreenode'),

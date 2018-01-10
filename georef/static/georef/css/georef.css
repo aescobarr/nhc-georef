@@ -202,3 +202,18 @@ table#toponim_edit tbody tr td ul li{
 .remove_toponimversio{
     background-color:red;
 }
+
+.table_top {
+    background-color: gray;
+}
+
+.active_edit {
+    background-color: red;
+    color: white;
+}
+
+#versions{
+    margin-top: 10px;
+}
+
+#versions tr { line-height: 10px; }

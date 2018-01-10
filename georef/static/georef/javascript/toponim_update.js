@@ -17,34 +17,6 @@ var node_load_callback = function(node,status){
     }
 };
 
-/* Undetermined nodes in jstree checkbox are those nodes selected because there is at least one
-selected child node - it renders as a square in the checkbox */
-var get_undetermined_nodes = function(){
-    var checked_ids = [];
-    $('#jstree')
-        .find('.jstree-undetermined')
-        .each(function (i, element) {
-            var node_elem = '';
-            var node_id = $(element).closest('.jstree-node').attr('id');
-            var node_txt = $(element).closest('.jstree-node')[0].innerText.split('-')[0].trim();
-            checked_ids.push(node_id+'$'+node_txt);
-        });
-    return checked_ids;
-};
-
-var get_top_selected_node = function(){
-    var top_selected_node_id = $('#jstree').jstree().get_top_selected()[0];
-    var node_text = $('#' + top_selected_node_id)[0].innerText.split('-')[0].trim();
-    return top_selected_node_id + '$' + node_text;
-};
-
-var get_full_selection_array = function(){
-    var checked = get_undetermined_nodes();
-    var top_selected = get_top_selected_node();
-    checked.push(top_selected);
-    return checked;
-};
-
 var init_ariadna = function(nodes){
     $('#ariadna ul').empty();
     for(var i = 0; i < nodes.length; i++){
@@ -104,10 +76,53 @@ $(document).ready(function() {
         });
 
     init_ariadna(node_list_full);
-    $('#testbutton').click(function(){
-        var checked = get_undetermined_nodes();
-        var top_selected = get_top_selected_node();
+
+    /*$('#testbutton').click(function(){
+        var checked = get_undetermined_nodes('#jstree');
+        var top_selected = get_top_selected_node('#jstree');
         checked.push(top_selected);
-    });
+    });*/
+
+    var toponims =  {
+        name: 'toponims',
+        layer : L.tileLayer.wms(
+            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            {
+                layers: 'mzoologia:toponimsdarreraversio',
+                format: 'image/png',
+                transparent: true
+            }
+        )
+    };
+
+    var overlay_list = [];
+    overlay_list.push(toponims);
+
+    var overlays_control_config = [
+        {
+            groupName: 'Toponims',
+            expanded: true,
+            layers: {
+                'Darreres versions': toponims.layer
+            }
+        }
+    ];
+
+    map_options = {
+        editable:true,
+        overlays: overlay_list,
+        overlays_control_config: overlays_control_config,
+        wms_url: wms_url
+    };
+
+    map_options.state = {
+        overlays: [toponims.name],
+        base: 'djangoRef.Map.roads',
+        view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
+    };
+
+    //map_options.consultable = [toponims.layer];
+
+    map = new djangoRef.Map.createMap(map_options);
 
 });

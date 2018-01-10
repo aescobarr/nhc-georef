@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'georef_addenda',
     'djangobower',
     'ajaxuploader',
+    'datetimewidget',
 ]
 
 MIDDLEWARE = [
