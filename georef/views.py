@@ -2,7 +2,7 @@ from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer
 from georef.models import Toponim, Filtrejson
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
@@ -113,6 +113,10 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
 def index(request):
     return render(request, 'georef/index.html')
 
+
+class ToponimVersioViewSet(viewsets.ModelViewSet):
+    queryset = Toponimversio.objects.all()
+    serializer_class = ToponimVersioSerializer
 
 
 class ToponimViewSet(viewsets.ModelViewSet):

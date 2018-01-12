@@ -32,6 +32,47 @@ var init_ariadna = function(nodes){
     }
 };
 
+var confirmDialog = function(message,id){
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>'+message+'</h6></div>')
+            .dialog({
+                modal: true, title: 'Esborrant versió...', zIndex: 10000, autoOpen: true,
+                width: 'auto', resizable: false,
+                buttons: {
+                    Yes: function () {
+                        delete_versio(id);
+                        $(this).dialog("close");
+                    },
+                    No: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+        });
+    };
+
+var delete_versio = function(id){
+    $.ajax({
+        url: _versio_delete_url + id,
+        method: "DELETE",
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                var csrftoken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        success: function( data, textStatus, jqXHR ) {
+             toastr.success("Versió esborrada amb èxit!");
+             $('table#versions tr#' + id).remove();
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            toastr.error("Error esborrant la versió");
+        }
+    });
+};
+
 $(document).ready(function() {
 
     $('#jstree')

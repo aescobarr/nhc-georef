@@ -67,4 +67,4 @@ class ToponimversioForm(ModelForm):
 
     class Meta:
         model = Toponimversio
-        fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen']
+        fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen','coordenada_x','coordenada_y','coordenada_z']

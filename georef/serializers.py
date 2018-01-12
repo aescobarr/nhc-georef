@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref
+from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio
 
 
 class TipusToponimSerializer(serializers.ModelSerializer):
@@ -15,6 +15,12 @@ class ToponimSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Toponim
+        fields = '__all__'
+
+
+class ToponimVersioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Toponimversio
         fields = '__all__'
 
 
