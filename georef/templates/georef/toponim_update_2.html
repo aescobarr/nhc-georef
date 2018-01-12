@@ -94,13 +94,14 @@
                 </div>
             </div>
             <div class="container">
-                <input role="button" class="btn btn-success" type="submit" value="Desar Topònim" />
+                <input role="button" class="btn btn-success" type="submit" name="save_toponim_from_toponimversio" value="Desar Topònim" />
             </div>
         </form>
         {% if versions %}
         <div class="container separador_seccio">
             <p><strong>Versions:</strong></p>
-            <input role="button" class="btn btn-success" type="submit" value="Afegir nova versió" />
+            <!--<input role="button" class="btn btn-success" value="Afegir nova versió" />-->
+            <a href="{% url 'toponims_update_2' idtoponim -2 %}" class="btn btn-success">Afegir nova versió</a>
             <table id="versions">
                 <tr class="table_top">
                     <td><strong>#</strong></td>
@@ -109,24 +110,27 @@
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                 </tr>
+
                 {% for versio in versions %}
                 <tr {% if versio.id == id_darrera_versio %} class="active_edit" {% endif %} id="{{ versio.id }}">
                     <td>{{ versio.numero_versio }}</td>
                     <td>{{ versio.idqualificador.qualificador }}</td>
                     <td>{{ versio.datacaptura | date:"d/m/Y"}}</td>
                     <td><a href="{% url 'toponims_update_2' idtoponim versio.id %}" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></a></td>
-                    <!--<td><button id="edit_version" class="btn btn-info" type="reset"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>-->
                     <td><button id="delete_version" class="btn btn-danger" type="reset"><i class="fa fa-times"></i></button></td>
                 </tr>
                 {% endfor %}
+                {% if id_darrera_versio == '-2' %}
+                    <tr class="active_edit"><td colspan="5">Afegint nova versió...</td></tr>
+                {% endif %}
             </table>
         </div>
         {% endif %}
             <form action="{% url 'toponims_update_2' idtoponim idversio %}" method="post">
                 {% csrf_token %}
-                <div class="container form-container">
+                <div id="div_versions" class="container form-container">
                     <div class="separador_seccio">
-                        <p><strong>Dades versió:</strong></p>
+                        <p><strong>Dades versió: {% if id_darrera_versio == '-2' %} (Afegint nova versió...) {% else %} {{ toponimversio_form.instance.nom }} {% endif %}</strong></p>
                         {% if not versions %}
                         <span class="label label-warning"><i class="fa fa-info" aria-hidden="true"></i> Aquest topònim encara no té versions. Omple el formulari de versió i prem 'Desar versió' per crear la primera versió</span>
                         {% endif %}
@@ -136,12 +140,12 @@
                         <div class="col-sm-6">
                             <table id="toponimversio_edit">
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.numero_versio.id_for_label }}">Número de versió <a class="botoinfo" title="Numeració de les versions de cada topònim, des de l’ 1 i creixement progressiu; útil només per identificar versions"><i class="fa fa-info" aria-hidden="true"></i></a> :</label></th>
+                                    <th><label for="{{ toponimversio_form.numero_versio.id_for_label }}">Número versió <a class="botoinfo" title="Numeració de les versions de cada topònim, des de l’ 1 i creixement progressiu; útil només per identificar versions"><i class="fa fa-info" aria-hidden="true"></i></a> :</label></th>
                                     <td>{{ toponimversio_form.numero_versio }}</td>
                                     <td>{{ toponimversio_form.numero_versio.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.idqualificador.id_for_label }}">Qualificador de versió:</label></th>
+                                    <th><label for="{{ toponimversio_form.idqualificador.id_for_label }}">Qualificador versió:</label></th>
                                     <td>{{ toponimversio_form.idqualificador }}</td>
                                     <td>{{ toponimversio_form.idqualificador.errors }}</td>
                                 </tr>
@@ -188,8 +192,7 @@
                     </div>
                 </div>
                 <div class="container">
-                    <input role="button" class="btn btn-success" type="submit" value="Desar Versió" />
-                    <input role="button" class="btn btn-danger" value="Esborrar Versió" />
+                    <input role="button" class="btn btn-success" type="submit" name="save_versio_from_toponimversio" value="Desar Versió" />
                 </div>
             </form>
     </div>

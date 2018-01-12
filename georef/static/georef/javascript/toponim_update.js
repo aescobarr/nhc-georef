@@ -125,4 +125,6 @@ $(document).ready(function() {
 
     map = new djangoRef.Map.createMap(map_options);
 
+    //$('#div_versions')[0].scrollIntoView( true );
+
 });

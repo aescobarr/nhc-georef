@@ -295,18 +295,19 @@ def toponims_create(request):
 
 @login_required
 def toponims_update_2(request, idtoponim=None, idversio=None):
+    versio = None
+    id_darrera_versio = None
+    toponim = get_object_or_404(Toponim, pk=idtoponim)
+    nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
+    toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
     if request.method == 'GET':
-        toponim = get_object_or_404(Toponim, pk=idtoponim)
-        versio = None
-        id_darrera_versio = None
-        nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
         if idversio == '-1':
-            toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
             if (len(toponimsversio) > 0):
                 versio = toponimsversio[0]
                 id_darrera_versio = versio.id
+        elif idversio == '-2': #Afegint nova versió
+            id_darrera_versio = '-2'
         else:
-            toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
             versio = get_object_or_404(Toponimversio, pk=idversio)
             id_darrera_versio = idversio
         toponim_form = ToponimsUpdateForm(request.GET or None, instance=toponim)
@@ -323,7 +324,71 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             'versions': toponimsversio,
             'id_darrera_versio': id_darrera_versio
         }
-    return render(request, 'georef/toponim_update_2.html', context)
+        return render(request, 'georef/toponim_update_2.html', context)
+    elif request.method == 'POST':
+        if 'save_toponim_from_toponimversio' in request.POST:
+            form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+            if form.is_valid():
+                form.save()
+                url = reverse('toponims_update_2', kwargs={'idtoponim': form.instance.id, 'idversio': idversio})
+                return HttpResponseRedirect(url)
+            else:
+                if idversio == '-1':
+                    if (len(toponimsversio) > 0):
+                        versio = toponimsversio[0]
+                        id_darrera_versio = versio.id
+                else:
+                    versio = get_object_or_404(Toponimversio, pk=idversio)
+                    id_darrera_versio = idversio
+                if versio:
+                    toponimversio_form = ToponimversioForm(request.GET or None, instance=versio)
+                else:
+                    toponimversio_form = ToponimversioForm(request.GET or None)
+                context = {
+                    'form': form,
+                    'toponimversio_form': toponimversio_form,
+                    'idtoponim': idtoponim,
+                    'idversio': idversio,
+                    'nodelist_full': nodelist_full,
+                    'versions': toponimsversio,
+                    'id_darrera_versio': id_darrera_versio
+                }
+                return render(request, 'georef/toponim_update_2.html', context)
+        elif 'save_versio_from_toponimversio' in request.POST:
+            if idversio == '-1':
+                if (len(toponimsversio) > 0):
+                    versio = toponimsversio[0]
+                    id_darrera_versio = versio.id
+                else:
+                    id_darrera_versio = -1
+            elif idversio == '-2':
+                id_darrera_versio = -2
+            else:
+                versio = get_object_or_404(Toponimversio, pk=idversio)
+                id_darrera_versio = idversio
+            if versio:
+                toponimversio_form = ToponimversioForm(request.POST or None, instance=versio)
+            else:
+                toponimversio_form = ToponimversioForm(request.POST or None)
+            form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+            if toponimversio_form.is_valid():
+                toponimversio = toponimversio_form.save(commit=False)
+                idversio = toponimversio.id
+                toponimversio.idtoponim = toponim
+                toponimversio.save()
+                url = reverse('toponims_update_2', kwargs={'idtoponim': form.instance.id, 'idversio': idversio})
+                return HttpResponseRedirect(url)
+            else:
+                context = {
+                    'form': form,
+                    'toponimversio_form': toponimversio_form,
+                    'idtoponim': idtoponim,
+                    'idversio': idversio,
+                    'nodelist_full': nodelist_full,
+                    'versions': toponimsversio,
+                    'id_darrera_versio': id_darrera_versio
+                }
+                return render(request, 'georef/toponim_update_2.html', context)
 
 @login_required
 def toponims_update(request, id=None):

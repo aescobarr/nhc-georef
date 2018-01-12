@@ -42,8 +42,8 @@ AQUATIC_CHOICES = (
     ('N','No'),
 )
 
-class ToponimsUpdateForm(ModelForm):
 
+class ToponimsUpdateForm(ModelForm):
     aquatic = forms.ChoiceField(choices=AQUATIC_CHOICES,widget=forms.RadioSelect, label='Aquàtic?', required=False)
     idtipustoponim = forms.ModelChoiceField(queryset=Tipustoponim.objects.all().order_by('nom'),widget=forms.Select, label='Tipus topònim')
     idpais = forms.ModelChoiceField(queryset=Pais.objects.all().order_by('nom'), widget=forms.Select, label='País', required=False)
@@ -55,19 +55,16 @@ class ToponimsUpdateForm(ModelForm):
             'idpare': forms.HiddenInput(),
         }
 
+
 class ToponimversioForm(ModelForm):
-    idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select)
-    idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select)
+    numero_versio = forms.IntegerField(required=True)
+    idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select, required=False)
+    idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select, required=False)
     dateTimeOptions = {
         'format': 'dd/mm/yyyy'
     }
-    datacaptura = forms.DateField(input_formats=['%d/%m/%Y'],widget=DateWidget(bootstrap_version=3, options=dateTimeOptions))
+    datacaptura = forms.DateField(initial=datetime.date.today, input_formats=['%d/%m/%Y'],widget=DateWidget(bootstrap_version=3, options=dateTimeOptions))
 
     class Meta:
         model = Toponimversio
         fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen']
-        '''
-        widgets = {
-            'datacaptura': DateWidget(bootstrap_version=3, options=dateTimeOptions)
-        }
-        '''
