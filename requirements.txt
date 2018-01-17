@@ -6,6 +6,8 @@ django-datetime-widget==0.9.3
 django-filter==1.1.0
 django-material==1.1.0
 djangorestframework==3.7.3
+GDAL==2.2.3
+numpy==1.14.0
 psycopg2==2.7.3.2
 pyshp==1.2.12
 python-magic==0.4.13

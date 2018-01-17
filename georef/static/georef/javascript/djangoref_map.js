@@ -4,6 +4,8 @@
 
     if (typeof(L.gridLayer.googleMutant) == 'undefined') throw 'Google Mutant leaflet library must be loaded';
 
+    if (typeof(L.control.coordinates) == 'undefined') throw 'Leaflet.Coordinates library must be loaded';
+
     if (typeof djangoRef === 'undefined') this.djangoRef = {};
 
     if (typeof djangoRef.Map === 'undefined') this.djangoRef.Map = {};
@@ -36,18 +38,7 @@
 
     djangoRef.Map.map = null;
 
-    /*
-    djangoRef.Map.toponims =  L.tileLayer.wms(
-        'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
-        {
-            layers: 'mzoologia:toponimsdarreraversio',
-            format: 'image/png', transparent: true
-        }
-    );
-    */
-
     djangoRef.Map.editableLayers = new L.FeatureGroup();
-    //var editableLayers = new L.FeatureGroup();
 
     djangoRef.Map.createMap = function(options) {
         options = options || {};
@@ -58,7 +49,9 @@
                 zoom: 2,
                 consultable: [],
                 editable: false,
-                overlays: []
+                overlays: [],
+                show_coordinates: true,
+                show_centroid_after_edit: false
             },
             options);
 
@@ -96,6 +89,33 @@
             exclusive       	: false
         };
 
+        if(options.show_coordinates){
+            coordControl = L.control.coordinates({position:"bottomleft",enableUserInput:false});
+            map.addControl(coordControl);
+            /*
+            L.control.coordinates({
+                position:"bottomleft", //optional default "bootomright"
+                decimals:2, //optional default 4
+                decimalSeperator:".", //optional default "."
+                labelTemplateLat:"Latitude: {y}", //optional default "Lat: {y}"
+                labelTemplateLng:"Longitude: {x}", //optional default "Lng: {x}"
+                enableUserInput:true, //optional default true
+                useDMS:false, //optional default false
+                useLatLngOrder: true, //ordering of labels, default false-> lng-lat
+                markerType: L.marker, //optional default L.marker
+                markerProps: {}, //optional default {},
+                labelFormatterLng : funtion(lng){return lng+" lng"}, //optional default none,
+                labelFormatterLat : funtion(lat){return lat+" lat"}, //optional default none
+                customLabelFcn: function(latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng)} //optional default none
+            }).addTo(map);
+            */
+        }
+
+        if(options.show_centroid_after_edit){
+            djangoRef.Map.centroid = new L.geoJSON();
+            map.addLayer(djangoRef.Map.centroid);
+        }
+
         if(options.editable){
 
             var draw_options = {
@@ -117,12 +137,18 @@
                             color: '#bada55'
                         }
                     },
-                    circle: false, // Turns off this drawing tool
-                    rectangle: {
+                    //circle: false, // Turns off this drawing tool
+                    circle:{
+                        shapeOptions: {
+                            fill:true
+                        }
+                    },
+                    rectangle: false,
+                    /*rectangle: {
                         shapeOptions: {
                             clickable: false
                         }
-                    },
+                    },*/
                     /*marker: {
                         icon: new MyCustomMarker()
                     }*/
@@ -159,11 +185,26 @@
         }
 
         map.on(L.Draw.Event.CREATED, function (e) {
-            // Do whatever else you need to. (save to db, add to map etc)
-            //map.addLayer(layer);
-            //console.log(e);
             var type = e.layerType,layer = e.layer;
             djangoRef.Map.editableLayers.addLayer(layer);
+            if(options.show_centroid_after_edit){
+                refreshCentroid();
+            }
+            djangoRef.Map.editableLayers.bringToFront();
+        });
+
+        map.on(L.Draw.Event.EDITED, function (e) {
+            if(options.show_centroid_after_edit){
+                refreshCentroid();
+            }
+            djangoRef.Map.editableLayers.bringToFront();
+        });
+
+        map.on(L.Draw.Event.DELETED, function (e) {
+            if(options.show_centroid_after_edit){
+                refreshCentroid();
+            }
+            djangoRef.Map.editableLayers.bringToFront();
         });
 
         if(options.overlays && options.overlays.length > 0){
@@ -178,6 +219,13 @@
 
         return map;
     };
+
+    djangoRef.Map.getDigitizedFeaturesJSON = function(){
+        if(djangoRef.Map.editableLayers){
+            var geoJson = djangoRef.Map.editableLayers.toGeoJSON();
+            return geoJson;
+        }
+    }
 
     djangoRef.Map.getActiveOverlays = function(){
         var retVal = [];
@@ -239,6 +287,17 @@
         return state;
     };
 
+    djangoRef.Map.getCurrentCentroid = function(){
+        var geoJson = djangoRef.Map.editableLayers.toGeoJSON();
+        if (geoJson.features.length > 0){
+            var centroid = turf.centroid(geoJson);
+            var dist = getMaxDistanceMetersFromCentroidToDigitizedGeometry(centroid);
+            var dist_km = dist / 1000;
+            return { 'centroid' : centroid, 'radius': dist_km };
+        }
+        return null;
+    };
+
     var register_overlays = function(overlays){
         for (var i = 0; i < overlays.length; i++){
             djangoRef.Map.overlays[overlays[i].name] = overlays[i].layer;
@@ -293,5 +352,36 @@
 
         return wms_url + L.Util.getParamString(params, wms_url, true);
     };
+
+    var refreshCentroid = function(){
+        djangoRef.Map.centroid.clearLayers();
+        var centroid_data = djangoRef.Map.getCurrentCentroid();
+        if(centroid_data != null){
+            var centroid = centroid_data.centroid;
+            var dist_km = centroid_data.radius;
+            var circle = turf.circle(centroid,dist_km);
+            djangoRef.Map.centroid.addData(circle);
+        }
+    };
+
+    var getMaxDistanceMetersFromCentroidToDigitizedGeometry = function(point){
+        var coordinates = [];
+        var options = {units: 'kilometers'};
+        var min_distance = 0;
+        for (var i = 0; i < djangoRef.Map.editableLayers.getLayers().length; i++){
+            var feature_coords = turf.coordAll(djangoRef.Map.editableLayers.getLayers()[i].toGeoJSON());
+            for (var j = 0; j < feature_coords.length; j++){
+                coordinates.push( feature_coords[j] );
+            }
+        }
+        for( var i = 0; i < coordinates.length; i++){
+            var to = turf.point(coordinates[i]);
+            var distance_m = turf.distance(point,to,options) * 1000;
+            if (distance_m > min_distance){
+                min_distance = distance_m;
+            }
+        }
+        return min_distance;
+    }
 
 })();

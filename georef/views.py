@@ -31,6 +31,7 @@ from georef.forms import ToponimsUpdateForm, ToponimversioForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
+from django.contrib.gis.geos import GEOSGeometry, GeometryCollection
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -187,14 +188,14 @@ def process_shapefile(request):
     if request.method == 'GET':
         path = request.query_params.get('path', None)
         if path is None:
-            content = {'success': False, 'detail': 'mandatory param missing'}
+            content = {'success': False, 'detail': 'Ruta de fitxer incorrecta o fitxer no trobat!'}
             return Response(data=content, status=400)
         else:
             filepath = path
             filename = ntpath.basename(os.path.splitext(filepath)[0])
             presumed_zipfile = magic.from_file(filepath)
             if not presumed_zipfile.lower().startswith('zip archive'):
-                content = {'success': False, 'detail': 'Fitxer zip incorrecte'}
+                content = {'success': False, 'detail': 'No sembla que el fitxer sigui un zip correcte'}
                 return Response(data=content, status=400)
             else:
                 #Extract file
@@ -223,6 +224,50 @@ def process_shapefile(request):
                 content = {'success': False, 'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
                 return Response(data=content, status=200)
 
+
+@api_view(['GET'])
+def get_centroid_from_shapefile(request):
+    if request.method == 'GET':
+        path = request.query_params.get('path', None)
+        if path is None:
+            content = {'success': False, 'detail': 'Ruta de fitxer incorrecta o fitxer no trobat!'}
+            return Response(data=content, status=400)
+        else:
+            filepath = path
+            filename = ntpath.basename(os.path.splitext(filepath)[0])
+            presumed_zipfile = magic.from_file(filepath)
+            if not presumed_zipfile.lower().startswith('zip archive'):
+                content = {'success': False, 'detail': 'No sembla que el fitxer sigui un zip correcte'}
+                return Response(data=content, status=400)
+            else:
+                # Extract file
+                zip_ref = zipfile.ZipFile(filepath, 'r')
+                zip_ref.extractall(BASE_DIR + "/uploads/" + filename)
+                zip_ref.close()
+                # Find and import shapefile
+                os.chdir(BASE_DIR + "/uploads/" + filename)
+                for file in glob.glob("*.shp"):
+                    presumed_shapefile = magic.from_file(BASE_DIR + "/uploads/" + filename + "/" + file)
+                    if presumed_shapefile.lower().startswith('esri shapefile'):
+                        sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
+                        fields = sf.fields[1:]
+                        field_names = [field[0] for field in fields]
+                        buffer = []
+                        for sr in sf.shapeRecords():
+                            geom = sr.shape.__geo_interface__
+                            geojson = dumps(geom)
+                            geosgeom = GEOSGeometry(geojson)
+                            buffer.append(geosgeom)
+                        gc = GeometryCollection(buffer)
+                        centroid_geojson = dumps(gc.centroid.geojson)
+                        content = {'success': True, 'detail': centroid_geojson}
+                        return Response(data=content, status=200)
+                    else:
+                        content = {'success': False, 'detail': 'El fitxer shapefile té un format incorrecte'}
+                        return Response(data=content, status=200)
+                content = {'success': False,
+                           'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
+                return Response(data=content, status=200)
 
 @login_required
 def toponimfilters(request):

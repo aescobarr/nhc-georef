@@ -281,17 +281,17 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 toastr.success('Importació amb èxit!');
-                editableLayers.clearLayers();
+                djangoRef.Map.editableLayers.clearLayers();
                 var geoJson = JSON.parse(data.detail);
                 var geoJSONLayer = L.geoJson(geoJson);
                 geoJSONLayer.eachLayer(
                     function(l){
-                        editableLayers.addLayer(l);
+                        djangoRef.Map.editableLayers.addLayer(l);
                     }
                 );
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error important fitxer:' + textStatus);
+                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
             }
         });
     };

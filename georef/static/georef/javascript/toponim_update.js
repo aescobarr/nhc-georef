@@ -73,6 +73,19 @@ var delete_versio = function(id){
     });
 };
 
+var refreshCentroidUI = function(){
+    var centroid_data = djangoRef.Map.getCurrentCentroid();
+    if(centroid_data != null){
+        $('#id_coordenada_x_centroide').val( centroid_data.centroid.geometry.coordinates[0] );
+        $('#id_coordenada_y_centroide').val( centroid_data.centroid.geometry.coordinates[1] );
+        $('#id_precisio_h').val(centroid_data.radius * 1000);
+    }else{
+        $('#id_coordenada_x_centroide').val( '' );
+        $('#id_coordenada_y_centroide').val( '' );
+        $('#id_precisio_h').val( '' );
+    }
+};
+
 $(document).ready(function() {
 
     $('#jstree')
@@ -151,6 +164,7 @@ $(document).ready(function() {
 
     map_options = {
         editable:true,
+        show_centroid_after_edit: true,
         overlays: overlay_list,
         overlays_control_config: overlays_control_config,
         wms_url: wms_url
@@ -162,10 +176,20 @@ $(document).ready(function() {
         view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
     };
 
-    //map_options.consultable = [toponims.layer];
-
     map = new djangoRef.Map.createMap(map_options);
 
-    //$('#div_versions')[0].scrollIntoView( true );
+
+
+    map.on(L.Draw.Event.CREATED, function (e) {
+        refreshCentroidUI();
+    });
+
+    map.on(L.Draw.Event.EDITED, function (e) {
+        refreshCentroidUI();
+    });
+
+    map.on(L.Draw.Event.DELETED, function (e) {
+        refreshCentroidUI();
+    });
 
 });

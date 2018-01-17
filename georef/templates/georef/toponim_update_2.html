@@ -7,6 +7,7 @@
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.css' %}" rel="stylesheet">
     <style>
         /* Fix to avoid table overflow */
         .toponimversio_edit{
@@ -120,7 +121,10 @@
                     <td>&nbsp;</td>
                 </tr>
                 {% if id_darrera_versio == '-2' %}
-                    <tr class="active_edit"><td colspan="5">Afegint nova versió...</td></tr>
+                    <tr class="active_edit">
+                        <td colspan="4">Afegint nova versió...</td>
+                        <td><a role="button" class="btn btn-success" href="{% url 'toponims_update_2' idtoponim -1 %}">Cancel·lar</a></td>
+                    </tr>
                 {% endif %}
                 {% for versio in versions %}
                 <tr {% if versio.id == id_darrera_versio %} class="active_edit" {% endif %} id="{{ versio.id }}">
@@ -206,19 +210,19 @@
                         <div class="col-sm-6">
                             <table class="toponimversio_edit">
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_x.id_for_label }}">Coordenada X:</label></th>
-                                    <td>{{ toponimversio_form.coordenada_x }}</td>
-                                    <td>{{ toponimversio_form.coordenada_x.errors }}</td>
+                                    <th><label for="{{ toponimversio_form.coordenada_x_centroide.id_for_label }}">Coordenada X centroide:</label></th>
+                                    <td>{{ toponimversio_form.coordenada_x_centroide }}</td>
+                                    <td>{{ toponimversio_form.coordenada_x_centroide.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_y.id_for_label }}">Coordenada Y:</label></th>
-                                    <td>{{ toponimversio_form.coordenada_y }}</td>
-                                    <td>{{ toponimversio_form.coordenada_y.errors }}</td>
+                                    <th><label for="{{ toponimversio_form.coordenada_y_centroide.id_for_label }}">Coordenada Y centroide:</label></th>
+                                    <td>{{ toponimversio_form.coordenada_y_centroide }}</td>
+                                    <td>{{ toponimversio_form.coordenada_y_centroide.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_z.id_for_label }}">Coordenada Z:</label></th>
-                                    <td>{{ toponimversio_form.coordenada_z }}</td>
-                                    <td>{{ toponimversio_form.coordenada_z.errors }}</td>
+                                    <th><label for="{{ toponimversio_form.precisio_h.id_for_label }}">Incertesa coordenades(m):</label></th>
+                                    <td>{{ toponimversio_form.precisio_h }}</td>
+                                    <td>{{ toponimversio_form.precisio_h.errors }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -271,6 +275,8 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Marker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/turf.min.js' %}"></script>
     <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js'%}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
