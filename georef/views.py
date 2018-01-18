@@ -32,6 +32,7 @@ from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
 from django.contrib.gis.geos import GEOSGeometry, GeometryCollection
+from georef_addenda.models import GeometriaToponimVersio
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -225,6 +226,7 @@ def process_shapefile(request):
                 return Response(data=content, status=200)
 
 
+'''
 @api_view(['GET'])
 def get_centroid_from_shapefile(request):
     if request.method == 'GET':
@@ -268,6 +270,7 @@ def get_centroid_from_shapefile(request):
                 content = {'success': False,
                            'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
                 return Response(data=content, status=200)
+'''
 
 @login_required
 def toponimfilters(request):
@@ -342,9 +345,22 @@ def toponims_create(request):
         form = ToponimsUpdateForm()
     return render(request, 'georef/toponim_create.html', {'form': form, 'wms_url': conf.GEOSERVER_WMS_URL})
 
+
+def toponimversio_geometries_to_geojson(toponimversio):
+    geometries = toponimversio.geometries.all()
+    geos = []
+    for geom in geometries:
+        geos.append({'type': 'Feature', 'properties': {}, 'geometry': json.loads(geom.geometria.json) })
+    features = {
+        'type': 'FeatureCollection',
+        'features': geos
+    }
+    return json.dumps(features)
+
 @login_required
 def toponims_update_2(request, idtoponim=None, idversio=None):
     versio = None
+    geometries_json = None
     id_darrera_versio = None
     toponim = get_object_or_404(Toponim, pk=idtoponim)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
@@ -362,9 +378,11 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
         toponim_form = ToponimsUpdateForm(request.GET or None, instance=toponim)
         if versio:
             toponimversio_form = ToponimversioForm(request.GET or None, instance=versio)
+            geometries_json = toponimversio_geometries_to_geojson(versio)
         else:
             toponimversio_form = ToponimversioForm(request.GET or None)
         context = {
+            'geometries_json': geometries_json,
             'form': toponim_form,
             'toponimversio_form': toponimversio_form,
             'idtoponim': idtoponim,
@@ -422,6 +440,14 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             form = ToponimsUpdateForm(request.POST or None, instance=toponim)
             if toponimversio_form.is_valid():
                 toponimversio = toponimversio_form.save(commit=False)
+                toponimversio.geometries.clear()
+                json_geometry_string = request.POST["geometria"]
+                json_geometry = json.loads(json_geometry_string)
+                for feature in json_geometry['features']:
+                    feature_geometry = GEOSGeometry(json.dumps(feature['geometry']))
+                    g = GeometriaToponimVersio( idversio=toponimversio, geometria=feature_geometry )
+                    g.save()
+                    toponimversio.geometries.add(g)
                 idversio = toponimversio.id
                 toponimversio.idtoponim = toponim
                 toponimversio.save()

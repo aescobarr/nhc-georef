@@ -73,6 +73,14 @@ var delete_versio = function(id){
     });
 };
 
+var refreshDigitizedGeometry = function(){
+    var geometry = djangoRef.Map.editableLayers.toGeoJSON()
+    var json_string = JSON.stringify(geometry);
+    console.log(json_string);
+    $('#geometria').val( json_string );
+};
+
+
 var refreshCentroidUI = function(){
     var centroid_data = djangoRef.Map.getCurrentCentroid();
     if(centroid_data != null){
@@ -129,6 +137,61 @@ $(document).ready(function() {
             }
         });
 
+    var uploader = new qq.FileUploader({
+        action: _ajax_upload_url,
+        element: $('#fileuploader')[0],
+        multiple: false,
+        onComplete: function(id, fileName, responseJSON) {
+            if(responseJSON.success) {
+                //alert("success!");
+                importa_shapefile(responseJSON.path);
+            } else {
+                alert('upload failed!');
+            }
+        },
+        template:'<div class="qq-uploader">' +
+            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile</div>' +
+            '<ul class="qq-upload-list"></ul>' +
+            '</div>',
+        params: {
+            'csrf_token': csrf_token,
+            'csrf_name': 'csrfmiddlewaretoken',
+            'csrf_xname': 'X-CSRFToken',
+        }
+    });
+
+    var importa_shapefile = function(filepath){
+        $.ajax({
+            url: _import_shapefile_url,
+            data: 'path=' + encodeURI(filepath),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Importació amb èxit!');
+                djangoRef_map.editableLayers.clearLayers();
+                var geoJson = JSON.parse(data.detail);
+                var geoJSONLayer = L.geoJson(geoJson);
+                geoJSONLayer.eachLayer(
+                    function(l){
+                        djangoRef_map.editableLayers.addLayer(l);
+                    }
+                );
+                djangoRef_map.refreshCentroid();
+                refreshCentroidUI();
+                refreshDigitizedGeometry();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+            }
+        });
+    };
+
     init_ariadna(node_list_full);
 
     /*$('#testbutton').click(function(){
@@ -176,20 +239,31 @@ $(document).ready(function() {
         view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
     };
 
-    map = new djangoRef.Map.createMap(map_options);
+    djangoRef_map = new djangoRef.Map.createMap(map_options);
 
 
-
-    map.on(L.Draw.Event.CREATED, function (e) {
+    djangoRef_map.map.on(L.Draw.Event.CREATED, function (e) {
         refreshCentroidUI();
+        refreshDigitizedGeometry();
     });
 
-    map.on(L.Draw.Event.EDITED, function (e) {
+    djangoRef_map.map.on(L.Draw.Event.EDITED, function (e) {
         refreshCentroidUI();
+        refreshDigitizedGeometry();
     });
 
-    map.on(L.Draw.Event.DELETED, function (e) {
+    djangoRef_map.map.on(L.Draw.Event.DELETED, function (e) {
         refreshCentroidUI();
+        refreshDigitizedGeometry();
     });
+
+    var geoJSONLayer = L.geoJson(geometries_json);
+    geoJSONLayer.eachLayer(
+        function(l){
+            djangoRef_map.editableLayers.addLayer(l);
+        }
+    );
+    djangoRef_map.refreshCentroid();
+    djangoRef_map.editableLayers.bringToFront();
 
 });

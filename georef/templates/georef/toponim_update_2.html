@@ -6,6 +6,7 @@
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.css' %}" rel="stylesheet">
     <style>
@@ -41,6 +42,10 @@
     </script>
     <script>
         var wms_url = "{{ wms_url }}";
+        var _ajax_upload_url = "{% url 'ajax_upload' %}";
+        var _import_shapefile_url = "{% url 'process_shapefile' %}";
+        var csrf_token = '{{ csrf_token }}';
+        var geometries_json = JSON.parse('{{ geometries_json | safe }}');
     </script>
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
@@ -180,6 +185,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div id="map"></div>
+                            <div id="fileuploader"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -231,6 +237,7 @@
                 <div class="container">
                     <input role="button" class="btn btn-success" type="submit" name="save_versio_from_toponimversio" value="Desar Versió" />
                 </div>
+                <input id="geometria" name="geometria" type="hidden" value=""/>
             </form>
     </div>
 </main>
@@ -280,6 +287,7 @@
     <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js'%}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
     <script src="{% static 'georef/javascript/toponim_update.js' %}"></script>
     <script>
         {% if saved_success %}

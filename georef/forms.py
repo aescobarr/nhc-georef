@@ -60,6 +60,9 @@ class ToponimversioForm(ModelForm):
     numero_versio = forms.IntegerField(required=True)
     idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select, required=False)
     idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select, required=False)
+    coordenada_x_centroide = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    coordenada_y_centroide = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    precisio_h = forms.FloatField(widget=forms.NumberInput(attrs={'readonly':'readonly'}))
     dateTimeOptions = {
         'format': 'dd/mm/yyyy'
     }

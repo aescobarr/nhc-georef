@@ -217,7 +217,7 @@
 
         djangoRef.Map.map = map;
 
-        return map;
+        return djangoRef.Map;
     };
 
     djangoRef.Map.getDigitizedFeaturesJSON = function(){
@@ -296,6 +296,17 @@
             return { 'centroid' : centroid, 'radius': dist_km };
         }
         return null;
+    };
+
+    djangoRef.Map.refreshCentroid = function(){
+        djangoRef.Map.centroid.clearLayers();
+        var centroid_data = djangoRef.Map.getCurrentCentroid();
+        if(centroid_data != null){
+            var centroid = centroid_data.centroid;
+            var dist_km = centroid_data.radius;
+            var circle = turf.circle(centroid,dist_km);
+            djangoRef.Map.centroid.addData(circle);
+        }
     };
 
     var register_overlays = function(overlays){
