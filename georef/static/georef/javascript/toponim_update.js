@@ -264,6 +264,9 @@ $(document).ready(function() {
         }
     );
     djangoRef_map.refreshCentroid();
+    refreshCentroidUI();
+    refreshDigitizedGeometry();
     djangoRef_map.editableLayers.bringToFront();
+    djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
 
 });

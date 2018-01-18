@@ -409,9 +409,11 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     id_darrera_versio = idversio
                 if versio:
                     toponimversio_form = ToponimversioForm(request.GET or None, instance=versio)
+                    geometries_json = toponimversio_geometries_to_geojson(versio)
                 else:
                     toponimversio_form = ToponimversioForm(request.GET or None)
                 context = {
+                    'geometries_json': geometries_json,
                     'form': form,
                     'toponimversio_form': toponimversio_form,
                     'idtoponim': idtoponim,
@@ -435,6 +437,7 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 id_darrera_versio = idversio
             if versio:
                 toponimversio_form = ToponimversioForm(request.POST or None, instance=versio)
+                geometries_json = toponimversio_geometries_to_geojson(versio)
             else:
                 toponimversio_form = ToponimversioForm(request.POST or None)
             form = ToponimsUpdateForm(request.POST or None, instance=toponim)
@@ -455,6 +458,7 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 return HttpResponseRedirect(url)
             else:
                 context = {
+                    'geometries_json': geometries_json,
                     'form': form,
                     'toponimversio_form': toponimversio_form,
                     'idtoponim': idtoponim,
