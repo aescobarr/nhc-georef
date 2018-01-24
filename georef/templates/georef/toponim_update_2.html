@@ -31,6 +31,7 @@
 {% block extrahead %}
     <script>
         var _versio_delete_url = "{% url 'versions-list' %}";
+        var _last_version_url = "{% url 'toponims_update_2' idtoponim -1 %}";
     </script>
     <script>
         var node_list_full = {{ nodelist_full|safe }};
@@ -45,7 +46,8 @@
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var csrf_token = '{{ csrf_token }}';
-        var geometries_json = JSON.parse('{{ geometries_json | safe }}');
+        var geometries_json = {% if geometries_json %} JSON.parse('{{ geometries_json | safe }}') {% else %} null {% endif %};
+        var stored_centroid_radius_m = {% if toponimversio_form.instance.precisio_h %} {{ toponimversio_form.instance.precisio_h }} {% else %} null {% endif %};
     </script>
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
@@ -184,8 +186,36 @@
                             </table>
                         </div>
                         <div class="col-sm-6">
-                            <div id="map"></div>
+                            <div id="map">
+                                <div id="boto-digit-point">
+                                    <a id="kb_digit" class="custom-digit-point" href="#" title="Digitalitza un punt per teclat">
+                                        <span class="sr-only"></span>
+                                    </a>
+                                </div>
+                            </div>
                             <div id="fileuploader"></div>
+                            <div id="dialog-uncertainty-radius" title="Entra el radi d'incertesa del punt, en metres">
+                                <p class="validateTips"></p>
+                                <label for="radi">Radi</label>
+                                <input type="text" name="radi" id="radi" value="" class="text ui-widget-content ui-corner-all">
+                            </div>
+                            <div id="dialog-digitize-kb" title="Digitalització de punt via teclat">
+                                <p class="validateTipsKb"></p>
+                                <table>
+                                    <tr>
+                                        <td><label for="inc_radius_kb">Radi incertesa(m)</label></td>
+                                        <td><input type="text" name="inc_radius_kb" id="inc_radius_kb" value="" class="text ui-widget-content ui-corner-all"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="coord_x_kb">Coordenada x (longitud)</label></td>
+                                        <td><input type="text" name="coord_x_kb" id="coord_x_kb" value="" class="text ui-widget-content ui-corner-all"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="coord_y_kb">Coordenada y (latitud)</label></td>
+                                        <td><input type="text" name="coord_y_kb" id="coord_y_kb" value="" class="text ui-widget-content ui-corner-all"></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -288,6 +318,8 @@
     <script src="{% static 'georef/javascript/cookies.js'%}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
     <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
+    <script src="{% static 'georef/javascript/wicket.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/utils.js' %}"></script>
     <script src="{% static 'georef/javascript/toponim_update.js' %}"></script>
     <script>
         {% if saved_success %}

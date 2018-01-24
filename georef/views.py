@@ -444,16 +444,18 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             if toponimversio_form.is_valid():
                 toponimversio = toponimversio_form.save(commit=False)
                 toponimversio.geometries.clear()
+                idversio = toponimversio.id
+                toponimversio.idtoponim = toponim
+                toponimversio.save()
+
                 json_geometry_string = request.POST["geometria"]
                 json_geometry = json.loads(json_geometry_string)
                 for feature in json_geometry['features']:
                     feature_geometry = GEOSGeometry(json.dumps(feature['geometry']))
-                    g = GeometriaToponimVersio( idversio=toponimversio, geometria=feature_geometry )
+                    g = GeometriaToponimVersio(idversio=toponimversio, geometria=feature_geometry)
                     g.save()
-                    toponimversio.geometries.add(g)
-                idversio = toponimversio.id
-                toponimversio.idtoponim = toponim
-                toponimversio.save()
+                    #toponimversio.geometries.add(g)
+
                 url = reverse('toponims_update_2', kwargs={'idtoponim': form.instance.id, 'idversio': idversio})
                 return HttpResponseRedirect(url)
             else:

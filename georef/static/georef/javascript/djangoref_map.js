@@ -118,6 +118,15 @@
 
         if(options.editable){
 
+            var MyCustomMarker = L.Icon.extend({
+                options: {
+                    shadowUrl: null,
+                    iconAnchor: new L.Point(12, 12),
+                    iconSize: new L.Point(24, 24),
+                    iconUrl: 'link/to/image.png'
+                }
+            });
+
             var draw_options = {
                 position: 'topleft',
                 draw: {
@@ -137,12 +146,12 @@
                             color: '#bada55'
                         }
                     },
-                    //circle: false, // Turns off this drawing tool
-                    circle:{
+                    circle: false, // Turns off this drawing tool
+                    /*circle:{
                         shapeOptions: {
                             fill:true
                         }
-                    },
+                    },*/
                     rectangle: false,
                     /*rectangle: {
                         shapeOptions: {
@@ -151,8 +160,9 @@
                     },*/
                     /*marker: {
                         icon: new MyCustomMarker()
-                    }*/
-                    marker: false,
+                    },*/
+                    marker: {},
+                    //marker: false,
                     circlemarker: false
                 },
                 edit: {
@@ -188,21 +198,21 @@
             var type = e.layerType,layer = e.layer;
             djangoRef.Map.editableLayers.addLayer(layer);
             if(options.show_centroid_after_edit){
-                refreshCentroid();
+                djangoRef.Map.refreshCentroid();
             }
             djangoRef.Map.editableLayers.bringToFront();
         });
 
         map.on(L.Draw.Event.EDITED, function (e) {
             if(options.show_centroid_after_edit){
-                refreshCentroid();
+                djangoRef.Map.refreshCentroid();
             }
             djangoRef.Map.editableLayers.bringToFront();
         });
 
         map.on(L.Draw.Event.DELETED, function (e) {
             if(options.show_centroid_after_edit){
-                refreshCentroid();
+                djangoRef.Map.refreshCentroid();
             }
             djangoRef.Map.editableLayers.bringToFront();
         });
@@ -298,14 +308,21 @@
         return null;
     };
 
-    djangoRef.Map.refreshCentroid = function(){
+    djangoRef.Map.refreshCentroid = function(radius_km){
         djangoRef.Map.centroid.clearLayers();
         var centroid_data = djangoRef.Map.getCurrentCentroid();
         if(centroid_data != null){
             var centroid = centroid_data.centroid;
-            var dist_km = centroid_data.radius;
-            var circle = turf.circle(centroid,dist_km);
-            djangoRef.Map.centroid.addData(circle);
+            var dist_km;
+            if(radius_km){
+                dist_km = radius_km
+            }else{
+                dist_km = centroid_data.radius;
+            }
+            if(dist_km > 0){
+                var circle = turf.circle(centroid,dist_km);
+                djangoRef.Map.centroid.addData(circle);
+            }
         }
     };
 
@@ -364,6 +381,7 @@
         return wms_url + L.Util.getParamString(params, wms_url, true);
     };
 
+    /*
     var refreshCentroid = function(){
         djangoRef.Map.centroid.clearLayers();
         var centroid_data = djangoRef.Map.getCurrentCentroid();
@@ -374,6 +392,7 @@
             djangoRef.Map.centroid.addData(circle);
         }
     };
+    */
 
     var getMaxDistanceMetersFromCentroidToDigitizedGeometry = function(point){
         var coordinates = [];

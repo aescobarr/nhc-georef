@@ -66,6 +66,7 @@ var delete_versio = function(id){
         success: function( data, textStatus, jqXHR ) {
              toastr.success("Versió esborrada amb èxit!");
              $('table#versions tr#' + id).remove();
+             window.location.href = _last_version_url;
         },
         error: function(jqXHR, textStatus, errorThrown){
             toastr.error("Error esborrant la versió");
@@ -76,17 +77,21 @@ var delete_versio = function(id){
 var refreshDigitizedGeometry = function(){
     var geometry = djangoRef.Map.editableLayers.toGeoJSON()
     var json_string = JSON.stringify(geometry);
-    console.log(json_string);
+    //console.log(json_string);
     $('#geometria').val( json_string );
 };
 
 
-var refreshCentroidUI = function(){
+var refreshCentroidUI = function(radius_m){
     var centroid_data = djangoRef.Map.getCurrentCentroid();
     if(centroid_data != null){
         $('#id_coordenada_x_centroide').val( centroid_data.centroid.geometry.coordinates[0] );
         $('#id_coordenada_y_centroide').val( centroid_data.centroid.geometry.coordinates[1] );
-        $('#id_precisio_h').val(centroid_data.radius * 1000);
+        if(radius_m){
+            $('#id_precisio_h').val(radius_m);
+        }else{
+            $('#id_precisio_h').val(centroid_data.radius * 1000);
+        }
     }else{
         $('#id_coordenada_x_centroide').val( '' );
         $('#id_coordenada_y_centroide').val( '' );
@@ -95,6 +100,157 @@ var refreshCentroidUI = function(){
 };
 
 $(document).ready(function() {
+
+    function updateTips( t, class_name ) {
+        var tips = $( "." + class_name );
+        tips.text( t ).addClass( "ui-state-highlight" );
+        setTimeout(function() {
+            tips.removeClass( "ui-state-highlight", 1500 );
+        }, 500 );
+    }
+
+    function checkLat( control, error_message, tipsclass ) {
+        var latValue = parseFloat(control.val());
+        if (0 <= latValue && latValue <= 90){
+            control.removeClass( "ui-state-error" );
+            return true;
+        }else{
+            control.addClass( "ui-state-error" );
+            updateTips( error_message, tipsclass );
+        }
+    }
+
+    function checkLong( control, error_message, tipsclass ) {
+        var longValue = parseFloat(control.val());
+        if (-180 <= longValue && longValue <= 180){
+            control.removeClass( "ui-state-error" );
+            return true;
+        }else{
+            control.addClass( "ui-state-error" );
+            updateTips( error_message, tipsclass );
+        }
+    }
+
+    function checkRegexp( o, regexp, n, tipsclass ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n, tipsclass );
+        return false;
+      } else {
+        o.removeClass( "ui-state-error" );
+        return true;
+      }
+    }
+
+    function enterMarkerUncertaintyRadius () {
+        var valid = true;
+        //Draw centroid
+        var radius = $('#radi').val();
+        var radius_ctrl = $('#radi');
+        valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTips");
+        if(valid){
+            djangoRef_map.refreshCentroid(radius/1000);
+            refreshCentroidUI(radius);
+            djangoRef_map.editableLayers.bringToFront();
+            if(djangoRef_map.centroid.getBounds().isValid()){
+                djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+            }
+            dialog_centroid.dialog( "close" );
+        }
+        return valid;
+    };
+
+    function digitizeViaKb (){
+        var valid = true;
+        var radius = $('#inc_radius_kb').val();
+        var radius_ctrl = $('#inc_radius_kb');
+        var coord_x = $('#coord_x_kb').val();
+        var coord_x_ctrl = $('#coord_x_kb');
+        var coord_y = $('#coord_y_kb').val();
+        var coord_y_ctrl = $('#coord_y_kb');
+        valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid pel radi d\'incertesa. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTipsKb");
+        valid = valid && checkRegexp(coord_x_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid per la coordenada x. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTipsKb");
+        valid = valid && checkRegexp(coord_y_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid per la coordenada y. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTipsKb");
+        valid = valid && checkLat(coord_y_ctrl, 'La latitud no pot ser superior a 90 ni inferior a 0', "validateTipsKb");
+        valid = valid && checkLong(coord_x_ctrl, 'La longitud no pot ser superior a 180 ni inferior a -180', "validateTipsKb");
+        if(valid){
+            //Draw geometry
+            djangoRef.Map.editableLayers.clearLayers();
+            var wkt = new Wkt.Wkt();
+            wkt.read("POINT (" + coord_x + " " + coord_y + ")");
+            var geoJson_point = wkt.toJson();
+            var geoJSONLayer = L.geoJson(geoJson_point);
+            geoJSONLayer.eachLayer(
+                function(l){
+                    djangoRef_map.editableLayers.addLayer(l);
+                }
+            );
+            //Draw centroid
+            djangoRef.Map.centroid.clearLayers();
+            var centroid_data = djangoRef.Map.getCurrentCentroid();
+            var circle = turf.circle(centroid_data.centroid,parseFloat(radius)/1000);
+            djangoRef.Map.centroid.addData(circle);
+
+            refreshCentroidUI(parseFloat(radius));
+
+            //Zoom on features
+            djangoRef_map.editableLayers.bringToFront();
+            if(djangoRef_map.centroid.getBounds().isValid()){
+                djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+            }
+
+            //...and close dialog
+            dialog_kb.dialog( "close" );
+        }
+        return valid;
+    }
+
+    var dialog_kb = $( "#dialog-digitize-kb").dialog({
+        autoOpen: false,
+        height: 300,
+        width: 450,
+        modal: true,
+        buttons: {
+            "Digitalitza": digitizeViaKb,
+            Cancel: function() {
+                alert('cancel');
+            }
+        },
+        close: function() {
+            $('#inc_radius_kb').val('');
+            $('#coord_x_kb').val('');
+            $('#coord_y_kb').val('');
+        }
+    });
+
+    $('#kb_digit').click( function(e) {
+        e.preventDefault();
+        /*your_code_here;*/
+        dialog_kb.dialog( "open" );
+        return false;
+    });
+
+    var dialog_centroid = $( "#dialog-uncertainty-radius").dialog({
+      autoOpen: false,
+      height: 250,
+      width: 400,
+      modal: true,
+      buttons: {
+        "D'acord": enterMarkerUncertaintyRadius,
+        Cancel: function() {
+            dialog_centroid.dialog( "close" );
+            djangoRef_map.editableLayers.clearLayers();
+            djangoRef_map.centroid.clearLayers();
+        }
+      },
+      close: function() {
+        $('#radi').val('');
+        /*djangoRef_map.editableLayers.clearLayers();
+        djangoRef_map.centroid.clearLayers();*/
+        //allFields.removeClass( "ui-state-error" );
+      }
+    });
+
 
     $('#jstree')
         .on('loaded.jstree', function(event, data) {
@@ -173,7 +329,6 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Importació amb èxit!');
                 djangoRef_map.editableLayers.clearLayers();
                 var geoJson = JSON.parse(data.detail);
                 var geoJSONLayer = L.geoJson(geoJson);
@@ -182,9 +337,19 @@ $(document).ready(function() {
                         djangoRef_map.editableLayers.addLayer(l);
                     }
                 );
-                djangoRef_map.refreshCentroid();
-                refreshCentroidUI();
-                refreshDigitizedGeometry();
+                if(geoJSONIsSinglePoint(geoJson)){
+                    dialog_centroid.dialog("open");
+                }else{
+                    djangoRef_map.refreshCentroid();
+                    refreshCentroidUI();
+                    refreshDigitizedGeometry();
+                    djangoRef_map.editableLayers.bringToFront();
+                    if(djangoRef_map.centroid.getBounds().isValid()){
+                        djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+                    }
+                    toastr.success('Importació amb èxit!');
+                }
+
             },
             error: function(jqXHR, textStatus, errorThrown){
                 toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
@@ -243,8 +408,14 @@ $(document).ready(function() {
 
 
     djangoRef_map.map.on(L.Draw.Event.CREATED, function (e) {
-        refreshCentroidUI();
-        refreshDigitizedGeometry();
+        var type = e.layerType,layer = e.layer;
+        if(type=='marker'){
+            //Prompt imprecision
+            dialog_centroid.dialog("open");
+        }else{
+            refreshCentroidUI();
+            refreshDigitizedGeometry();
+        }
     });
 
     djangoRef_map.map.on(L.Draw.Event.EDITED, function (e) {
@@ -263,10 +434,22 @@ $(document).ready(function() {
             djangoRef_map.editableLayers.addLayer(l);
         }
     );
-    djangoRef_map.refreshCentroid();
-    refreshCentroidUI();
+    if(stored_centroid_radius_m){
+        djangoRef_map.refreshCentroid(stored_centroid_radius_m/1000);
+    }else{
+        djangoRef_map.refreshCentroid();
+    }
+    if(stored_centroid_radius_m){
+        refreshCentroidUI(stored_centroid_radius_m);
+    }else{
+        refreshCentroidUI();
+    }
     refreshDigitizedGeometry();
     djangoRef_map.editableLayers.bringToFront();
-    djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+    if(djangoRef_map.centroid.getBounds().isValid()){
+        djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+    }
+
+
 
 });
