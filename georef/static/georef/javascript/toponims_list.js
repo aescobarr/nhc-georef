@@ -12,6 +12,12 @@ $.fn.dataTable.ext.search.push(
         }
     );
 */
+
+var exportPDF = function(){
+    var params = table.ajax.params();
+    window.location.href = _toponims_list_pdf + '?' + jQuery.param(params);
+};
+
 $(document).ready(function() {
     table = $('#toponims_list').DataTable( {
         'ajax': {
@@ -203,6 +209,27 @@ $(document).ready(function() {
         });
     };
 
+    var confirmDialog = function(message,id){
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>'+message+'</h6></div>')
+            .dialog({
+                modal: true, title: 'Esborrant topònim...', zIndex: 10000, autoOpen: true,
+                width: 'auto', resizable: false,
+                buttons: {
+                    Yes: function () {
+                        delete_toponim(id);
+                        $(this).dialog("close");
+                    },
+                    No: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+        });
+    };
+
     var check_nomfiltre = function(){
         var json = extreureJSONDeFiltre();
         var nomfiltre = $('#autoc_filtres').val();
@@ -240,6 +267,33 @@ $(document).ready(function() {
             }
         });
     };
+
+    var delete_toponim = function(id){
+        $.ajax({
+            url: _toponim_delete_url + id,
+            method: 'DELETE',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Topònim esborrat amb èxit!');
+                table.ajax.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error esborrant topònim');
+            }
+        });
+    };
+
+    $('#toponims_list tbody').on('click', 'td button.delete_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().id;
+        confirmDialog("S'esborrarà el topònim '" + row.data().nom_str + "' i totes les seves versions i informació associada! Segur que vols continuar?",id);
+    });
 
     $('#toponims_list tbody').on('click', 'td button.edit_button', function () {
         var tr = $(this).closest('tr');

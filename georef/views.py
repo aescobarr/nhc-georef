@@ -34,6 +34,12 @@ from georef.tasks import compute_denormalized_toponim_tree_val, format_denormali
 from django.contrib.gis.geos import GEOSGeometry, GeometryCollection
 from georef_addenda.models import GeometriaToponimVersio
 
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
+from weasyprint import HTML
+
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -72,10 +78,22 @@ def get_filter_clause(params_dict, fields, translation_dict=None):
         pass
     return filter_clause
 
-def generic_datatable_list_endpoint(request,search_field_list,queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None):
+"""
+Request is a rest_framework request
+"""
+def generic_datatable_list_endpoint(request,search_field_list,queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None, paginate=True):
+
+    '''
+    request.query_params works only for rest_framework requests, but not for WSGI requests. request.GET[key] works for
+    both types of requests
+    '''
+    '''    
     draw = request.query_params.get('draw', -1)
     start = request.query_params.get('start', 0)
-    #length = request.query_params.get('length', 25)
+    '''
+    draw = request.GET['draw']
+    start = request.GET['start']
+
     length = 25
 
     get_dict = parser.parse(request.GET.urlencode())
@@ -102,13 +120,19 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
     else:
         queryset = queryset.order_by(*order_clause).filter(functools.reduce(operator.or_, filter_clause))
 
-    paginator = Paginator(queryset, length)
+    if paginate:
+        paginator = Paginator(queryset, length)
 
-    recordsTotal = queryset.count()
-    recordsFiltered = recordsTotal
-    page = int(start) / int(length) + 1
+        recordsTotal = queryset.count()
+        recordsFiltered = recordsTotal
+        page = int(start) / int(length) + 1
 
-    serializer = classSerializer(paginator.page(page), many=True)
+        serializer = classSerializer(paginator.page(page), many=True)
+    else:
+        serializer = classSerializer(queryset, many=True)
+        recordsTotal = queryset.count()
+        recordsFiltered = recordsTotal
+
     return Response({'draw': draw, 'recordsTotal': recordsTotal, 'recordsFiltered': recordsFiltered, 'data': serializer.data})
 
 
@@ -470,6 +494,28 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'id_darrera_versio': id_darrera_versio
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
+
+@login_required
+def toponims_list_pdf(request):
+
+    search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
+    sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
+    field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
+    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer, field_translation_list, sort_translation_list,paginate=False)
+
+    records = data.data['data']
+    html_string = render_to_string('georef/reports/toponims_list_pdf.html', {'title': 'Llistat de topònims', 'records': records})
+
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/mypdf.pdf');
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('mypdf.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+
+    return response
 
 @login_required
 def toponims_update(request, id=None):

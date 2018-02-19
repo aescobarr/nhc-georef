@@ -13,6 +13,7 @@
 {% block extrahead %}
     <script>
         var _toponim_list_url = "{% url 'toponims_datatable_list' %}";
+        var _toponim_delete_url = "{% url 'toponims-list' %}";
         var _filtres_list_url = "{% url 'filtres-list' %}";
         var _filtres_delete_url = "{% url 'filtres-list' %}";
         var _filtres_update_url = "{% url 'filtres-list' %}";
@@ -22,6 +23,7 @@
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var wms_url = "{{ wms_url }}";
+        var _toponims_list_pdf = "{% url 'toponims_list_pdf' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -34,6 +36,15 @@
             <li class="breadcrumb-item">Topònims</li>
             <li class="breadcrumb-item active">Llistat</li>
         </ol>
+    </div>
+    <div class="container">
+        <div class="pull-right">
+                <a class="imatge_shp" href="#"></a>
+                <a class="imatge_kml" href="#"></a>
+                <a class="imatge_xls" href="#"></a>
+                <a class="imatge_csv" href="#"></a>
+                <a class="imatge_pdf" href="#" onclick="javascript:exportPDF();"></a>
+        </div>
     </div>
     <div class="container">
         <div class="wrapper clear_blue">

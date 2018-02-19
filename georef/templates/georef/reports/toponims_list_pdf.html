@@ -1,0 +1,29 @@
+<html>
+<head>
+  <title>{{ title }}</title>
+  <style>
+    table {
+        width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ title }}</h1>
+  <table>
+      <thead>
+        <th>Nom</th>
+        <th>Aquàtic</th>
+        <th>Tipus Topònim</th>
+      </thead>
+      <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.nom_str }}</td>
+            <td>{{ record.aquatic }}</td>
+            <td>{{ record.idtipustoponim.nom }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</body>
+</html>

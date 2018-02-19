@@ -236,7 +236,7 @@ table#toponim_edit tbody tr td ul li{
     text-decoration: none;
     width: 26px;
     height: 26px;
-    background-image:url('/static/georef/css/crosshair_smaller.png');
+    background-image:url('/static/georef/css/icon/crosshair_smaller.png');
     background-repeat: no-repeat;
     background-position: 4px 4px;
 }
@@ -244,3 +244,39 @@ table#toponim_edit tbody tr td ul li{
 .custom-digit-point:hover {
     background-color: #f2f2f2;
 }
+
+.imatge_pdf {
+    background: url(/static/georef/css/icon/pdf16x16.png) no-repeat;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.imatge_kml {
+    background: url(/static/georef/css/icon/kml.png) no-repeat;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.imatge_csv {
+    background: url(/static/georef/css/icon/csv_text.png) no-repeat;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.imatge_shp {
+    background: url(/static/georef/css/icon/page_shp.png) no-repeat;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.imatge_xls {
+    background: url(/static/georef/css/icon/xls16x16.png) no-repeat;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
