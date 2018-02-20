@@ -213,7 +213,7 @@ $(document).ready(function() {
         buttons: {
             "Digitalitza": digitizeViaKb,
             Cancel: function() {
-                alert('cancel');
+                dialog_kb.dialog( "close" );
             }
         },
         close: function() {

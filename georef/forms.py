@@ -4,6 +4,7 @@ from georef.models import *
 from django.forms import ModelForm
 from django.forms import inlineformset_factory
 from datetimewidget.widgets import DateWidget
+from georef_addenda.models import Profile
 
 '''
 class ToponimsForm(forms.Form):
@@ -71,3 +72,22 @@ class ToponimversioForm(ModelForm):
     class Meta:
         model = Toponimversio
         fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen','coordenada_x_centroide','coordenada_y_centroide','precisio_h']
+
+
+class UserForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'username')
+
+
+class ProfileForm(forms.ModelForm):
+    permission_visualize = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    permission_administrative = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    permission_filter_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    class Meta:
+        model = Profile
+        fields = ('toponim_permission', 'permission_visualize', 'permission_administrative', 'permission_filter_edition', )

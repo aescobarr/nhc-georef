@@ -18,6 +18,40 @@ var exportPDF = function(){
     window.location.href = _toponims_list_pdf + '?' + jQuery.param(params);
 };
 
+var exportCSV = function(){
+    var params = table.ajax.params();
+    window.location.href = _toponims_list_csv + '?' + jQuery.param(params);
+};
+
+var exportXLS = function(){
+    var params = table.ajax.params();
+    window.location.href = _toponims_list_xls + '?' + jQuery.param(params);
+}
+
+var exportKML = function(){
+    var filtrejson = extreureJSONDeFiltre();
+    if(filtrejson!=null && filtrejson!=''){
+        var cql = transformarJSONACQL(filtrejson);
+        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        document.kml.CQL_FILTER.value = cql_filter_text;
+    }else{
+        document.kml.CQL_FILTER.value = "TRUE=TRUE";
+    }
+    document.kml.submit();
+}
+
+var exportSHP = function(){
+    var filtrejson = extreureJSONDeFiltre();
+    if(filtrejson!=null && filtrejson!=''){
+        var cql = transformarJSONACQL(filtrejson);
+        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        document.shp.CQL_FILTER.value = cql_filter_text;
+    }else{
+        document.shp.CQL_FILTER.value = "TRUE=TRUE";
+    }
+    document.shp.submit();
+}
+
 $(document).ready(function() {
     table = $('#toponims_list').DataTable( {
         'ajax': {

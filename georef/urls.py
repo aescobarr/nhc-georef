@@ -21,10 +21,13 @@ urlpatterns = [
     url(r'^toponims/update/(?P<idtoponim>[0-9A-Za-z_\-]+)/(?P<idversio>[0-9A-Za-z_\-]+)/$', views.toponims_update_2, name='toponims_update_2'),
     url(r'^toponims/create/$', views.toponims_create, name='toponims_create'),
     url(r'^toponims/list/pdf/$', views.toponims_list_pdf, name='toponims_list_pdf'),
+    url(r'^toponims/list/csv/$', views.toponims_list_csv, name='toponims_list_csv'),
+    url(r'^toponims/list/xls/$', views.toponims_list_xls, name='toponims_list_xls'),
     url(r'^toponimstree$', views.toponimstree, name='toponimstree'),
     #url(r'^toponimstree/(?P<node_id>[\w\-]+)/$', views.toponimstreenode, name='toponimstreenode'),
     url(r'^toponimstree/$', views.toponimstreenode, name='toponimstreenode'),
     url(r'^toponimfilters$', views.toponimfilters, name='toponimfilters'),
+    url(r'^user/profile/$', views.user_profile, name='user_profile'),
     url(r'ajax-upload$', views.import_uploader, name='ajax_upload'),
     url(r'ajax-process-shapefile$', views.process_shapefile, name='process_shapefile'),
 ]

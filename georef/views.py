@@ -27,7 +27,7 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from georef.forms import ToponimsUpdateForm, ToponimversioForm
+from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
@@ -39,6 +39,8 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 from weasyprint import HTML
+import csv
+import xlwt
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -496,8 +498,45 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 return render(request, 'georef/toponim_update_2.html', context)
 
 @login_required
-def toponims_list_pdf(request):
+def toponims_list_xls(request):
+    search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
+    sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
+    field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
+    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,field_translation_list, sort_translation_list, paginate=False)
+    records = data.data['data']
 
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="toponims.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Toponims')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Nom', 'Aquàtic?', 'Tipus', ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    for record in records:
+        row_num += 1
+        ws.write(row_num, 0, record['nom_str'], font_style)
+        ws.write(row_num, 1, record['aquatic'], font_style)
+        ws.write(row_num, 2, record['idtipustoponim']['nom'], font_style)
+
+    wb.save(response)
+    return response
+
+
+@login_required
+def toponims_list_pdf(request):
     search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
     sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
     field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
@@ -516,6 +555,44 @@ def toponims_list_pdf(request):
         return response
 
     return response
+
+
+@login_required
+def toponims_list_csv(request):
+    search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
+    sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
+    field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
+    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer, field_translation_list, sort_translation_list, paginate=False)
+
+    records = data.data['data']
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['nom_toponim','aquatic?','tipus_toponim'])
+    for record in records:
+        writer.writerow([record['nom_str'], record['aquatic'], record['idtipustoponim']['nom']])
+
+    return response
+
+
+@login_required
+@transaction.atomic
+def user_profile(request):
+    successfully_saved = False
+    nodelist_full = []
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            successfully_saved = True
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+    return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': []})
+
 
 @login_required
 def toponims_update(request, id=None):

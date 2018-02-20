@@ -24,10 +24,33 @@
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var wms_url = "{{ wms_url }}";
         var _toponims_list_pdf = "{% url 'toponims_list_pdf' %}";
+        var _toponims_list_csv = "{% url 'toponims_list_csv' %}";
+        var _toponims_list_xls = "{% url 'toponims_list_xls' %}";
     </script>
 {% endblock %}
 {% block main %}
 <main>
+    <form name="kml" action="{{ wms_url }}" method="POST">
+        <input type="hidden" name="service" value="WMS" />
+        <input type="hidden" name="version" value="1.1.0" />
+        <input type="hidden" name="request" value="GetMap" />
+        <input type="hidden" name="layers" value="mzoologia:toponimsdarreraversio" />
+        <input type="hidden" name="styles" value="" />
+        <input type="hidden" name="bbox" value="-180,-90,180,90" />
+        <input type="hidden" name="width" value="2157" />
+        <input type="hidden" name="height" value="330" />
+        <input type="hidden" name="srs" value="EPSG:4326" />
+        <input type="hidden" name="CQL_FILTER" value="" />
+        <input type="hidden" name="format" id="format" value="application/vnd.google-earth.kml+xml" />
+    </form>
+    <form name="shp" action="{{ wms_url }}" method="POST">
+        <input type="hidden" name="service" value="WFS" />
+        <input type="hidden" name="version" value="1.0.0" />
+        <input type="hidden" name="request" value="GetFeature" />
+        <input type="hidden" name="typeName" value="mzoologia:toponimsdarreraversio" />
+        <input type="hidden" name="outputFormat" value="SHAPE-ZIP" />
+        <input type="hidden" name="CQL_FILTER" id="CQL_FILTER" value="" />
+    </form>
     <div class="page-header">
     </div>
     <div class="container">
@@ -39,11 +62,11 @@
     </div>
     <div class="container">
         <div class="pull-right">
-                <a class="imatge_shp" href="#"></a>
-                <a class="imatge_kml" href="#"></a>
-                <a class="imatge_xls" href="#"></a>
-                <a class="imatge_csv" href="#"></a>
-                <a class="imatge_pdf" href="#" onclick="javascript:exportPDF();"></a>
+                <a class="imatge_shp" href="#" onclick="javascript:exportSHP(); return false;"></a>
+                <a class="imatge_kml" href="#" onclick="javascript:exportKML(); return false;"></a>
+                <a class="imatge_xls" href="#" onclick="javascript:exportXLS(); return false;"></a>
+                <a class="imatge_csv" href="#" onclick="javascript:exportCSV(); return false;"></a>
+                <a class="imatge_pdf" href="#" onclick="javascript:exportPDF(); return false;"></a>
         </div>
     </div>
     <div class="container">
