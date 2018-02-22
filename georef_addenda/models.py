@@ -14,8 +14,10 @@ class GeometriaToponimVersio(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    toponim_permission = models.OneToOneField(Toponim, on_delete=models.CASCADE, null=True, blank=True)
-    permission_visualize = models.BooleanField(default=False)
+    toponim_permission = models.CharField(max_length=200, null=True, blank=True)
+    permission_recurs_edition = models.BooleanField(default=False)
+    permission_toponim_edition = models.BooleanField(default=False)
+    permission_tesaure_edition = models.BooleanField(default=False)
     permission_administrative = models.BooleanField(default=False)
     permission_filter_edition = models.BooleanField(default=False)
 

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio
+from georef_addenda.models import Profile
+from django.contrib.auth.models import User
 
 
 class TipusToponimSerializer(serializers.ModelSerializer):
@@ -8,14 +10,36 @@ class TipusToponimSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False)
+    class Meta:
+        model = Profile
+        fields = '__all__'
+
+
 class ToponimSerializer(serializers.ModelSerializer):
     aquatic_str = serializers.ReadOnlyField()
     nom_str = serializers.ReadOnlyField()
     idtipustoponim = TipusToponimSerializer(required=True)
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = Toponim
         fields = '__all__'
+
+    def get_editable(self, obj):
+        user = self.context['request'].user
+        if user.profile.toponim_permission == '1':
+            return True
+        if user.profile.toponim_permission in obj.denormalized_toponimtree:
+            return True
+        return False
 
 
 class ToponimVersioSerializer(serializers.ModelSerializer):

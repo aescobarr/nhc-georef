@@ -1,0 +1,37 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _user_list_url = "{% url 'users_datatable_list' %}";
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="page-header">
+        </div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Sessió</li>
+                <li class="breadcrumb-item active">Gestió usuaris</li>
+            </ol>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1 col-md-offset-11">
+                    <button id="addUser" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <table id="users_list" style="width:100%;"></table>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'georef/javascript/users_list.js' %}"></script>
+{% endblock %}

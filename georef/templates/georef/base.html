@@ -92,7 +92,7 @@
                     </li>
                     {% if user.is_superuser %}
                     <li>
-                        <a class="nav-link" href="#">Gestió usuaris</a>
+                        <a class="nav-link" href="{% url 'users_list' %}">Gestió usuaris</a>
                     </li>
                     {% endif %}
                 </ul>

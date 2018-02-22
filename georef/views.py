@@ -2,8 +2,10 @@ from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer
 from georef.models import Toponim, Filtrejson
+from georef_addenda.models import Profile
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
 from rest_framework.response import Response
@@ -30,7 +32,7 @@ from django.core.urlresolvers import reverse
 from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
-from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
+from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, compute_denormalized_toponim_tree_val_to_root
 from django.contrib.gis.geos import GEOSGeometry, GeometryCollection
 from georef_addenda.models import GeometriaToponimVersio
 
@@ -89,12 +91,21 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
     request.query_params works only for rest_framework requests, but not for WSGI requests. request.GET[key] works for
     both types of requests
     '''
+
     '''    
     draw = request.query_params.get('draw', -1)
     start = request.query_params.get('start', 0)
     '''
-    draw = request.GET['draw']
-    start = request.GET['start']
+    draw = -1
+    start = 0
+    try:
+        draw = request.GET['draw']
+    except:
+        pass
+    try:
+        start = request.GET['start']
+    except:
+        pass
 
     length = 25
 
@@ -129,9 +140,9 @@ def generic_datatable_list_endpoint(request,search_field_list,queryClass, classS
         recordsFiltered = recordsTotal
         page = int(start) / int(length) + 1
 
-        serializer = classSerializer(paginator.page(page), many=True)
+        serializer = classSerializer(paginator.page(page), many=True, context={'request':request})
     else:
-        serializer = classSerializer(queryset, many=True)
+        serializer = classSerializer(queryset, many=True, context={'request':request})
         recordsTotal = queryset.count()
         recordsFiltered = recordsTotal
 
@@ -145,6 +156,15 @@ def index(request):
 class ToponimVersioViewSet(viewsets.ModelViewSet):
     queryset = Toponimversio.objects.all()
     serializer_class = ToponimVersioSerializer
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class ToponimViewSet(viewsets.ModelViewSet):
@@ -191,6 +211,14 @@ def check_filtre(request):
                 content = {'status': 'KO', 'detail': 'exists_not'}
                 return Response(data=content, status=200)
 
+@api_view(['GET'])
+def users_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ()
+        sort_translation_list = {}
+        field_translation_list = {}
+        response = generic_datatable_list_endpoint(request, search_field_list, Profile, ProfileSerializer, field_translation_list, sort_translation_list)
+        return response
 
 @api_view(['GET'])
 def toponims_datatable_list(request):
@@ -303,6 +331,9 @@ def toponimfilters(request):
     csrf_token = get_token(request)
     return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token})
 
+@login_required
+def users_list(request):
+    return render(request, 'georef/user_list.html')
 
 @login_required
 def toponims(request):
@@ -588,10 +619,18 @@ def user_profile(request):
             user_form.save()
             profile_form.save()
             successfully_saved = True
+        else:
+            successfully_saved = False
     else:
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': []})
+    if request.user and request.user.profile and request.user.profile.toponim_permission:
+        if request.user.profile.toponim_permission == '1':
+            nodelist_full = ['1']
+        else:
+            toponim = get_object_or_404(Toponim, pk=request.user.profile.toponim_permission)
+            nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
+    return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
 
 
 @login_required

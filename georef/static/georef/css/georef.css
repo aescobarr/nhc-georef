@@ -280,3 +280,6 @@ table#toponim_edit tbody tr td ul li{
     width: 16px;
 }
 
+.error{
+    color: red;
+}

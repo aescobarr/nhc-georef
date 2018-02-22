@@ -16,12 +16,11 @@
         for(var i = 0; i < node_list_full.length; i++){
             node_list.push(node_list_full[i].split('$')[0]);
         }
-        var node_ini = "1";
     </script>
 {% endblock %}
 {% block main %}
 <main>
-    <form action="{% url 'user_profile' %}" method="POST">
+    <form action="{% url 'user_profile' %}" onsubmit="return checkPermissions()" method="POST">
     {% csrf_token %}
         <div class="page-header">
         </div>
@@ -33,7 +32,10 @@
             </ol>
         </div>
         <div class="container">
-            <input role="button" class="btn btn-success" type="submit" value="Desar" />
+            <input role="button" class="btn btn-success"  type="submit" value="Desar" />
+        </div>
+        <div class="container">
+            <div class="form-errors"></div>
         </div>
         <div class="container separador_seccio">
             <p><strong>Dades usuari:</strong></p>
@@ -83,29 +85,47 @@
             <div class="row">
                 <div class="col-xs-4">
                     <div class="form-check">
-                        {{ profile_form.permission_visualize }}
-                        <label class="form-check-label" for="profile_form.permission_visualize.id_for_label">Visualització</label>
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <div class="form-check">
                         {{ profile_form.permission_administrative }}
-                        <label class="form-check-label" for="profile_form.permission_administrative.id_for_label">Administratiu</label>
+                        <label class="form-check-label" for="profile_form.permission_administrative.id_for_label">Administració</label>
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-check">
                         {{ profile_form.permission_filter_edition }}
-                        <label class="form-check-label" for="profile_form.permission_filter_edition.id_for_label">Edició filtre</label>
+                        <label class="form-check-label" for="profile_form.permission_filter_edition.id_for_label">Edició filtres</label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_tesaure_edition }}
+                        <label class="form-check-label" for="profile_form.permission_tesaure_edition.id_for_label">Edició tesaures</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_toponim_edition }}
+                        <label class="form-check-label" for="profile_form.permission_toponim_edition.id_for_label">Edició topònim</label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_recurs_edition }}
+                        <label class="form-check-label" for="profile_form.permission_recurs_edition.id_for_label">Edició recurs cartogràfic</label>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container">
+        {{ profile_form.toponim_permission.as_hidden }}
+        <div class="container separador_seccio">
             <div id="jstree"></div>
         </div>
-        <div class="container">
+        <div class="container separador_seccio">
             <input role="button" class="btn btn-success" type="submit" value="Desar" />
+        </div>
+        <div class="container">
+            <div class="form-errors"></div>
         </div>
     </form>
 </main>

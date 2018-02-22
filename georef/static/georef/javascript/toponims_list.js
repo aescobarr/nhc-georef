@@ -89,15 +89,27 @@ $(document).ready(function() {
         'columnDefs': [
             {
                 'targets': 3,
-                'data': null,
-                'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>',
-                'sortable': false
+                'data': 'editable',
+                'sortable': false,
+                'render': function(value){
+                    if(value==true){
+                        return '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>';
+                    }else{
+                        return '&nbsp;';
+                    }
+                }
             },
             {
                 'targets': 4,
-                'data': null,
-                'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>',
-                'sortable': false
+                'data': 'editable',
+                'sortable': false,
+                'render': function(value){
+                    if(value==true){
+                        return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
+                    }else{
+                        return '&nbsp;';
+                    }
+                }
             },
             {
                 'targets':0,
