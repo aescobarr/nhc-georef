@@ -333,7 +333,10 @@ def toponimfilters(request):
 
 @login_required
 def users_list(request):
-    return render(request, 'georef/user_list.html')
+    if request.user.profile and request.user.profile.permission_administrative == False:
+        return HttpResponse(reverse(index))
+    else:
+        return render(request, 'georef/user_list.html')
 
 @login_required
 def toponims(request):
@@ -609,28 +612,36 @@ def toponims_list_csv(request):
 
 @login_required
 @transaction.atomic
-def user_profile(request):
+def user_profile(request, user_id=None):
     successfully_saved = False
     nodelist_full = []
-    if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            successfully_saved = True
-        else:
-            successfully_saved = False
+    if user_id is None:
+        this_user = request.user
     else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
-    if request.user and request.user.profile and request.user.profile.toponim_permission:
-        if request.user.profile.toponim_permission == '1':
-            nodelist_full = ['1']
+        this_user = get_object_or_404(User, pk=user_id)
+    user_is_me = this_user == request.user
+    if request.user.is_superuser or user_is_me:
+        if request.method == 'POST':
+            user_form = UserForm(request.POST, instance=this_user)
+            profile_form = ProfileForm(request.POST, instance=this_user.profile)
+            if user_form.is_valid() and profile_form.is_valid():
+                user_form.save()
+                profile_form.save()
+                successfully_saved = True
+            else:
+                successfully_saved = False
         else:
-            toponim = get_object_or_404(Toponim, pk=request.user.profile.toponim_permission)
-            nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
-    return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
+            user_form = UserForm(instance=this_user)
+            profile_form = ProfileForm(instance=this_user.profile)
+        if this_user and this_user.profile and this_user.profile.toponim_permission:
+            if this_user.profile.toponim_permission == '1':
+                nodelist_full = ['1']
+            else:
+                toponim = get_object_or_404(Toponim, pk=this_user.profile.toponim_permission)
+                nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
+        return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
+    else:
+        return HttpResponse('No tens permís per fer aquesta operació')
 
 
 @login_required
@@ -646,6 +657,7 @@ def change_password(request,user_id=None):
             if form.is_valid():
                 password = form.cleaned_data['password_1']
                 this_user.set_password(password)
+                this_user.save()
                 url = reverse('users_list')
                 return HttpResponseRedirect(url)
         else:
