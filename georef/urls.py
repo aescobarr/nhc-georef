@@ -31,6 +31,9 @@ urlpatterns = [
     url(r'^toponimstree/$', views.toponimstreenode, name='toponimstreenode'),
     url(r'^toponimfilters$', views.toponimfilters, name='toponimfilters'),
     url(r'^user/profile/$', views.user_profile, name='user_profile'),
+    url(r'^user/new/$', views.user_new, name='user_new'),
+    url(r'^user/password/change$', views.change_password, name='change_password'),
+    url(r'^user/password/change/(?P<user_id>[0-9A-Za-z_\-]+)/$', views.change_password, name='change_password'),
     url(r'ajax-upload$', views.import_uploader, name='ajax_upload'),
     url(r'ajax-process-shapefile$', views.process_shapefile, name='process_shapefile'),
 ]

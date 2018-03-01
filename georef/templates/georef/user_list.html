@@ -7,6 +7,7 @@
 {% block extrahead %}
     <script>
         var _user_list_url = "{% url 'users_datatable_list' %}";
+        var _add_user_url = "{% url 'user_new' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -20,11 +21,9 @@
                 <li class="breadcrumb-item active">Gestió usuaris</li>
             </ol>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-1 col-md-offset-11">
-                    <button id="addUser" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
-                </div>
+        <div class="container separador_seccio">
+            <div class="pull-right">
+                <button id="addUser" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
             </div>
         </div>
         <div class="container">
@@ -33,5 +32,6 @@
     </main>
 {% endblock %}
 {% block extra_js %}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'georef/javascript/users_list.js' %}"></script>
 {% endblock %}

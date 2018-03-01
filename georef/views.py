@@ -11,7 +11,7 @@ from querystring_parser import parser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Q
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
 from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio
@@ -29,7 +29,7 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm
+from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, compute_denormalized_toponim_tree_val_to_root
@@ -214,9 +214,9 @@ def check_filtre(request):
 @api_view(['GET'])
 def users_datatable_list(request):
     if request.method == 'GET':
-        search_field_list = ()
-        sort_translation_list = {}
-        field_translation_list = {}
+        search_field_list = ('user.username', 'user.first_name', 'user.last_name', 'user.email')
+        sort_translation_list = {'user.username':'user__username', 'user.first_name':'user__first_name', 'user.last_name':'user__last_name', 'user.email':'user__email'}
+        field_translation_list = {'user.username':'user__username', 'user.first_name':'user__first_name', 'user.last_name':'user__last_name', 'user.email':'user__email'}
         response = generic_datatable_list_endpoint(request, search_field_list, Profile, ProfileSerializer, field_translation_list, sort_translation_list)
         return response
 
@@ -631,6 +631,57 @@ def user_profile(request):
             toponim = get_object_or_404(Toponim, pk=request.user.profile.toponim_permission)
             nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
     return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
+
+
+@login_required
+def change_password(request,user_id=None):
+    if user_id is None:
+        this_user = request.user
+    else:
+        this_user = get_object_or_404(User, pk=user_id)
+    user_is_me = this_user == request.user
+    if request.user.is_superuser or user_is_me:
+        if request.method == 'POST':
+            form = ChangePasswordForm(request.POST)
+            if form.is_valid():
+                password = form.cleaned_data['password_1']
+                this_user.set_password(password)
+                url = reverse('users_list')
+                return HttpResponseRedirect(url)
+        else:
+            form = ChangePasswordForm()
+        return render(request, 'georef/change_password.html', {'form': form, 'user_is_other': None if user_is_me else this_user})
+    else:
+        return HttpResponse('No tens permís per fer aquesta operació')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+@transaction.atomic
+def user_new(request):
+    successfully_saved = False
+    nodelist_full = []
+    if request.method == 'POST':
+        user_form = UserForm(request.POST or None)
+        profile_form = ProfileForm(request.POST or None)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save(commit=False)
+            profile = profile_form.save(commit=False)
+            user.save()
+            user.profile.toponim_permission = profile.toponim_permission
+            user.profile.permission_toponim_edition = profile.permission_toponim_edition
+            user.profile.permission_administrative = profile.permission_administrative
+            user.profile.permission_filter_edition = profile.permission_filter_edition
+            user.profile.permission_recurs_edition = profile.permission_recurs_edition
+            user.profile.permission_tesaure_edition = profile.permission_tesaure_edition
+            user.save()
+            successfully_saved = True
+        else:
+            successfully_saved = False
+    else:
+        user_form = UserForm()
+        profile_form = ProfileForm()
+    return render(request, 'georef/user_new.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
 
 
 @login_required

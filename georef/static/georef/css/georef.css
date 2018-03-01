@@ -283,3 +283,7 @@ table#toponim_edit tbody tr td ul li{
 .error{
     color: red;
 }
+
+.errorlist{
+    color: red;
+}

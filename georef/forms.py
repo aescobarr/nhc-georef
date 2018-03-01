@@ -6,28 +6,20 @@ from django.forms import inlineformset_factory
 from datetimewidget.widgets import DateWidget
 from georef_addenda.models import Profile
 
-'''
-class ToponimsForm(forms.Form):
-    codi = forms.CharField(required=True)
-    nom = forms.CharField(required=True)
-    aquatic = forms.ChoiceField(choices=((None, ''), ('S', 'Sí'), ('N', 'No')))
+
+class ChangePasswordForm(forms.Form):
+    password_1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+    password_2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+
+    def clean_password_2(self):
+        cleaned_data = self.cleaned_data
+        password_2 = cleaned_data.get('password_2')
+        password_1 = cleaned_data.get('password_1')
+        if password_1 != password_2:
+            raise forms.ValidationError('Els passwords són diferents! Si us plau torna a escriure\'ls')
+        return password_2
 
 
-    email = forms.EmailField(label="Email Address")
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")
-    first_name = forms.CharField(required=False)
-    last_name = forms.CharField(required=False)
-    gender = forms.ChoiceField(choices=((None, ''), ('F', 'Female'), ('M', 'Male'), ('O', 'Other')))
-    receive_news = forms.BooleanField(required=False, label='I want to receive news and special offers')
-    agree_toc = forms.BooleanField(required=True, label='I agree with the Terms and Conditions')
-
-
-
-    layout = Layout(
-        Row('codi', 'nom', 'aquatic'),
-    )
-'''
 
 class ToponimsForm(forms.Form):
     codi = forms.CharField(required=True)
@@ -79,9 +71,11 @@ class UserForm(forms.ModelForm):
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'username')
+
 
 
 class ProfileForm(forms.ModelForm):

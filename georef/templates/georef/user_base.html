@@ -1,0 +1,138 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var successfully_saved;
+        {% if successfully_saved == True %}
+            successfully_saved = true;
+        {% endif %}
+        var node_list_full = {{ nodelist_full|safe }};
+        var node_list = [];
+        for(var i = 0; i < node_list_full.length; i++){
+            node_list.push(node_list_full[i].split('$')[0]);
+        }
+    </script>
+{% endblock %}
+{% block main %}
+<main>
+    {% block form %}
+    <form action="{% url 'user_profile' %}" onsubmit="return checkPermissions()" method="POST">
+    {% endblock %}
+    {% csrf_token %}
+        <div class="page-header">
+        </div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Sessió</li>
+                <li class="breadcrumb-item active">Perfil</li>
+            </ol>
+        </div>
+        <div class="container">
+            <input role="button" class="btn btn-success"  type="submit" value="Desar" />
+        </div>
+        <div class="container">
+            <div class="form-errors"></div>
+        </div>
+        <div class="container separador_seccio">
+            <p><strong>Dades usuari:</strong></p>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="user_form.first_name.id_for_label">Nom:</label>
+                        {{ user_form.first_name }}
+                        {{ user_form.first_name.errors }}
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="user_form.last_name.id_for_label">Cognom:</label>
+                        {{ user_form.last_name }}
+                        {{ user_form.last_name.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="user_form.email.id_for_label">Correu electrònic:</label>
+                        {{ user_form.email }}
+                        {{ user_form.email.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="user_form.username.id_for_label">Nom d'usuari:</label>
+                        {{ user_form.username }}
+                        {{ user_form.username.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container separador_seccio">
+            <p><strong>Permisos:</strong></p>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_administrative }}
+                        <label class="form-check-label" for="profile_form.permission_administrative.id_for_label">Administració</label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_filter_edition }}
+                        <label class="form-check-label" for="profile_form.permission_filter_edition.id_for_label">Edició filtres</label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_tesaure_edition }}
+                        <label class="form-check-label" for="profile_form.permission_tesaure_edition.id_for_label">Edició tesaures</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_toponim_edition }}
+                        <label class="form-check-label" for="profile_form.permission_toponim_edition.id_for_label">Edició topònim</label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-check">
+                        {{ profile_form.permission_recurs_edition }}
+                        <label class="form-check-label" for="profile_form.permission_recurs_edition.id_for_label">Edició recurs cartogràfic</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ profile_form.toponim_permission.as_hidden }}
+        <div class="container separador_seccio">
+            <div id="jstree"></div>
+        </div>
+        <div class="container separador_seccio">
+            <input role="button" class="btn btn-success" type="submit" value="Desar" />
+        </div>
+        <div class="container">
+            <div class="form-errors"></div>
+        </div>
+    </form>
+</main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/user_base.js' %}"></script>
+{% endblock %}
