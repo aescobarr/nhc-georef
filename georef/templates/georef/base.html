@@ -88,7 +88,10 @@
                         <a class="nav-link" href="{% url 'logout' %}">Tancar sessió - {{ user.username }}</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="{% url 'user_profile' %}">Perfil</a>
+                        <a class="nav-link" href="{% url 'my_profile' %}">El meu perfil</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'change_my_password' %}">Canviar el meu password</a>
                     </li>
                     {% if user.is_superuser %}
                     <li>

@@ -29,7 +29,7 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm
+from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm, NewUserForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, compute_denormalized_toponim_tree_val_to_root
@@ -609,72 +609,89 @@ def toponims_list_csv(request):
 
     return response
 
+@login_required
+def my_profile(request):
+    successfully_saved = False
+    this_user = request.user
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=this_user)
+        if user_form.is_valid():
+            user_form.save()
+            successfully_saved = True
+        else:
+            successfully_saved = False
+    else:
+        user_form = UserForm(instance=this_user)
+    return render(request, 'georef/profile.html',{'user_form': user_form, 'successfully_saved': successfully_saved})
 
+
+@user_passes_test(lambda u: u.is_superuser)
 @login_required
 @transaction.atomic
 def user_profile(request, user_id=None):
-    successfully_saved = False
     nodelist_full = []
-    if user_id is None:
-        this_user = request.user
+    this_user = get_object_or_404(User, pk=user_id)
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=this_user)
+        profile_form = ProfileForm(request.POST, instance=this_user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            url = reverse('users_list')
+            return HttpResponseRedirect(url)
     else:
-        this_user = get_object_or_404(User, pk=user_id)
-    user_is_me = this_user == request.user
-    if request.user.is_superuser or user_is_me:
-        if request.method == 'POST':
-            user_form = UserForm(request.POST, instance=this_user)
-            profile_form = ProfileForm(request.POST, instance=this_user.profile)
-            if user_form.is_valid() and profile_form.is_valid():
-                user_form.save()
-                profile_form.save()
-                successfully_saved = True
-            else:
-                successfully_saved = False
+        user_form = UserForm(instance=this_user)
+        profile_form = ProfileForm(instance=this_user.profile)
+
+    if this_user and this_user.profile and this_user.profile.toponim_permission:
+        if this_user.profile.toponim_permission == '1':
+            nodelist_full = ['1']
         else:
-            user_form = UserForm(instance=this_user)
-            profile_form = ProfileForm(instance=this_user.profile)
-        if this_user and this_user.profile and this_user.profile.toponim_permission:
-            if this_user.profile.toponim_permission == '1':
-                nodelist_full = ['1']
-            else:
-                toponim = get_object_or_404(Toponim, pk=this_user.profile.toponim_permission)
-                nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
-        return render(request, 'georef/user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
-    else:
-        return HttpResponse('No tens permís per fer aquesta operació')
+            toponim = get_object_or_404(Toponim, pk=this_user.profile.toponim_permission)
+            nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
+    return render(request, 'georef/user_profile.html', {'user_id': this_user.id,'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
 
 
 @login_required
+def change_my_password(request):
+    this_user = request.user
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password_1']
+            this_user.set_password(password)
+            this_user.save()
+            url = reverse('index')
+            return HttpResponseRedirect(url)
+    else:
+        form = ChangePasswordForm()
+    return render(request, 'georef/change_password.html', {'form': form, 'edited_user': None})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def change_password(request,user_id=None):
-    if user_id is None:
-        this_user = request.user
+    this_user = get_object_or_404(User, pk=user_id)
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password_1']
+            this_user.set_password(password)
+            this_user.save()
+            url = reverse('users_list')
+            return HttpResponseRedirect(url)
     else:
-        this_user = get_object_or_404(User, pk=user_id)
-    user_is_me = this_user == request.user
-    if request.user.is_superuser or user_is_me:
-        if request.method == 'POST':
-            form = ChangePasswordForm(request.POST)
-            if form.is_valid():
-                password = form.cleaned_data['password_1']
-                this_user.set_password(password)
-                this_user.save()
-                url = reverse('users_list')
-                return HttpResponseRedirect(url)
-        else:
-            form = ChangePasswordForm()
-        return render(request, 'georef/change_password.html', {'form': form, 'user_is_other': None if user_is_me else this_user})
-    else:
-        return HttpResponse('No tens permís per fer aquesta operació')
+        form = ChangePasswordForm()
+    return render(request, 'georef/change_password.html', {'form': form, 'edited_user': this_user})
 
 
 @user_passes_test(lambda u: u.is_superuser)
 @login_required
 @transaction.atomic
 def user_new(request):
-    successfully_saved = False
     nodelist_full = []
     if request.method == 'POST':
-        user_form = UserForm(request.POST or None)
+        user_form = NewUserForm(request.POST or None)
         profile_form = ProfileForm(request.POST or None)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
@@ -687,13 +704,12 @@ def user_new(request):
             user.profile.permission_recurs_edition = profile.permission_recurs_edition
             user.profile.permission_tesaure_edition = profile.permission_tesaure_edition
             user.save()
-            successfully_saved = True
-        else:
-            successfully_saved = False
+            url = reverse('users_list')
+            return HttpResponseRedirect(url)
     else:
-        user_form = UserForm()
+        user_form = NewUserForm()
         profile_form = ProfileForm()
-    return render(request, 'georef/user_new.html', {'user_form': user_form, 'profile_form': profile_form, 'successfully_saved':successfully_saved, 'nodelist_full': nodelist_full})
+    return render(request, 'georef/user_new.html', {'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
 
 
 @login_required

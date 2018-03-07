@@ -5,13 +5,17 @@
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
 {% endblock %}
+{% block extrahead %}
+    <script>
+        var successfully_saved;
+        {% if successfully_saved == True %}
+            successfully_saved = true;
+        {% endif %}
+    </script>
+{% endblock %}
 {% block main %}
 <main>
-    {% if edited_user %}
-        <form action="{% url 'change_password' edited_user.id %}" method="POST">
-    {% else %}
-        <form action="{% url 'change_my_password' %}" method="POST">
-    {% endif %}
+    <form action="{% url 'my_profile' %}" method="POST">
     {% csrf_token %}
         <div class="page-header">
         </div>
@@ -19,8 +23,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
                 <li class="breadcrumb-item">Sessió</li>
-                <li class="breadcrumb-item"><a href="{% url 'user_profile' %}">Perfil</a></li>
-                <li class="breadcrumb-item active">Canvi de password</li>
+                <li class="breadcrumb-item active">Perfil</li>
             </ol>
         </div>
         <div class="container">
@@ -29,28 +32,43 @@
         <div class="container">
             <div class="form-errors"></div>
         </div>
-        {% if edited_user %}
         <div class="container separador_seccio">
-            <h3 class="error">Atenció! estàs canviant el password de l'usuari {{ edited_user.username }}</h3>
+            <p><strong>Dades usuari:</strong></p>
         </div>
-        {% endif %}
-        <div class="container separador_seccio">
-            <p><strong>Canvi de password:</strong></p>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="user_form.first_name.id_for_label">Nom:</label>
+                        {{ user_form.first_name }}
+                        {{ user_form.first_name.errors }}
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="user_form.last_name.id_for_label">Cognom:</label>
+                        {{ user_form.last_name }}
+                        {{ user_form.last_name.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="user_form.email.id_for_label">Correu electrònic:</label>
+                        {{ user_form.email }}
+                        {{ user_form.email.errors }}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label for="form.password_1.id_for_label">Nou password:</label>
-                        {{ form.password_1 }}
-                        {{ form.password_1.errors }}
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label for="form.password_2.id_for_label">Nou password (repeteix):</label>
-                        {{ form.password_2 }}
-                        {{ form.password_2.errors }}
+                        <label for="user_form.username.id_for_label">Nom d'usuari:</label>
+                        {{ user_form.username }}
+                        {{ user_form.username.errors }}
                     </div>
                 </div>
             </div>

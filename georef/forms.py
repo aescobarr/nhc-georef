@@ -76,6 +76,39 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'email', 'username')
 
+    def clean_email(self):
+        cleaned_data = self.cleaned_data
+        proposed_email = cleaned_data.get('email')
+        if User.objects.filter(email=proposed_email).exclude(id=self.instance.id).exists():
+            raise forms.ValidationError('Un altre usuari està fent servir aquest compte de correu, si us plau tria\'n un de diferent')
+        return proposed_email
+
+
+class NewUserForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'username', 'password')
+
+    def clean_email(self):
+        cleaned_data = self.cleaned_data
+        proposed_email = cleaned_data.get('email')
+        if User.objects.filter(email=proposed_email).exists():
+            raise forms.ValidationError('Un altre usuari està fent servir aquest compte de correu, si us plau tria\'n un de diferent')
+        return proposed_email
+
+    def clean_password(self):
+        cleaned_data = self.cleaned_data
+        password_2 = self.data['password_2']
+        password_1 = cleaned_data.get('password')
+        if password_1 != password_2:
+            raise forms.ValidationError('Els passwords són diferents! Si us plau torna a escriure\'ls')
+        return password_1
 
 
 class ProfileForm(forms.ModelForm):

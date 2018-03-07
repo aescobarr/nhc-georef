@@ -46,19 +46,41 @@ $(document).ready(function() {
                 'targets': 4,
                 'data': null,
                 'sortable': false,
-                'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
+                'defaultContent': '<button title="Esborrar usuari" class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
             },
             {
                 'targets': 5,
                 'data': null,
                 'sortable': false,
-                'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+                'defaultContent': '<button title="Editar perfil" class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+            },
+            {
+                'targets': 6,
+                'data': null,
+                'sortable': false,
+                'defaultContent': '<button title="Canviar password" class="chgpsswd_button btn btn-danger"><i class="fa fa-lock"></i></button>'
             }
         ]
     } );
 
     $( '#addUser' ).click(function() {
         var url = _add_user_url;
+        window.location.href = url;
+    });
+
+    $('#users_list tbody').on('click', 'td button.edit_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().user.id;
+        url = '/user/profile/' + id + '/';
+        window.location.href = url;
+    });
+
+    $('#users_list tbody').on('click', 'td button.chgpsswd_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().user.id;
+        url = '/user/password/change/' + id;
         window.location.href = url;
     });
 });
