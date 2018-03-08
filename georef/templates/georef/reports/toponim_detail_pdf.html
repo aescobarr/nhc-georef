@@ -1,0 +1,102 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fitxa de topònim</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic);
+
+        * {
+          font-family: 'Lato', Helvetica, sans-serif;
+          color: #333447;
+          line-height: 1.5;
+        }
+
+        body{
+            font-size: 14px;
+        }
+        .container{
+            width
+        }
+
+    </style>
+</head>
+<body>
+    <h3>Fitxa del topònim {{ toponim.nom_str }}</h3>
+    <div class="container separador_seccio">
+        <p><strong>Dades bàsiques:</strong></p>
+    </div>
+    <table>
+        <tr>
+            <th>Nom:</th>
+            <td>{{ toponim.nom }}</td>
+        </tr>
+        <tr>
+            <th>Tipus:</th>
+            <td>{{ toponim.idtipustoponim }}</td>
+        </tr>
+        <tr>
+            <th>País:</th>
+            <td>{{ toponim.idpais }}</td>
+        </tr>
+        <tr>
+            <th>Aquàtic:</th>
+            <td>{{ toponim.aquatic }}</td>
+        </tr>
+    </table>
+    <div class="container separador_seccio">
+        <p><strong>Versions:</strong></p>
+        {% for versio in toponim.versions.all %}
+        <table>
+            <tr>
+                <th>Nom versió:</th>
+                <td>{{ versio.nom }}</td>
+            </tr>
+            <tr>
+                <th>Número versió:</th>
+                <td>{{ versio.numero_versio }}</td>
+            </tr>
+            <tr>
+                <th>Qualificador versió:</th>
+                <td>{{ versio.idqualificador }}</td>
+            </tr>
+            <tr>
+                <th>Versió capturada del recurs:</th>
+                <td>{{ versio.idrecursgeoref }}</td>
+            </tr>
+            <tr>
+                <th>Data:</th>
+                <td>{{ versio.datacaptura }}</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th>Coordenada X original:</th>
+                <td>{{ versio.coordenada_x_origen }}</td>
+                <th>Coordenada X centroide:</th>
+                <td>{{ versio.centroide_x }}</td>
+            </tr>
+            <tr>
+                <th>Coordenada Y original:</th>
+                <td>{{ versio.coordenada_y_origen }}</td>
+                <th>Coordenada Y centroide:</th>
+                <td>{{ versio.centroide_y }}</td>
+            </tr>
+            <tr>
+                <th>Coordenada Z:</th>
+                <td>{{ versio.coordenada_z_origen }}</td>
+                <th>Incertesa coordenades(m):</th>
+                <td>{{ versio.precisio_h }}</td>
+            </tr>
+            <tr>
+                <th>Incertesa d'altitud(m):</th>
+                <td>{{ versio.precisio_z }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        {% endfor %}
+    </div>
+</body>
+</html>

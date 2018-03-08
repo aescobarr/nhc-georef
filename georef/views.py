@@ -39,8 +39,9 @@ from georef_addenda.models import GeometriaToponimVersio
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from weasyprint import HTML
+from weasyprint import HTML, CSS
 import csv
 import xlwt
 
@@ -604,6 +605,29 @@ def toponims_list_pdf(request):
 
     html = HTML(string=html_string)
     html.write_pdf(target='/tmp/mypdf.pdf');
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('mypdf.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+
+    return response
+
+@login_required
+def toponims_detail_pdf(request, idtoponim=None):
+
+    toponim = get_object_or_404(Toponim,pk=idtoponim)
+
+    html_string = render_to_string('georef/reports/toponim_detail_pdf.html',{'toponim':toponim})
+    georef_css = CSS('georef/static/georef/css/georef.css')
+    #simple_grid = CSS('georef/static/georef/css/grid/simple-grid.css')
+    #styles = [simple_grid, georef_css]
+    styles = [georef_css]
+
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/mypdf.pdf', stylesheets=styles)
+
 
     fs = FileSystemStorage('/tmp')
     with fs.open('mypdf.pdf') as pdf:

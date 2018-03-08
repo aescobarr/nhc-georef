@@ -266,6 +266,31 @@ class Toponimversio(models.Model):
         managed = False
         db_table = 'toponimversio'
 
+    def union_geometry(self):
+        geometries = self.geometries.all()
+        unio_geometries = None
+        for geometria in geometries:
+            this_geometria = geometria.geometria
+            if unio_geometries is None:
+                unio_geometries = this_geometria
+            else:
+                unio_geometries = unio_geometries.union(this_geometria)
+        return unio_geometries
+
+    @property
+    def centroide_x(self):
+        centroide = self.union_geometry()
+        if centroide:
+            return centroide.x
+        return None
+
+    @property
+    def centroide_y(self):
+        centroide = self.union_geometry()
+        if centroide:
+            return centroide.y
+        return None
+
 
 '''
 class Versions(models.Model):
