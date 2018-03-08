@@ -39,7 +39,8 @@
         for(var i = 0; i < node_list_full.length; i++){
             node_list.push(node_list_full[i].split('$')[0]);
         }
-        var node_ini = "1";
+        /*var node_ini = "1";*/
+        var node_ini = "{{ node_ini }}";
     </script>
     <script>
         var wms_url = "{{ wms_url }}";

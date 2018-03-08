@@ -24,9 +24,9 @@ var init_ariadna = function(nodes){
         var nom = nodes[i].split('$')[1];
         var linkVisualitzar;
         if(i == 0){
-            linkVisualitzar = '<li><a href="/toponims/update/' + id + '" title="'+nom+'">' + nom + '</a></li>';
+            linkVisualitzar = '<li><a href="/toponims/update/' + id + '/-1" title="'+nom+'">' + nom + '</a></li>';
         }else{
-            linkVisualitzar = '<li><a href="/toponims/update/' + id + '" title="'+nom+'"> <- ' + nom + '</a></li>';
+            linkVisualitzar = '<li><a href="/toponims/update/' + id + '/-1" title="'+nom+'"> <- ' + nom + '</a></li>';
         }
         $('#ariadna ul').append(linkVisualitzar);
     }

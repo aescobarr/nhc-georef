@@ -110,6 +110,21 @@ class Toponim(models.Model):
         #return stack
         return format_denormalized_toponimtree(self.denormalized_toponimtree)
 
+    def can_i_edit(self, toponim_permission):
+        '''
+        Returns true if a given user has permission to edit this toponim based on his upper limit toponim edit permission
+        :param toponim_permission: Id of the highest toponim the user is allowed to edit
+        :return: True, if either this is the highest toponim the user is allowed to edit or this toponim is below. False
+        otherwise
+        '''
+        #Wildcard permission
+        if toponim_permission == '1':
+            return True
+        if toponim_permission == self.id or toponim_permission in self.denormalized_toponimtree:
+            return True
+        return False
+
+
     def crea_query_de_filtre(json_filtre):
         accum_query = None
         for condicio in json_filtre:

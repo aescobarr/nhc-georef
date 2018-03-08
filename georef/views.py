@@ -402,8 +402,17 @@ def toponims_create(request):
             url = reverse('toponims_update_2', kwargs = {'idtoponim': form.instance.id, 'idversio':'-1'})
             return HttpResponseRedirect(url)
     else:
+        this_user = request.user
+        id_toponim = request.user.profile.toponim_permission
+        try:
+            toponim = Toponim.objects.get(pk=id_toponim)
+            node_ini = toponim.id
+            nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
+        except Toponim.DoesNotExist:
+            node_ini = '1'
+            nodelist_full = ['1']
         form = ToponimsUpdateForm()
-    return render(request, 'georef/toponim_create.html', {'form': form, 'wms_url': conf.GEOSERVER_WMS_URL})
+    return render(request, 'georef/toponim_create.html', {'form': form, 'wms_url': conf.GEOSERVER_WMS_URL, 'node_ini': node_ini, 'nodelist_full': nodelist_full})
 
 
 def toponimversio_geometries_to_geojson(toponimversio):
@@ -425,6 +434,17 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
     toponim = get_object_or_404(Toponim, pk=idtoponim)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
     toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
+    this_user = request.user
+    node_ini = '1'
+    if this_user.profile.permission_toponim_edition == False:
+        return HttpResponse('No tens permís per editar topònims. Operació no permesa.')
+    else:
+        if toponim.can_i_edit(this_user.profile.toponim_permission):
+            node_ini = this_user.profile.toponim_permission
+        else:
+            toponim_mes_alt = Toponim.objects.get(pk=this_user.profile.toponim_permission)
+            message = ('No tens permís per editar aquest topònim. El topònim més alt a l\'arbre que pots editar és %s i aquest està jeràrquicament per sobre. Operació no permesa.') % (toponim_mes_alt.nom_str)
+            return HttpResponse(message)
     if request.method == 'GET':
         if idversio == '-1':
             if (len(toponimsversio) > 0):
@@ -449,7 +469,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             'idversio': idversio,
             'nodelist_full': nodelist_full,
             'versions': toponimsversio,
-            'id_darrera_versio': id_darrera_versio
+            'id_darrera_versio': id_darrera_versio,
+            'node_ini': node_ini
         }
         return render(request, 'georef/toponim_update_2.html', context)
     elif request.method == 'POST':
@@ -480,7 +501,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'idversio': idversio,
                     'nodelist_full': nodelist_full,
                     'versions': toponimsversio,
-                    'id_darrera_versio': id_darrera_versio
+                    'id_darrera_versio': id_darrera_versio,
+                    'node_ini': node_ini
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
         elif 'save_versio_from_toponimversio' in request.POST:
@@ -527,7 +549,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'idversio': idversio,
                     'nodelist_full': nodelist_full,
                     'versions': toponimsversio,
-                    'id_darrera_versio': id_darrera_versio
+                    'id_darrera_versio': id_darrera_versio,
+                    'node_ini': node_ini
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
 
@@ -696,6 +719,7 @@ def user_new(request):
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
             profile = profile_form.save(commit=False)
+            user.set_password(user.password)
             user.save()
             user.profile.toponim_permission = profile.toponim_permission
             user.profile.permission_toponim_edition = profile.permission_toponim_edition
