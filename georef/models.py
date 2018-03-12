@@ -251,7 +251,9 @@ class Toponimversio(models.Model):
     coordenada_z_origen = models.CharField(max_length=50, blank=True, null=True)
     precisio_h_origen = models.CharField(max_length=50, blank=True, null=True)
     precisio_z_origen = models.CharField(max_length=50, blank=True, null=True)
+    #idpersona is a legacy field - NEVER EVER EVER USE IT
     idpersona = models.CharField(max_length=100, blank=True, null=True)
+    iduser = models.ForeignKey(User, models.SET_NULL, blank=True, null=True, db_column='iduser')
     observacions = models.TextField(blank=True, null=True)
     #idlimitcartooriginal = models.ForeignKey('Documents', models.DO_NOTHING, db_column='idlimitcartooriginal', blank=True, null=True)
     idrecursgeoref = models.ForeignKey(Recursgeoref, models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)

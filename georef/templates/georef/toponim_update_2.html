@@ -125,6 +125,7 @@
                     <td><strong>#</strong></td>
                     <td><strong>Qualificador</strong></td>
                     <td><strong>Data</strong></td>
+                    <td>Autor</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                 </tr>
@@ -139,6 +140,7 @@
                     <td>{{ versio.numero_versio }}</td>
                     <td>{{ versio.idqualificador.qualificador }}</td>
                     <td>{{ versio.datacaptura | date:"d/m/Y"}}</td>
+                    <td>{{ versio.iduser }}</td>
                     <td><a href="{% url 'toponims_update_2' idtoponim versio.id %}" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></a></td>
                     <td><button id="delete_version" class="btn btn-danger" onclick="javascript:confirmDialog('Estàs a punt d\'esborrar la versió \'{{ versio.nom | safe }}\' amb numero \'{{ versio.numero_versio | safe }}\', vols continuar?','{{ versio.id }}');" type="reset"><i class="fa fa-times"></i></button></td>
                 </tr>

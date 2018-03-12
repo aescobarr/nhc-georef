@@ -9,7 +9,8 @@ router.register(r'toponims', views.ToponimViewSet, base_name='toponims')
 router.register(r'filtres', views.FiltrejsonViewSet, base_name='filtres')
 router.register(r'recursgeoref', views.RecursGeoRefViewSet, base_name='recursgeoref')
 router.register(r'versions', views.ToponimVersioViewSet, base_name='versions')
-router.register(r'users', views.ProfileViewSet, base_name='users')
+#router.register(r'users', views.ProfileViewSet, base_name='users')
+router.register(r'users', views.UsersViewSet, base_name='users')
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

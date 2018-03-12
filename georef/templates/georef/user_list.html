@@ -8,6 +8,7 @@
     <script>
         var _user_list_url = "{% url 'users_datatable_list' %}";
         var _add_user_url = "{% url 'user_new' %}";
+        var _user_delete_url = "{% url 'users-list' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -33,5 +34,7 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
     <script src="{% static 'georef/javascript/users_list.js' %}"></script>
 {% endblock %}

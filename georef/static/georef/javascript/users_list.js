@@ -63,6 +63,47 @@ $(document).ready(function() {
         ]
     } );
 
+    var delete_usuari = function(id){
+        $.ajax({
+            url: _user_delete_url + id,
+            method: 'DELETE',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Usuari esborrat amb èxit!');
+                table.ajax.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error esborrant');
+            }
+        });
+    };
+
+    var confirmDialog = function(message,id){
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>'+message+'</h6></div>')
+            .dialog({
+                modal: true, title: 'Esborrant usuari...', zIndex: 10000, autoOpen: true,
+                width: 'auto', resizable: false,
+                buttons: {
+                    Yes: function () {
+                        delete_usuari(id);
+                        $(this).dialog("close");
+                    },
+                    No: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+        });
+    };
+
     $( '#addUser' ).click(function() {
         var url = _add_user_url;
         window.location.href = url;
@@ -82,5 +123,12 @@ $(document).ready(function() {
         var id = row.data().user.id;
         url = '/user/password/change/' + id;
         window.location.href = url;
+    });
+
+    $('#users_list tbody').on('click', 'td button.delete_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().user.id;
+        confirmDialog("S'esborrarà l'usuari '" + row.data().user.first_name + " " + row.data().user.last_name + "'! Segur que vols continuar?",id);
     });
 });
