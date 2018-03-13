@@ -1,0 +1,285 @@
+function crearTaulaFiltre(jsonStringFiltre){
+    var taula = $('#taulafiltre')[0];
+    while (1<taula.children.length){
+        taula.removeChild(taula.lastChild);
+    }
+    var jsonFiltre = JSON.parse(jsonStringFiltre);
+    var condicions = jsonFiltre.filtre;
+    for (var i=0; i<condicions.length; i++){
+        insertCondicioFiltre(condicions[i].operador,condicions[i].condicio,condicions[i].valor,condicions[i].not,i);
+        indexTaula++;
+    }
+
+}
+
+function createSelect(valors,idselected,idselect,onchange){
+    var htmlSelect = '<select class="input-field"';
+    if(idselect!=null && idselect!=undefined)
+        htmlSelect += " id='"+idselect+"'";
+    if(idselect!=null && idselect!=undefined)
+        htmlSelect += " onchange='"+onchange+"'";
+    htmlSelect += ">";
+    for(var i=0;i<valors.length;i++){
+        if(idselected==valors[i].id)
+            htmlSelect += "<option id='"+valors[i].id+"' selected='selected'>"+valors[i].value+"</option>";
+        else
+            htmlSelect += "<option id='"+valors[i].id+"'>"+valors[i].value+"</option>";
+    }
+    htmlSelect += "</select>";
+    return htmlSelect;
+}
+
+function createValor(condicio,valor){
+    if('nom'==condicio || 'acronim'==condicio || 'paraulaclau'==condicio){
+        return "<input type='text' value='"+valor+"' />";
+    }else if('tipus'==condicio){
+        return createSelect(valorsTipus,valor);
+    }else if('geografic'==condicio){
+        return createImportCartoButton(valor);
+    }else if('geografic_geo'==condicio){
+        return createImportCartoButton(valor);
+    }else if('publicable'==condicio){
+        return createSelect(valorsSiNo,valor);
+    }else{
+        return "<input type='text' value='"+valor+"' />";
+    }
+    return "";
+}
+
+function createCheckNot(valueNot){
+    var htmlChck = "<input type='checkbox' name='chcknot' />";
+    if("S"==valueNot)
+        htmlChck = "<input type='checkbox' name='chcknot' checked='checked' />";
+    return htmlChck;
+}
+
+function clearFeaturesMapa(){
+    djangoRef.Map.editableLayers.clearLayers();
+}
+
+function esborrarFilaFiltre(indexTaulaAEsborrar){
+    var fila = document.getElementById("fila_"+indexTaulaAEsborrar);
+    if($('#select_condicio_'+indexTaulaAEsborrar).val().includes('Geogràfic')){
+        clearFeaturesMapa();
+    }
+    fila.parentNode.removeChild(fila);
+}
+
+function insertCondicioFiltre(operador,condicio,valor,not,indexTaulaNovaFila){
+    var taula = $("#taulafiltre")[0];
+    var selectOperador = createSelect(valorsOperadors,operador,'select_operador_'+indexTaulaNovaFila);
+    if(taula.children.length==1){
+        //només hi ha els titols de les columnes
+        selectOperador = "&nbsp;";
+    }
+    var selectCondicio = createSelect(valorsCondicions,condicio,'select_condicio_'+indexTaulaNovaFila,'javascript:canviCondicio('+indexTaulaNovaFila+');');
+    var valorCondicio = createValor(condicio,valor);
+    var checkNot = createCheckNot(not);
+    var botoEsborrar = '<button id="addCondicio" onclick="javascript:esborrarFilaFiltre('+indexTaulaNovaFila+');return false;" type="button" class="btn btn-danger">Esborrar <i class="fa fa-times" aria-hidden="true"></i></button>';
+    var fila = "<td>"+selectOperador+"</td>";
+    fila += "<td>"+checkNot+"</td>";
+    fila += "<td>"+selectCondicio+"</td>";
+    fila += "<td id='value_"+indexTaulaNovaFila+"'>"+valorCondicio+"</td>";
+    fila += "<td>"+botoEsborrar+"</td>";
+    var newtr = document.createElement('tr');
+    newtr.setAttribute('id','fila_'+indexTaulaNovaFila);
+    newtr.setAttribute('name','trfiltre');
+    newtr.innerHTML = fila;
+    taula.appendChild(newtr);
+}
+
+function afegirCondicioFiltre(){
+    insertCondicioFiltre("and", "", "", "N", indexTaula);
+    indexTaula++;
+}
+
+function canviCondicio(indexTaulaFila){
+    var select = document.getElementById('select_condicio_'+indexTaulaFila);
+    var indexSelect = select.selectedIndex;
+    var valueCondicio = select.options[indexSelect].id;
+    var tdValue = document.getElementById('value_'+indexTaulaFila);
+    var valorCondicio = createValor(valueCondicio,"");
+    tdValue.innerHTML = valorCondicio;
+}
+
+function mostrarGeoJSON(valor){
+    var wkt = new Wkt.Wkt();
+    wkt.read(valor);
+    var geoJSONLayer = L.geoJson(wkt.toJson());
+    geoJSONLayer.eachLayer(
+        function(l){
+            djangoRef.Map.editableLayers.addLayer(l);
+        }
+    );
+}
+
+function centrarMapaADigitalitzacio(valor){
+    map.fitBounds(djangoRef.Map.editableLayers.getBounds());
+}
+
+function createImportCartoButton(valor){
+    var boto = txtFuncionamentFiltreCarto;
+    if(valor!=null && ''!=valor){
+        mostrarGeoJSON(valor);
+        centrarMapaADigitalitzacio();
+        //filtarCQLMapa(valor);
+    }
+    return boto;
+}
+
+function extreureJSONDeFiltre(){
+    var json = '{"filtre":[';
+    var trs = document.getElementsByName("trfiltre");
+    var tr;
+    var tds;
+    var fila;
+    var jsonTD;
+    for(var i=0;i<trs.length;i++){
+        fila = '{';
+        tr = trs[i];
+        jsonTD = extreureOperadorJSON(tr.children[0]);
+        fila += jsonTD + ',';
+        jsonTD = extreureNotJSON(tr.children[1]);
+        fila += jsonTD + ',';
+        jsonTD = extreureCondicioJSON(tr.children[2]);
+        fila += jsonTD + ',';
+        jsonTD = extreureValorJSON(tr.children[2],tr.children[3]);
+        fila += jsonTD;
+        fila += '}';
+        json += fila;
+        if(i+1<trs.length)
+            json+=',';
+    }
+    json += ']}';
+    return json;
+}
+
+function extreureIdSelect(td){
+    var select = td.children[0];
+    var index = select.selectedIndex;
+    var option = select.options[index];
+    return option.id;
+}
+
+function extreureValorSelect(td){
+    var select = td.children[0];
+    var index = select.selectedIndex;
+    var option = select.options[index];
+    return option.text;
+}
+
+function getWKTDeObjectesDigitalitzats(){
+    var geoJSON = djangoRef.Map.editableLayers.toGeoJSON();
+    var wkts = [];
+    var accum;
+    //var wkt = new Wkt.Wkt();
+    for(var i=0; i<geoJSON.features.length; i++){
+        geometry_n = geoJSON.features[i];
+        //wkt.read( JSON.stringify(geometry_n) );
+        var wkt = new Wkt.Wkt(JSON.stringify(geometry_n));
+        wkts.push(wkt);
+        //wkt.merge( new Wkt.Wkt(JSON.stringify(geometry_n)) );
+    }
+    for(var i = 0; i < wkts.length; i++){
+        if(i == 0){
+            accum = wkts[0];
+        }else{
+            if (i + 1 > wkts.length ){
+                return accum.write();
+            }else{
+                accum = accum.merge(wkts[i]);
+            }
+        }
+    }
+    if(accum){
+        return accum.write();
+    }else{
+        return '';
+    }
+}
+
+function getGeoJSONDeObjectesDigitalitzats(){
+    return JSON.stringify(djangoRef.Map.editableLayers.toGeoJSON());
+}
+
+function extreureValorJSON(tdCondicio,tdValor){
+    var json = '"valor":"';
+    var idCondicio = extreureIdSelect(tdCondicio);
+    if('nom'==idCondicio || 'acronim'==idCondicio || 'paraulaclau'==idCondicio){
+        var inputTxt = tdValor.children[0];
+        var txt = inputTxt.value;
+        json = '"valor":"'+txt+'"';
+    }else if('tipus'==idCondicio || 'publicable'==idCondicio){
+        var idValor = extreureIdSelect(tdValor);
+        json = '"valor":"'+idValor+'"';
+    }else if('geografic'==idCondicio){
+        var idValor = getWKTDeObjectesDigitalitzats();
+        json = '"valor":"'+idValor+'"';
+    }else if('geografic_geo'==idCondicio){
+        var idValor = getWKTDeObjectesDigitalitzats();
+        json = '"valor":"'+idValor+'"';
+    }else{
+        json = '"valor":""';
+    }
+    return json;
+}
+
+function extreureCondicioJSON(td){
+    var select = td.children[0];
+    var index = select.selectedIndex;
+    var option = select.options[index];
+    var json = '"condicio":"'+option.id+'"';
+    return json;
+}
+
+function extreureOperadorJSON(td){
+    var operador = "";
+    if(td.children.length>0){
+        var select = td.children[0];
+        var index = select.selectedIndex;
+        var option = select.options[index];
+        operador = option.id;
+    }
+    var json = '"operador":"'+operador+'"';
+    return json;
+}
+
+function extreureNotJSON(td){
+    var chck = td.children[0];
+    var not = "N";
+    if(chck.checked)
+        not = "S";
+    var json = '"not":"'+not+'"';
+    return json;
+}
+
+$( '#addCondicio' ).click(function() {
+    afegirCondicioFiltre();
+});
+
+function clearTaula(idtaula){
+    $('#' + idtaula).find('tr[id*="fila_"]').remove();
+}
+
+function filter(){
+    var valorJson = extreureJSONDeFiltre();
+    setCookie('filtre_r',valorJson,1);
+    var activeOverlays = djangoRef.Map.getActiveOverlays();
+    for(var i = 0; i < activeOverlays.length; i++){
+        var layer = activeOverlays[i];
+        filterCQL(valorJson,layer);
+    }
+    table.ajax.reload();
+}
+
+function filterCQL(valorJson,layer){
+    var cql = transformarJSONACQL(valorJson);
+    if(cql == null){
+        layer.setParams({cql_filter:'1=1'});
+    }else{
+        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        //toastr.info(cql_filter_text);
+        layer.setParams({cql_filter:cql_filter_text});
+    }
+
+}

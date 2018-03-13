@@ -160,7 +160,7 @@ $(document).ready(function() {
 
     $( '#autoc_filtres' ).autocomplete({
         source: function(request,response){
-            $.getJSON( _filtres_list_url + '?term=' + request.term, function(data){
+            $.getJSON( _filtres_list_url + '?modul=TOPONIMS&term=' + request.term, function(data){
                 response($.map(data.results, function(item){
                     return {
                         label: item.nomfiltre,
@@ -282,7 +282,7 @@ $(document).ready(function() {
         var modul = 'TOPONIMS';
         $.ajax({
             url: _check_filtre_url,
-            data: 'nomfiltre=' + encodeURI(nomfiltre),
+            data: 'nomfiltre=' + encodeURI(nomfiltre) + "&modul=" + modul,
             method: 'GET',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {

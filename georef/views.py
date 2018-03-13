@@ -3,7 +3,7 @@ from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status,viewsets
 from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer
-from georef.models import Toponim, Filtrejson
+from georef.models import Toponim, Filtrejson, Recursgeoref
 from georef_addenda.models import Profile
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
-from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref
 import json
 from json import dumps
 import magic
@@ -185,8 +185,11 @@ class FiltrejsonViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Filtrejson.objects.all()
         term = self.request.query_params.get('term', None)
+        modul = self.request.query_params.get('modul', None)
         if term is not None:
             queryset = queryset.filter(nomfiltre__icontains=term)
+        if modul is not None:
+            queryset = queryset.filter(modul=modul)
         return queryset
 
     def put(self, request, *args, **kwargs):
@@ -200,13 +203,17 @@ class RecursGeoRefViewSet(viewsets.ModelViewSet):
 def check_filtre(request):
     if request.method == 'GET':
         nomfiltre = request.query_params.get('nomfiltre', None)
+        modul = request.query_params.get('modul', None)
         if nomfiltre is None:
             content = {'status': 'KO', 'detail':'mandatory param missing'}
             return Response(data=content,status=400)
+        if modul is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
         else:
             try:
-                f = Filtrejson.objects.get(nomfiltre=nomfiltre)
-                content = {'status': 'KO', 'detail': f.idfiltre}
+                f = Filtrejson.objects.get(nomfiltre=nomfiltre, modul=modul)
+                content = {'status': 'OK', 'detail': f.idfiltre}
                 return Response(data=content, status=400)
             except Filtrejson.DoesNotExist:
                 content = {'status': 'KO', 'detail': 'exists_not'}
@@ -219,6 +226,15 @@ def users_datatable_list(request):
         sort_translation_list = {'user.username':'user__username', 'user.first_name':'user__first_name', 'user.last_name':'user__last_name', 'user.email':'user__email'}
         field_translation_list = {'user.username':'user__username', 'user.first_name':'user__first_name', 'user.last_name':'user__last_name', 'user.email':'user__email'}
         response = generic_datatable_list_endpoint(request, search_field_list, Profile, ProfileSerializer, field_translation_list, sort_translation_list)
+        return response
+
+@api_view(['GET'])
+def recursos_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nom',)
+        sort_translation_list = {}
+        field_translation_list = {}
+        response = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer,field_translation_list,sort_translation_list)
         return response
 
 @api_view(['GET'])
@@ -338,6 +354,11 @@ def users_list(request):
         return HttpResponse(reverse(index))
     else:
         return render(request, 'georef/user_list.html')
+
+@login_required
+def recursos(request):
+    llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
+    return render(request, 'georef/recursos_list.html', context={'llista_tipus':llista_tipus})
 
 @login_required
 def toponims(request):

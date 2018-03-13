@@ -199,42 +199,6 @@ class Sistemareferenciamm(models.Model):
         managed = False
         db_table = 'sistemareferenciamm'
 
-
-class Recursgeoref(models.Model):
-    id = models.CharField(primary_key=True, max_length=100)
-    nom = models.CharField(max_length=500)
-    idtipusrecursgeoref = models.ForeignKey('Tipusrecursgeoref', models.DO_NOTHING, db_column='idtipusrecursgeoref', blank=True, null=True)
-    comentarisnoambit = models.CharField(max_length=500, blank=True, null=True)
-    campidtoponim = models.CharField(max_length=500, blank=True, null=True)
-    versio = models.CharField(max_length=100, blank=True, null=True)
-    fitxergraficbase = models.CharField(max_length=100, blank=True, null=True)
-    idsuport = models.ForeignKey('Suport', models.DO_NOTHING, db_column='idsuport', blank=True, null=True)
-    urlsuport = models.CharField(max_length=250, blank=True, null=True)
-    ubicaciorecurs = models.CharField(max_length=200, blank=True, null=True)
-    actualitzaciosuport = models.CharField(max_length=250, blank=True, null=True)
-    mapa = models.CharField(max_length=100, blank=True, null=True)
-    comentariinfo = models.TextField(blank=True, null=True)
-    comentariconsulta = models.TextField(blank=True, null=True)
-    comentariqualitat = models.TextField(blank=True, null=True)
-    classificacio = models.CharField(max_length=300, blank=True, null=True)
-    divisiopoliticoadministrativa = models.CharField(max_length=300, blank=True, null=True)
-    idambit = models.ForeignKey('Toponimversio', models.DO_NOTHING, db_column='idambit', blank=True, null=True)
-    acronim = models.CharField(max_length=100, blank=True, null=True)
-    idsistemareferenciamm = models.ForeignKey('Sistemareferenciamm', models.DO_NOTHING, db_column='idsistemareferenciamm', blank=True, null=True)
-    idtipusunitatscarto = models.ForeignKey('Tipusunitats', models.DO_NOTHING, db_column='idtipusunitatscarto', blank=True, null=True)
-    #idgeometria = models.ForeignKey('Geometria', models.DO_NOTHING, db_column='idgeometria', blank=True, null=True)
-    base_url_wms = models.CharField(max_length=255, blank=True, null=True)
-    capes_wms_json = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'recursgeoref'
-        #unique_together = (('id', 'id'),)
-
-    def __str__(self):
-        return '%s' % (self.nom)
-
-
 class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200,default=uuid.uuid4)
     codi = models.CharField(max_length=50, blank=True, null=True)
@@ -256,7 +220,7 @@ class Toponimversio(models.Model):
     iduser = models.ForeignKey(User, models.SET_NULL, blank=True, null=True, db_column='iduser')
     observacions = models.TextField(blank=True, null=True)
     #idlimitcartooriginal = models.ForeignKey('Documents', models.DO_NOTHING, db_column='idlimitcartooriginal', blank=True, null=True)
-    idrecursgeoref = models.ForeignKey(Recursgeoref, models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)
+    idrecursgeoref = models.ForeignKey('Recursgeoref', models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)
     idtoponim = models.ForeignKey(Toponim, models.CASCADE, db_column='idtoponim', blank=True, null=True, related_name='versions')
     numero_versio = models.IntegerField(blank=True, null=True)
     idqualificador = models.ForeignKey(Qualificadorversio, models.DO_NOTHING, db_column='idqualificador', blank=True, null=True)
@@ -292,6 +256,93 @@ class Toponimversio(models.Model):
         if centroide:
             return centroide.y
         return None
+
+class Paraulaclau(models.Model):
+    id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
+    paraula = models.CharField(max_length=500)
+
+    class Meta:
+        managed = False
+        db_table = 'paraulaclau'
+
+class ParaulaclauRecurs(models.Model):
+    id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
+    idparaula = models.ForeignKey(Paraulaclau, on_delete=models.CASCADE, db_column='idparaula')
+    idrecursgeoref = models.ForeignKey('Recursgeoref', on_delete=models.CASCADE, db_column='idrecursgeoref')
+
+    class Meta:
+        managed = False
+        db_table = 'paraulaclaurecursgeoref'
+
+class Recursgeoref(models.Model):
+    id = models.CharField(primary_key=True, max_length=100,default=uuid.uuid4)
+    nom = models.CharField(max_length=500)
+    idtipusrecursgeoref = models.ForeignKey(Tipusrecursgeoref, models.DO_NOTHING, db_column='idtipusrecursgeoref', blank=True, null=True)
+    comentarisnoambit = models.CharField(max_length=500, blank=True, null=True)
+    campidtoponim = models.CharField(max_length=500, blank=True, null=True)
+    versio = models.CharField(max_length=100, blank=True, null=True)
+    fitxergraficbase = models.CharField(max_length=100, blank=True, null=True)
+    idsuport = models.ForeignKey(Suport, models.DO_NOTHING, db_column='idsuport', blank=True, null=True)
+    urlsuport = models.CharField(max_length=250, blank=True, null=True)
+    ubicaciorecurs = models.CharField(max_length=200, blank=True, null=True)
+    actualitzaciosuport = models.CharField(max_length=250, blank=True, null=True)
+    mapa = models.CharField(max_length=100, blank=True, null=True)
+    comentariinfo = models.TextField(blank=True, null=True)
+    comentariconsulta = models.TextField(blank=True, null=True)
+    comentariqualitat = models.TextField(blank=True, null=True)
+    classificacio = models.CharField(max_length=300, blank=True, null=True)
+    divisiopoliticoadministrativa = models.CharField(max_length=300, blank=True, null=True)
+    idambit = models.ForeignKey(Toponimversio, models.DO_NOTHING, db_column='idambit', blank=True, null=True)
+    acronim = models.CharField(max_length=100, blank=True, null=True)
+    idsistemareferenciamm = models.ForeignKey(Sistemareferenciamm, models.DO_NOTHING, db_column='idsistemareferenciamm', blank=True, null=True)
+    idtipusunitatscarto = models.ForeignKey(Tipusunitats, models.DO_NOTHING, db_column='idtipusunitatscarto', blank=True, null=True)
+    #idgeometria = models.ForeignKey('Geometria', models.DO_NOTHING, db_column='idgeometria', blank=True, null=True)
+    base_url_wms = models.CharField(max_length=255, blank=True, null=True)
+    capes_wms_json = models.TextField(blank=True, null=True)
+    paraulesclau = models.ManyToManyField(Paraulaclau,through=ParaulaclauRecurs)
+
+    class Meta:
+        managed = False
+        db_table = 'recursgeoref'
+
+    def __str__(self):
+        return '%s' % (self.nom)
+
+
+    def crea_query_de_filtre(json_filtre):
+        accum_query = None
+        for condicio in json_filtre:
+            if condicio['condicio'] == 'nom':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(nom__icontains=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(nom__icontains=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'acronim':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(acronim__icontains=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(acronim__icontains=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'paraulaclau':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(paraulesclau__paraula__icontains=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(paraulesclau__paraula__icontains=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'tipus':
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(idtipusrecursgeoref__id=condicio['valor']), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(idtipusrecursgeoref__id=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'geografic':
+                # Es passa al constructor unicament el geometry del json
+                # geo = GEOSGeometry('{"type":"Polygon","coordinates":[[[-5.800781,32.546813],[12.480469,41.508577],[-6.855469,48.224673],[-5.800781,32.546813]]]}')
+                if condicio['valor'] != '':
+                    geometria = GEOSGeometry(condicio['valor'])
+                    # geometria = GEOSGeometry(json.dumps(condicio['valor']['features'][0]['geometry']))
+                    if condicio['not'] == 'S':
+                        accum_query = append_chain_query(accum_query,~Q(geometries__geometria__within=geometria),condicio)
+                    else:
+                        accum_query = append_chain_query(accum_query,Q(geometries__geometria__within=geometria), condicio)
+        return accum_query
 
 
 '''

@@ -1,0 +1,176 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _recurs_list_url = "{% url 'recursos_datatable_list' %}";
+        var _filtres_list_url = "{% url 'filtres-list' %}";
+        var _filtres_delete_url = "{% url 'filtres-list' %}";
+        var _filtres_update_url = "{% url 'filtres-list' %}";
+        var _filtres_create_url = "{% url 'filtres-list' %}";
+        var _check_filtre_url = "{% url 'check_filtre' %}";
+        /*var _toponim_delete_url = "{% url 'toponims-list' %}";
+        var _filtres_list_url = "{% url 'filtres-list' %}";
+        var _filtres_delete_url = "{% url 'filtres-list' %}";
+        var _filtres_update_url = "{% url 'filtres-list' %}";
+        var _filtres_create_url = "{% url 'filtres-list' %}";
+        var _check_filtre_url = "{% url 'check_filtre' %}";
+        var csrf_token = '{{ csrf_token }}';
+        var _ajax_upload_url = "{% url 'ajax_upload' %}";
+        var _import_shapefile_url = "{% url 'process_shapefile' %}";
+        var wms_url = "{{ wms_url }}";
+        var _toponims_list_pdf = "{% url 'toponims_list_pdf' %}";
+        var _toponims_list_csv = "{% url 'toponims_list_csv' %}";
+        var _toponims_list_xls = "{% url 'toponims_list_xls' %}";*/
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="page-header">
+        </div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Recursos</li>
+                <li class="breadcrumb-item active">Llistat</li>
+            </ol>
+        </div>
+        <div class="container">
+            <div class="pull-right">
+                <a class="imatge_xls" href="#" onclick="javascript:exportXLS(); return false;"></a>
+                <a class="imatge_csv" href="#" onclick="javascript:exportCSV(); return false;"></a>
+                <a class="imatge_pdf" href="#" onclick="javascript:exportPDF(); return false;"></a>
+            </div>
+        </div>
+        <div class="container">
+            <div class="wrapper clear_blue">
+                <button id="addCondicio" type="button" class="btn btn-primary">Afegir condició <i class="fa fa-plus" aria-hidden="true"></i></button>
+                <table id="taulafiltre">
+                    <tbody>
+                        <tr>
+                            <td><strong>Operador</strong></td>
+                            <td><strong>NOT</strong></td>
+                            <td><strong>Condició</strong></td>
+                            <td><strong>Valor</strong></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row container no_side_margin">
+                    <button id="doFilter" type="button" class="btn btn-primary">Filtrar <i class="fa fa-filter" aria-hidden="true"></i></button>
+                    <button id="doClear" type="button" class="btn btn-danger">Netejar filtre <i class="fa fa-close" aria-hidden="true"></i></button>
+                </div>
+                <div class="row container no_side_margin">
+                    <label for="saveDoFilter">Carregar filtre</label>
+                    <input id="autoc_filtres" type="text">
+                    <button id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div id="map"></div>
+        </div>
+        <div class="container">
+            <div id="fileuploader"></div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1 col-md-offset-11">
+                    <button id="addRecurs" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Ja hi ha un filtre amb aquest nom, el vols sobreescriure?</p>
+        </div>
+        <div class="container">
+            <table id="recursos_list" style="width:100%;"></table>
+        </div>
+</main>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        var table;
+        var indexTaula = 0;
+
+        var valorsOperadors = new Array();
+        valorsOperadors[0] = {id : "and", value : "AND"};
+        valorsOperadors[1] = {id : "or", value : "OR" };
+
+        var valorsCondicions = new Array();
+        valorsCondicions[0] = {id : "nom",value : "Nom"};
+        valorsCondicions[1] = {id : "acronim",value : "Acrònim"};
+        valorsCondicions[2] = {id : "paraulaclau",value : "Paraula clau"};
+        valorsCondicions[3] = {id : "tipus",value : "Tipus"};
+        valorsCondicions[4] = {id : "geografic",value : "Geogràfic (límits capes WMS associades)"};
+        valorsCondicions[5] = {id : "geografic_geo",value : "Geogràfic (elements digitalitzats)"};
+
+        var valorsTipus = new Array();
+        {% for tipus in llista_tipus %}
+            valorsTipus.push({id:"{{ tipus.id }}",value:"{{ tipus.nom }}"});
+        {% endfor %}
+
+        var txtBotoEsborrarCondicioFiltre = 'Esborrar';
+        var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
+
+        var editableLayers;
+        var controlCapes;
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet/leaflet.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>
+
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Leaflet.draw.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Leaflet.Draw.Event.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Toolbar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Tooltip.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/GeometryUtil.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/LatLngUtil.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/LineUtil.Intersect.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/Polygon.Intersect.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/Polyline.Intersect.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/TouchEvents.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/DrawToolbar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Feature.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.SimpleShape.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Polyline.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Marker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Circle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.CircleMarker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Polygon.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Rectangle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/EditToolbar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/EditToolbar.Edit.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/EditToolbar.Delete.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Control.Draw.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Poly.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.SimpleShape.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Rectangle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Marker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/OpenLayers2.12.js' %}"></script>
+    <script src="{% static 'georef/javascript/wicket.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
+    <script src="{% static 'georef/javascript/filtre_recursos.js' %}"></script>
+    <script src="{% static 'georef/javascript/filtrecql.js' %}"></script>
+    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
+    <script src="{% static 'georef/javascript/recursos_list.js' %}"></script>
+    <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
+    <script src="{% static 'georef/javascript/init_llista_recursos.js' %}"></script>
+    <!--<script src="{% static 'georef/javascript/leaflet_map_editable.js' %}"></script>-->
+{% endblock %}

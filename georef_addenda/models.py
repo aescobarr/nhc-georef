@@ -4,11 +4,17 @@ from georef.models import Toponimversio
 from django.db.models.signals import post_save, pre_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from georef.models import Toponim
+from georef.models import Toponim, Recursgeoref
+
 
 # Create your models here.
 class GeometriaToponimVersio(models.Model):
     idversio = models.ForeignKey(Toponimversio, on_delete=models.CASCADE, db_column='idversio', blank=True, null=True, related_name='geometries')
+    geometria = models.GeometryField(srid=4326)
+
+
+class GeometriaRecurs(models.Model):
+    idrecurs = models.ForeignKey(Recursgeoref, on_delete=models.CASCADE, db_column='idrecurs', blank=True, null=True, related_name='geometries')
     geometria = models.GeometryField(srid=4326)
 
 
