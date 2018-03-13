@@ -170,11 +170,11 @@ $(document).ready(function() {
         select: function( event, ui ) {
             var listname = ui.item.label;
             crearTaulaFiltre(ui.item.json);
-            /*var activeOverlays = djangoRef.Map.getActiveOverlays();
+            var activeOverlays = djangoRef.Map.getActiveOverlays();
             for(var i = 0; i < activeOverlays.length; i++){
                 var layer = activeOverlays[i];
                 filterCQL(ui.item.json,layer);
-            }*/
+            }
             $('#autoc_filtres').val(listname);
             return false;
         }
@@ -194,4 +194,110 @@ $(document).ready(function() {
         $('#autoc_filtres').val('');
     });
 
+    var importa_shapefile = function(filepath){
+        $.ajax({
+            url: _import_shapefile_url,
+            data: 'path=' + encodeURI(filepath),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Importació amb èxit!');
+                djangoRef.Map.editableLayers.clearLayers();
+                var geoJson = JSON.parse(data.detail);
+                var geoJSONLayer = L.geoJson(geoJson);
+                geoJSONLayer.eachLayer(
+                    function(l){
+                        djangoRef.Map.editableLayers.addLayer(l);
+                    }
+                );
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+            }
+        });
+    };
+
+    var uploader = new qq.FileUploader({
+        action: _ajax_upload_url,
+        element: $('#fileuploader')[0],
+        multiple: false,
+        onComplete: function(id, fileName, responseJSON) {
+            if(responseJSON.success) {
+                //alert("success!");
+                importa_shapefile(responseJSON.path);
+            } else {
+                alert('upload failed!');
+            }
+        },
+        template:'<div class="qq-uploader">' +
+            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile</div>' +
+            '<ul class="qq-upload-list"></ul>' +
+            '</div>',
+        params: {
+            'csrf_token': csrf_token,
+            'csrf_name': 'csrfmiddlewaretoken',
+            'csrf_xname': 'X-CSRFToken',
+        }
+    });
+
+    var recursos =  {
+        name: 'recursos',
+        layer : L.tileLayer.wms(
+            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            {
+                layers: 'mzoologia:recursosgeoreferenciacio',
+                format: 'image/png',
+                transparent: true
+            }
+        )
+    };
+
+    var overlay_list = [];
+    overlay_list.push(recursos);
+
+    var overlays_control_config = [
+        {
+            groupName: 'Recursos de georeferenciació',
+            expanded: true,
+            layers: {
+                'Recursos de georeferenciació (límits digitalitzats)': recursos.layer
+            }
+        }
+    ];
+
+    map_options = {
+        editable:true,
+        overlays: overlay_list,
+        overlays_control_config: overlays_control_config,
+        wms_url: wms_url
+    };
+
+    var valorView = getCookie('view_r');
+    if(valorView){
+        var jsonView = JSON.parse(valorView);
+        map_options.center = jsonView.center;
+        map_options.zoom = jsonView.zoom;
+    }
+
+    var valorEstat = getCookie('layers_r');
+    if(valorEstat){
+        var jsonState = JSON.parse(valorEstat);
+        map_options.state = jsonState;
+    }else{
+        map_options.state = {
+            overlays: [recursos.name],
+            base: 'djangoRef.Map.roads',
+            view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
+        };
+    }
+
+    map_options.consultable = [recursos.layer];
+
+    map = new djangoRef.Map.createMap(map_options);
 });

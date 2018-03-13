@@ -91,7 +91,7 @@ function transformarCondicioFiltreJSONACQL(filtreAnterior,operador,condicio,valo
         }else{
             filtreNou = transformarCondicioAquaticACQL(valor);
         }
-    }else if('geografic'==condicio){
+    }else if('geografic'==condicio || 'geografic_geo'==condicio){
         var wktReader = new OpenLayers.Format.WKT();
         var features = wktReader.read(valor);
         var elem;

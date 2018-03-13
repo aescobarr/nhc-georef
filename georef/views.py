@@ -357,8 +357,10 @@ def users_list(request):
 
 @login_required
 def recursos(request):
+    csrf_token = get_token(request)
     llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
-    return render(request, 'georef/recursos_list.html', context={'llista_tipus':llista_tipus})
+    wms_url = conf.GEOSERVER_WMS_URL
+    return render(request, 'georef/recursos_list.html', context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token})
 
 @login_required
 def toponims(request):

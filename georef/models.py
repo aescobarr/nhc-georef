@@ -332,7 +332,7 @@ class Recursgeoref(models.Model):
                     accum_query = append_chain_query(accum_query, ~Q(idtipusrecursgeoref__id=condicio['valor']), condicio)
                 else:
                     accum_query = append_chain_query(accum_query, Q(idtipusrecursgeoref__id=condicio['valor']), condicio)
-            elif condicio['condicio'] == 'geografic':
+            elif condicio['condicio'] == 'geografic_geo':
                 # Es passa al constructor unicament el geometry del json
                 # geo = GEOSGeometry('{"type":"Polygon","coordinates":[[[-5.800781,32.546813],[12.480469,41.508577],[-6.855469,48.224673],[-5.800781,32.546813]]]}')
                 if condicio['valor'] != '':

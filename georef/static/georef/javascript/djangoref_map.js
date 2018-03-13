@@ -336,7 +336,7 @@
         //if (err) { console.log(err); return; }
         // do nothing if there's an error
         // Otherwise show the content in a popup, or something.
-        L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(content).openOn(map);
+        L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(content).openOn(map.map);
     };
 
     var getFeatureInfo = function(evt,querylayers){
@@ -355,8 +355,9 @@
     };
 
     var getFeatureInfoUrl = function(latlng,querylayers){
-        var point = map.latLngToContainerPoint(latlng, map.getZoom());
-        var size = map.getSize();
+        var zoom = map.map.getZoom();
+        var point = map.map.latLngToContainerPoint(latlng, zoom);
+        var size = map.map.getSize();
 
         var params = {
             request: 'GetFeatureInfo',
@@ -366,7 +367,7 @@
             transparent: true,
             version: '1.1.1',
             format: 'image/jpeg',
-            bbox: map.getBounds().toBBoxString(),
+            bbox: map.map.getBounds().toBBoxString(),
             height: size.y,
             width: size.x,
             layers: querylayers,
