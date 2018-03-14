@@ -1,10 +1,10 @@
 $(document).ready(function() {
-    table = $('#toponimsfilter_list').DataTable( {
+    table = $('#recursosfilter_list').DataTable( {
         "ajax": {
-            "url": _filtrestoponims_list_url,
+            "url": _filtresrecursos_list_url,
             "dataType": 'json'
             ,"data": function(d){
-                d.filtrejson = '{"filtre":[{"modul":"TOPONIMS"}]}';
+                d.filtrejson = '{"filtre":[{"modul":"RECURSOS"}]}';
             }
         },
         "serverSide": true,
@@ -52,7 +52,7 @@ $(document).ready(function() {
 
     var delete_toponimfilter = function(id){
         $.ajax({
-            url: _toponimsfilter_delete_url + id,
+            url: _recursfilter_delete_url + id,
             method: "DELETE",
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
@@ -74,7 +74,7 @@ $(document).ready(function() {
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
-                modal: true, title: 'Esborrant filtre de topònims...', zIndex: 10000, autoOpen: true,
+                modal: true, title: 'Esborrant filtre de recursos...', zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
                 buttons: {
                     Yes: function () {
@@ -91,11 +91,10 @@ $(document).ready(function() {
         });
     };
 
-    $('#toponimsfilter_list tbody').on('click', 'td button.delete_button', function () {
+    $('#recursosfilter_list tbody').on('click', 'td button.delete_button', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().idfiltre
-        //alert(id);
         confirmDialog("Segur que vols esborrar?",id);
     });
 

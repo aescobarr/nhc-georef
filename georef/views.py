@@ -86,7 +86,7 @@ def get_filter_clause(params_dict, fields, translation_dict=None):
 """
 Request is a rest_framework request
 """
-def generic_datatable_list_endpoint(request,search_field_list,queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None, paginate=True):
+def generic_datatable_list_endpoint(request, search_field_list, queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None, paginate=True):
 
     '''
     request.query_params works only for rest_framework requests, but not for WSGI requests. request.GET[key] works for
@@ -247,8 +247,9 @@ def toponims_datatable_list(request):
         return response
 
 
+
 @api_view(['GET'])
-def toponimfilters_datatable_list(request):
+def filters_datatable_list(request):
     if request.method == 'GET':
         search_field_list = ('nomfiltre',)
         response = generic_datatable_list_endpoint(request, search_field_list, Filtrejson, FiltrejsonSerializer)
@@ -343,10 +344,18 @@ def get_centroid_from_shapefile(request):
                 return Response(data=content, status=200)
 '''
 
+
+@login_required
+def recursfilters(request):
+    csrf_token = get_token(request)
+    return render(request, 'georef/recursfilters_list.html', context={'csrf_token': csrf_token})
+
+
 @login_required
 def toponimfilters(request):
     csrf_token = get_token(request)
     return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token})
+
 
 @login_required
 def users_list(request):
@@ -355,12 +364,14 @@ def users_list(request):
     else:
         return render(request, 'georef/user_list.html')
 
+
 @login_required
 def recursos(request):
     csrf_token = get_token(request)
     llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
     return render(request, 'georef/recursos_list.html', context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token})
+
 
 @login_required
 def toponims(request):

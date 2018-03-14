@@ -385,6 +385,12 @@ class Filtrejson(models.Model):
             retval = ' '.join(filtre_text)
         return retval
 
+    def crea_query_de_filtre(json_filtre):
+        query = None
+        for criteri in json_filtre:
+            query = Q(modul=criteri['modul'])
+        return query
+
     class Meta:
         managed = False
         db_table = 'filtrejson'
