@@ -1,31 +1,17 @@
 var exportXLS = function(){
     var params = table.ajax.params();
-    window.location.href = _toponims_list_xls + '?' + jQuery.param(params);
+    window.location.href = _recursos_list_xls + '?' + jQuery.param(params);
 }
 
-var exportKML = function(){
-    var filtrejson = extreureJSONDeFiltre();
-    if(filtrejson!=null && filtrejson!=''){
-        var cql = transformarJSONACQL(filtrejson);
-        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
-        document.kml.CQL_FILTER.value = cql_filter_text;
-    }else{
-        document.kml.CQL_FILTER.value = "TRUE=TRUE";
-    }
-    document.kml.submit();
-}
+var exportCSV = function(){
+    var params = table.ajax.params();
+    window.location.href = _recursos_list_csv + '?' + jQuery.param(params);
+};
 
-var exportSHP = function(){
-    var filtrejson = extreureJSONDeFiltre();
-    if(filtrejson!=null && filtrejson!=''){
-        var cql = transformarJSONACQL(filtrejson);
-        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
-        document.shp.CQL_FILTER.value = cql_filter_text;
-    }else{
-        document.shp.CQL_FILTER.value = "TRUE=TRUE";
-    }
-    document.shp.submit();
-}
+var exportPDF = function(){
+    var params = table.ajax.params();
+    window.location.href = _recursos_list_pdf + '?' + jQuery.param(params);
+};
 
 $(document).ready(function() {
     table = $('#recursos_list').DataTable( {

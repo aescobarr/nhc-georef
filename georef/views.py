@@ -578,6 +578,60 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
 
+
+@login_required
+def recursos_list_csv(request):
+    search_field_list = ('nom',)
+    sort_translation_list = {}
+    field_translation_list = {}
+    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer, field_translation_list, sort_translation_list, paginate=False)
+
+    records = data.data['data']
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['nom'])
+    for record in records:
+        writer.writerow([record['nom']])
+
+    return response
+
+@login_required
+def recursos_list_xls(request):
+    search_field_list = ('nom',)
+    sort_translation_list = {}
+    field_translation_list = {}
+    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer, field_translation_list, sort_translation_list, paginate=False)
+    records = data.data['data']
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="recursos.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Recursos')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Nom', ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    for record in records:
+        row_num += 1
+        ws.write(row_num, 0, record['nom'], font_style)
+
+    wb.save(response)
+    return response
+
 @login_required
 def toponims_list_xls(request):
     search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
@@ -613,6 +667,29 @@ def toponims_list_xls(request):
         ws.write(row_num, 2, record['idtipustoponim']['nom'], font_style)
 
     wb.save(response)
+    return response
+
+
+@login_required
+def recursos_list_pdf(request):
+    search_field_list = ('nom',)
+    sort_translation_list = {}
+    field_translation_list = {}
+    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer, field_translation_list, sort_translation_list, paginate=False)
+
+    records = data.data['data']
+    html_string = render_to_string('georef/reports/recursos_list_pdf.html',
+                                   {'title': 'Llistat de Recursos de georeferenciació', 'records': records})
+
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/mypdf.pdf');
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('mypdf.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+
     return response
 
 

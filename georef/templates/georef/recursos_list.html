@@ -22,15 +22,17 @@
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var csrf_token = '{{ csrf_token }}';
-        /*var _toponim_delete_url = "{% url 'toponims-list' %}";
+        var _recursos_list_xls = "{% url 'recursos_list_xls' %}";
+        var _recursos_list_csv = "{% url 'recursos_list_csv' %}";
+        var _recursos_list_pdf = "{% url 'recursos_list_pdf' %}";
+        /*
+        var _toponim_delete_url = "{% url 'toponims-list' %}";
         var _filtres_list_url = "{% url 'filtres-list' %}";
         var _filtres_delete_url = "{% url 'filtres-list' %}";
         var _filtres_update_url = "{% url 'filtres-list' %}";
         var _filtres_create_url = "{% url 'filtres-list' %}";
         var _check_filtre_url = "{% url 'check_filtre' %}";
-        var _toponims_list_pdf = "{% url 'toponims_list_pdf' %}";
-        var _toponims_list_csv = "{% url 'toponims_list_csv' %}";
-        var _toponims_list_xls = "{% url 'toponims_list_xls' %}";*/
+        */
     </script>
 {% endblock %}
 {% block main %}
