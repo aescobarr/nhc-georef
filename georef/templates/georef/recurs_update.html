@@ -1,0 +1,94 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-tagit/css/jquery.tagit.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-tagit/css/tagit.ui-zendesk.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var paraulesclau = '{{ paraulesclau }}';
+        var autors = '{{ autors }}';
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="page-header"></div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Recursos</li>
+                <li class="breadcrumb-item active">Edició de recursos</li>
+            </ol>
+        </div>
+        <div class="container">
+            <form action="{% url 'recursos_update' form.instance.id %}" method="post">
+                {% csrf_token %}
+                <div class="container">
+                    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Cancel·lar</a>
+                    <input role="button" class="btn btn-success" type="submit" value="Desar" />
+                </div>
+                <div class="container separador_seccio">
+                    <p><strong>Dades bàsiques:</strong></p>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="{{ form.nom.id_for_label }}">Nom:</label>
+                                {{ form.nom }}
+                                {{ form.nom.errors }}
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="{{ form.acronim.id_for_label }}">Acrònim:</label>
+                                {{ form.acronim }}
+                                {{ form.acronim.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="{{ form.idtipusrecursgeoref.id_for_label }}">Tipus de contingut:</label>
+                                {{ form.idtipusrecursgeoref }}
+                                {{ form.idtipusrecursgeoref.errors }}
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="{{ form.versio.id_for_label }}">Versió:</label>
+                                {{ form.versio }}
+                                {{ form.versio.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <label for="paraulaclau_list">Paraules clau:</label>
+                            <ul id="paraulaclau_list"></ul>
+                        </div>
+                        <div class="col-xs-6">
+                            <label for="autor_list">Autors:</label>
+                            <ul id="autor_list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+    <script>
+        /* Fix for tagit/jquery conflict */
+        $.fn.andSelf = function() {
+            return this.addBack.apply(this, arguments);
+        }
+    </script>
+    <script src="{% static 'jquery-tagit/js/tag-it.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/recurs_update.js' %}"></script>
+{% endblock %}

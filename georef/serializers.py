@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio
-from georef_addenda.models import Profile
+from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau
+from georef_addenda.models import Profile, Autor
 from django.contrib.auth.models import User
 
 
@@ -61,3 +61,14 @@ class RecursgeorefSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recursgeoref
         fields = ('id', 'nom')
+
+
+class AutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Autor
+        fields = ('id', 'nom')
+
+class ParaulaClauSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Paraulaclau
+        fields = ('id', 'paraula')

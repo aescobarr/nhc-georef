@@ -2,9 +2,9 @@ from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer
-from georef.models import Toponim, Filtrejson, Recursgeoref
-from georef_addenda.models import Profile
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer
+from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref
+from georef_addenda.models import Profile, Autor
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
-from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs
 import json
 from json import dumps
 import magic
@@ -29,7 +29,7 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm, NewUserForm
+from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm, NewUserForm, RecursForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, compute_denormalized_toponim_tree_val_to_root
@@ -152,6 +152,29 @@ def generic_datatable_list_endpoint(request, search_field_list, queryClass, clas
 
 def index(request):
     return render(request, 'georef/index.html')
+
+
+
+class AutorViewSet(viewsets.ModelViewSet):
+    serializer_class = AutorSerializer
+
+    def get_queryset(self):
+        queryset = Autor.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
+class ParaulaClauViewSet(viewsets.ModelViewSet):
+    serializer_class = ParaulaClauSerializer
+
+    def get_queryset(self):
+        queryset = Paraulaclau.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(paraula__icontains=name)
+        return queryset
 
 
 class ToponimVersioViewSet(viewsets.ModelViewSet):
@@ -427,6 +450,41 @@ def toponims_update(request, id=None):
         return HttpResponseRedirect(reverse('toponims'))
     return render(request, 'georef/toponim_update.html', {'form': form, 'id' : id, 'nodelist_full': toponim.get_denormalized_toponimtree(), 'nodelist': toponim.get_denormalized_toponimtree_clean()})
 '''
+
+
+@login_required
+def recursos_create(request):
+    if request.method == 'POST':
+        form = RecursForm(request.POST or None)
+        if form.is_valid():
+            recurs = form.save(commit=False)
+            paraules_clau_string = request.POST.get("paraulesclau","")
+            autors_string = request.POST.get("autors", "")
+            paraules_clau = paraules_clau_string.split(',')
+            autors = autors_string.split(',')
+            recurs.paraulesclau.clear()
+            recurs.autors.clear()
+            recurs.save()
+            for paraula in paraules_clau:
+                try:
+                    p = Paraulaclau.objects.get(paraula=paraula)
+                except Paraulaclau.DoesNotExist:
+                    p = Paraulaclau(paraula=paraula)
+                    p.save()
+                pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
+                pcr.save()
+            for autor in autors:
+                try:
+                    a = Autor.objects.get(nom=autor)
+                except Autor.DoesNotExist:
+                    a = Autor(nom=autor)
+                    a.save()
+                arg = Autorrecursgeoref(autor=a, recurs=recurs)
+                arg.save()
+    else:
+        form = RecursForm()
+    return render(request, 'georef/recurs_create.html',{'form':form})
+
 
 @login_required
 def toponims_create(request):
@@ -869,6 +927,45 @@ def user_new(request):
         user_form = NewUserForm()
         profile_form = ProfileForm()
     return render(request, 'georef/user_new.html', {'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
+
+
+@login_required
+def recursos_update(request, id=None):
+    recurs = get_object_or_404(Recursgeoref, pk=id)
+    form = RecursForm(request.POST or None, instance=recurs)
+    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str() }
+    if request.method == 'POST':
+        if form.is_valid():
+            recurs = form.save(commit=False)
+            paraules_clau_string = request.POST.get("paraulesclau", "")
+            autors_string = request.POST.get("autors", "")
+            paraules_clau = paraules_clau_string.split(',')
+            autors = autors_string.split(',')
+            recurs.paraulesclau.clear()
+            recurs.autors.clear()
+            recurs.save()
+            for paraula in paraules_clau:
+                try:
+                    p = Paraulaclau.objects.get(paraula=paraula)
+                except Paraulaclau.DoesNotExist:
+                    p = Paraulaclau(paraula=paraula)
+                    p.save()
+                pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
+                pcr.save()
+            for autor in autors:
+                try:
+                    a = Autor.objects.get(nom=autor)
+                except Autor.DoesNotExist:
+                    a = Autor(nom=autor)
+                    a.save()
+                arg = Autorrecursgeoref(autor=a, recurs=recurs)
+                arg.save()
+
+            url = reverse('recursos')
+            return HttpResponseRedirect(url)
+    else:
+        pass
+    return render(request, 'georef/recurs_update.html', context)
 
 
 @login_required

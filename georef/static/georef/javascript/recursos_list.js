@@ -46,30 +46,32 @@ $(document).ready(function() {
             { 'data': 'nom' }
         ],
         'columnDefs': [
-            /*{
+            {
                 'targets': 1,
                 'data': 'editable',
                 'sortable': false,
-                'render': function(value){
+                'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
+                /*'render': function(value){
                     if(value==true){
                         return '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>';
                     }else{
                         return '&nbsp;';
                     }
-                }
+                }*/
             },
             {
                 'targets': 2,
                 'data': 'editable',
                 'sortable': false,
-                'render': function(value){
+                'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+                /*'render': function(value){
                     if(value==true){
                         return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
                     }else{
                         return '&nbsp;';
                     }
-                }
-            },*/
+                }*/
+            },
             {
                 'targets':0,
                 'title': 'Recurs de georeferenciació'
@@ -114,6 +116,67 @@ $(document).ready(function() {
             }
         });
     };
+
+    $( '#addRecurs' ).click(function() {
+        var url = '/recursos/create/';
+        window.location.href = url;
+    });
+
+    var delete_recurs = function(id){
+        $.ajax({
+            url: _recurs_delete_url + id,
+            method: 'DELETE',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Recurs esborrat amb èxit!');
+                table.ajax.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error esborrant recurs');
+            }
+        });
+    };
+
+    var confirmDialog = function(message,id){
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>'+message+'</h6></div>')
+            .dialog({
+                modal: true, title: 'Esborrant recurs...', zIndex: 10000, autoOpen: true,
+                width: 'auto', resizable: false,
+                buttons: {
+                    Yes: function () {
+                        delete_recurs(id);
+                        $(this).dialog("close");
+                    },
+                    No: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+        });
+    };
+
+    $('#recursos_list tbody').on('click', 'td button.delete_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().id;
+        confirmDialog("S'esborrarà el recurs '" + row.data().nom + "' i tota la informació associada! Segur que vols continuar?",id);
+    });
+
+    $('#recursos_list tbody').on('click', 'td button.edit_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().id;
+        url = '/recursos/update/' + id;
+        window.location.href = url;
+    });
 
     var add_filtre = function(json,modul,nomfiltre){
         var data = {

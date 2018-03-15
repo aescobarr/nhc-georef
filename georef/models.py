@@ -7,7 +7,8 @@ from django.contrib.gis.geos import GEOSGeometry
 import json
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree
+from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, pkgen
+from georef_addenda.models import Autor
 import datetime
 
 # Create your models here.
@@ -26,10 +27,6 @@ def append_chain_query(accum_query, current_clause, condicio):
             pass
         accum_query = join_op(accum_query,current_clause)
     return accum_query
-
-
-def pkgen():
-    return str(uuid.uuid4())
 
 
 class Tipustoponim(models.Model):
@@ -177,6 +174,9 @@ class Tipusrecursgeoref(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
     nom = models.CharField(max_length=100)
 
+    def __str__(self):
+        return '%s' % (self.nom)
+
     class Meta:
         managed = False
         db_table = 'tipusrecursgeoref'
@@ -265,6 +265,7 @@ class Paraulaclau(models.Model):
         managed = False
         db_table = 'paraulaclau'
 
+
 class ParaulaclauRecurs(models.Model):
     id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
     idparaula = models.ForeignKey(Paraulaclau, on_delete=models.CASCADE, db_column='idparaula')
@@ -273,6 +274,18 @@ class ParaulaclauRecurs(models.Model):
     class Meta:
         managed = False
         db_table = 'paraulaclaurecursgeoref'
+
+
+class Autorrecursgeoref(models.Model):
+    id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
+    recurs = models.ForeignKey('Recursgeoref', models.CASCADE, db_column='idrecursgeoref')
+    autor = models.ForeignKey(Autor, models.CASCADE, db_column='idpersona')
+
+    class Meta:
+        managed = False
+        db_table = 'autorrecursgeoref'
+        unique_together = (('autor', 'recurs'),)
+
 
 class Recursgeoref(models.Model):
     id = models.CharField(primary_key=True, max_length=100,default=uuid.uuid4)
@@ -300,6 +313,7 @@ class Recursgeoref(models.Model):
     base_url_wms = models.CharField(max_length=255, blank=True, null=True)
     capes_wms_json = models.TextField(blank=True, null=True)
     paraulesclau = models.ManyToManyField(Paraulaclau,through=ParaulaclauRecurs)
+    autors = models.ManyToManyField(Autor,through=Autorrecursgeoref)
 
     class Meta:
         managed = False
@@ -308,6 +322,17 @@ class Recursgeoref(models.Model):
     def __str__(self):
         return '%s' % (self.nom)
 
+    def paraulesclau_str(self):
+        p_str = []
+        for paraula in self.paraulesclau.all():
+            p_str.append(paraula.paraula)
+        return (',').join(p_str)
+
+    def autors_str(self):
+        a_str = []
+        for autor in self.autors.all():
+            a_str.append(autor.nom)
+        return (',').join(a_str)
 
     def crea_query_de_filtre(json_filtre):
         accum_query = None
@@ -343,6 +368,7 @@ class Recursgeoref(models.Model):
                     else:
                         accum_query = append_chain_query(accum_query,Q(geometries__geometria__within=geometria), condicio)
         return accum_query
+
 
 
 '''

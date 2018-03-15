@@ -287,3 +287,7 @@ table#toponim_edit tbody tr td ul li{
 .errorlist{
     color: red;
 }
+
+table#recurs_edit {
+	width: 100%;
+}

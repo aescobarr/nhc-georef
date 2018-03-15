@@ -28,3 +28,6 @@ def compute_denormalized_toponim_tree_val_to_root(toponim, stack):
         stack.append('1$Mon')
     denormalized_val = '#'.join(list(reversed(stack)))
     return denormalized_val
+
+def pkgen():
+    return str(uuid.uuid4())

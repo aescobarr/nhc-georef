@@ -149,6 +149,7 @@ BOWER_INSTALLED_APPS = (
     'bootstrap',
     'toastr',
     'jstree',
+    'jquery-tagit',
 )
 
 REST_FRAMEWORK = {

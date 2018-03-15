@@ -124,3 +124,15 @@ class ProfileForm(forms.ModelForm):
         widgets = {
             'toponim_permission': forms.HiddenInput(),
         }
+
+
+class RecursForm(forms.ModelForm):
+
+    nom = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
+    acronim = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    idtipusrecursgeoref = forms.ModelChoiceField(queryset=Tipusrecursgeoref.objects.all().order_by('nom'), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+    versio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+
+    class Meta:
+        model = Recursgeoref
+        fields = ('nom', 'acronim', 'idtipusrecursgeoref', 'versio')
