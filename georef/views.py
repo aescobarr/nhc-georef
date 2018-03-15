@@ -457,30 +457,31 @@ def recursos_create(request):
     if request.method == 'POST':
         form = RecursForm(request.POST or None)
         if form.is_valid():
-            recurs = form.save(commit=False)
-            paraules_clau_string = request.POST.get("paraulesclau","")
-            autors_string = request.POST.get("autors", "")
-            paraules_clau = paraules_clau_string.split(',')
-            autors = autors_string.split(',')
-            recurs.paraulesclau.clear()
-            recurs.autors.clear()
-            recurs.save()
-            for paraula in paraules_clau:
-                try:
-                    p = Paraulaclau.objects.get(paraula=paraula)
-                except Paraulaclau.DoesNotExist:
-                    p = Paraulaclau(paraula=paraula)
-                    p.save()
-                pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
-                pcr.save()
-            for autor in autors:
-                try:
-                    a = Autor.objects.get(nom=autor)
-                except Autor.DoesNotExist:
-                    a = Autor(nom=autor)
-                    a.save()
-                arg = Autorrecursgeoref(autor=a, recurs=recurs)
-                arg.save()
+            with transaction.atomic():
+                recurs = form.save(commit=False)
+                paraules_clau_string = request.POST.get("paraulesclau","")
+                autors_string = request.POST.get("autors", "")
+                paraules_clau = paraules_clau_string.split(',')
+                autors = autors_string.split(',')
+                recurs.paraulesclau.clear()
+                recurs.autors.clear()
+                recurs.save()
+                for paraula in paraules_clau:
+                    try:
+                        p = Paraulaclau.objects.get(paraula=paraula)
+                    except Paraulaclau.DoesNotExist:
+                        p = Paraulaclau(paraula=paraula)
+                        p.save()
+                    pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
+                    pcr.save()
+                for autor in autors:
+                    try:
+                        a = Autor.objects.get(nom=autor)
+                    except Autor.DoesNotExist:
+                        a = Autor(nom=autor)
+                        a.save()
+                    arg = Autorrecursgeoref(autor=a, recurs=recurs)
+                    arg.save()
     else:
         form = RecursForm()
     return render(request, 'georef/recurs_create.html',{'form':form})
@@ -936,33 +937,34 @@ def recursos_update(request, id=None):
     context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str() }
     if request.method == 'POST':
         if form.is_valid():
-            recurs = form.save(commit=False)
-            paraules_clau_string = request.POST.get("paraulesclau", "")
-            autors_string = request.POST.get("autors", "")
-            paraules_clau = paraules_clau_string.split(',')
-            autors = autors_string.split(',')
-            recurs.paraulesclau.clear()
-            recurs.autors.clear()
-            recurs.save()
-            for paraula in paraules_clau:
-                try:
-                    p = Paraulaclau.objects.get(paraula=paraula)
-                except Paraulaclau.DoesNotExist:
-                    p = Paraulaclau(paraula=paraula)
-                    p.save()
-                pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
-                pcr.save()
-            for autor in autors:
-                try:
-                    a = Autor.objects.get(nom=autor)
-                except Autor.DoesNotExist:
-                    a = Autor(nom=autor)
-                    a.save()
-                arg = Autorrecursgeoref(autor=a, recurs=recurs)
-                arg.save()
+            with transaction.atomic():
+                recurs = form.save(commit=False)
+                paraules_clau_string = request.POST.get("paraulesclau", "")
+                autors_string = request.POST.get("autors", "")
+                paraules_clau = paraules_clau_string.split(',')
+                autors = autors_string.split(',')
+                recurs.paraulesclau.clear()
+                recurs.autors.clear()
+                recurs.save()
+                for paraula in paraules_clau:
+                    try:
+                        p = Paraulaclau.objects.get(paraula=paraula)
+                    except Paraulaclau.DoesNotExist:
+                        p = Paraulaclau(paraula=paraula)
+                        p.save()
+                    pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
+                    pcr.save()
+                for autor in autors:
+                    try:
+                        a = Autor.objects.get(nom=autor)
+                    except Autor.DoesNotExist:
+                        a = Autor(nom=autor)
+                        a.save()
+                    arg = Autorrecursgeoref(autor=a, recurs=recurs)
+                    arg.save()
 
-            url = reverse('recursos')
-            return HttpResponseRedirect(url)
+                url = reverse('recursos')
+                return HttpResponseRedirect(url)
     else:
         pass
     return render(request, 'georef/recurs_update.html', context)
