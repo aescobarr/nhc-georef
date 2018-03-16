@@ -482,6 +482,9 @@ def recursos_create(request):
                         a.save()
                     arg = Autorrecursgeoref(autor=a, recurs=recurs)
                     arg.save()
+
+                url = reverse('recursos')
+                return HttpResponseRedirect(url)
     else:
         form = RecursForm()
     return render(request, 'georef/recurs_create.html',{'form':form})
