@@ -20,57 +20,7 @@
         <div class="container">
             <form action="{% url 'recursos_create' %}" method="post">
                 {% csrf_token %}
-                <div class="container">
-                    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Cancel·lar</a>
-                    <input role="button" class="btn btn-success" type="submit" value="Desar" />
-                </div>
-                <div class="container separador_seccio">
-                    <p><strong>Dades bàsiques:</strong></p>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="{{ form.nom.id_for_label }}">Nom:</label>
-                                {{ form.nom }}
-                                {{ form.nom.errors }}
-                            </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="{{ form.acronim.id_for_label }}">Acrònim:</label>
-                                {{ form.acronim }}
-                                {{ form.acronim.errors }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="{{ form.idtipusrecursgeoref.id_for_label }}">Tipus de contingut:</label>
-                                {{ form.idtipusrecursgeoref }}
-                                {{ form.idtipusrecursgeoref.errors }}
-                            </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="{{ form.versio.id_for_label }}">Versió:</label>
-                                {{ form.versio }}
-                                {{ form.versio.errors }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <label for="paraulaclau_list">Paraules clau:</label>
-                            <ul id="paraulaclau_list"></ul>
-                        </div>
-                        <div class="col-xs-6">
-                            <label for="autor_list">Autors:</label>
-                            <ul id="autor_list"></ul>
-                        </div>
-                    </div>
-                </div>
+                {% include 'georef/_recursos_fields.html' %}
             </form>
         </div>
     </main>
@@ -84,5 +34,6 @@
         }
     </script>
     <script src="{% static 'jquery-tagit/js/tag-it.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/recurs_autocomplete.js' %}"></script>
     <script src="{% static 'georef/javascript/recurs_create.js' %}"></script>
 {% endblock %}

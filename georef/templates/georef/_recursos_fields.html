@@ -1,0 +1,134 @@
+<div class="container">
+    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Cancel·lar</a>
+    <input role="button" class="btn btn-success" type="submit" value="Desar" />
+</div>
+<div class="container separador_seccio">
+    <p><strong>Dades bàsiques:</strong></p>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label for="{{ form.nom.id_for_label }}">Nom:</label>
+                {{ form.nom }}
+                {{ form.nom.errors }}
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label for="{{ form.acronim.id_for_label }}">Acrònim:</label>
+                {{ form.acronim }}
+                {{ form.acronim.errors }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label for="{{ form.idtipusrecursgeoref.id_for_label }}">Tipus de contingut:</label>
+                {{ form.idtipusrecursgeoref }}
+                {{ form.idtipusrecursgeoref.errors }}
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label for="{{ form.versio.id_for_label }}">Versió:</label>
+                {{ form.versio }}
+                {{ form.versio.errors }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <label for="paraulaclau_list">Paraules clau:</label>
+            <ul id="paraulaclau_list"></ul>
+        </div>
+        <div class="col-xs-6">
+            <label for="autor_list">Autors:</label>
+            <ul id="autor_list"></ul>
+        </div>
+    </div>
+</div>
+<div class="container separador_seccio">
+    <p><strong>Toponímia:</strong></p>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            <label for="{{ form.campidtoponim.id_for_label }}">Camp identificador toponímia:</label>
+            {{ form.campidtoponim }}
+            {{ form.campidtoponim.errors }}
+        </div>
+        <div class="col-xs-6">
+            <label for="{{ form.fitxergraficbase.id_for_label }}">Fitxer gràfic de base:</label>
+            {{ form.fitxergraficbase }}
+            {{ form.fitxergraficbase.errors }}
+        </div>
+    </div>
+</div>
+<div class="container separador_seccio">
+    <p><strong>Sistema de referència:</strong></p>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            <label for="{{ form.idsistemareferenciamm.id_for_label }}">Sistema de referència:</label>
+            {{ form.idsistemareferenciamm }}
+            {{ form.idsistemareferenciamm.errors }}
+        </div>
+        <div class="col-xs-6">
+            <label for="{{ form.fitxergraficbase.id_for_label }}">Unitats:</label>
+            {{ form.idtipusunitatscarto }}
+            {{ form.idtipusunitatscarto.errors }}
+        </div>
+    </div>
+</div>
+<div class="container separador_seccio">
+    <p><strong>Recursos WMS:</strong></p>
+</div>
+<div class="container separador_seccio">
+    <p><strong>Fonts:</strong></p>
+    <div class="col-xs-12">
+        <label for="{{ form.idsuport.id_for_label }}">Tipus de suport:</label>
+        {{ form.idsuport }}
+        {{ form.idsuport.errors }}
+    </div>
+    <div class="col-xs-12">
+        <label for="{{ form.urlsuport.id_for_label }}">URL o directori:</label>
+        {{ form.urlsuport }}
+        {{ form.urlsuport.errors }}
+    </div>
+    <div class="col-xs-12">
+        <label for="{{ form.actualitzaciosuport.id_for_label }}">Altres webs:</label>
+        {{ form.actualitzaciosuport }}
+        {{ form.actualitzaciosuport.errors }}
+    </div>
+    <div class="col-xs-12">
+        <label for="{{ form.ubicaciorecurs.id_for_label }}">Ubicació del recurs:</label>
+        {{ form.ubicaciorecurs }}
+        {{ form.ubicaciorecurs.errors }}
+    </div>
+</div>
+<div class="container separador_seccio">
+    <p><strong>Comentaris:</strong></p>
+    <div class="col-xs-12">
+        <label for="{{ form.comentariinfo.id_for_label }}">Informació:</label>
+        {{ form.comentariinfo }}
+        {{ form.comentariinfo.errors }}
+    </div>
+    <div class="col-xs-12">
+        <label for="{{ form.comentariinfo.id_for_label }}">Consulta:</label>
+        {{ form.comentariconsulta }}
+        {{ form.comentariconsulta.errors }}
+    </div>
+    <div class="col-xs-12">
+        <label for="{{ form.comentariqualitat.id_for_label }}">Qualitat:</label>
+        {{ form.comentariqualitat }}
+        {{ form.comentariqualitat.errors }}
+    </div>
+    <div class="col-xs-12">
+        <label for="{{ form.divisiopoliticoadministrativa.id_for_label }}">Divisió política administrativa:</label>
+        {{ form.divisiopoliticoadministrativa }}
+        {{ form.divisiopoliticoadministrativa.errors }}
+    </div>
+</div>

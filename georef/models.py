@@ -169,6 +169,9 @@ class Tipusunitats(models.Model):
         managed = False
         db_table = 'tipusunitats'
 
+    def __str__(self):
+        return '%s' % (self.tipusunitat)
+
 
 class Tipusrecursgeoref(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
@@ -186,6 +189,9 @@ class Suport(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
     nom = models.CharField(max_length=100)
 
+    def __str__(self):
+        return '%s' % (self.nom)
+
     class Meta:
         managed = False
         db_table = 'suport'
@@ -198,6 +204,9 @@ class Sistemareferenciamm(models.Model):
     class Meta:
         managed = False
         db_table = 'sistemareferenciamm'
+
+    def __str__(self):
+        return '%s' % (self.nom)
 
 class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200,default=uuid.uuid4)

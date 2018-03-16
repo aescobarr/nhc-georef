@@ -132,7 +132,21 @@ class RecursForm(forms.ModelForm):
     acronim = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     idtipusrecursgeoref = forms.ModelChoiceField(queryset=Tipusrecursgeoref.objects.all().order_by('nom'), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
     versio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    campidtoponim = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    fitxergraficbase = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    idsistemareferenciamm = forms.ModelChoiceField(queryset=Sistemareferenciamm.objects.all().order_by('nom'), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+    idtipusunitatscarto = forms.ModelChoiceField(queryset=Tipusunitats.objects.all().order_by('tipusunitat'), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+    idsuport = forms.ModelChoiceField(queryset=Suport.objects.all().order_by('nom'), widget=forms.Select(attrs={'class': 'form-control'}), required=False)
+    urlsuport = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    actualitzaciosuport = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    ubicaciorecurs = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    comentariinfo = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
+    comentariconsulta = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
+    comentariqualitat = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
+    divisiopoliticoadministrativa = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
 
     class Meta:
         model = Recursgeoref
-        fields = ('nom', 'acronim', 'idtipusrecursgeoref', 'versio')
+        fields = ('nom', 'acronim', 'idtipusrecursgeoref', 'versio', 'campidtoponim', 'fitxergraficbase', 'idsuport',
+                  'urlsuport', 'actualitzaciosuport', 'ubicaciorecurs', 'comentariinfo', 'comentariconsulta',
+                  'comentariqualitat', 'divisiopoliticoadministrativa')
