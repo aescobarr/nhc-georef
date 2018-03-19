@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework import status,viewsets
 from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref
-from georef_addenda.models import Profile, Autor
+from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
@@ -34,7 +34,6 @@ from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, compute_denormalized_toponim_tree_val_to_root
 from django.contrib.gis.geos import GEOSGeometry, GeometryCollection
-from georef_addenda.models import GeometriaToponimVersio
 
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
@@ -937,11 +936,12 @@ def user_new(request):
 @login_required
 def recursos_update(request, id=None):
     recurs = get_object_or_404(Recursgeoref, pk=id)
+    wms_url = conf.GEOSERVER_WMS_URL
     queryset = Toponimversio.objects.filter(idrecursgeoref=recurs).order_by('nom')
     toponimsversio = queryset
     moretoponims = len(queryset) > 20
     form = RecursForm(request.POST or None, instance=recurs)
-    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims }
+    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims, 'wms_url':wms_url }
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():
@@ -952,6 +952,14 @@ def recursos_update(request, id=None):
                 autors = autors_string.split(',')
                 recurs.paraulesclau.clear()
                 recurs.autors.clear()
+
+                json_geometry_string = request.POST["geometria"]
+                json_geometry = json.loads(json_geometry_string)
+                for feature in json_geometry['features']:
+                    feature_geometry = GEOSGeometry(json.dumps(feature['geometry']))
+                    g = GeometriaRecurs(idrecurs=recurs, geometria=feature_geometry)
+                    g.save()
+
                 recurs.save()
                 for paraula in paraules_clau:
                     try:
