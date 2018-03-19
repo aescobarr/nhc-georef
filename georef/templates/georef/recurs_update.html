@@ -11,6 +11,14 @@
     <script>
         var paraulesclau = '{{ paraulesclau }}';
         var autors = '{{ autors }}';
+        var toponims_basats_recurs = [];
+        {% for toponim in toponims_basats_recurs|slice:":20" %}
+        toponims_basats_recurs.push({ 'id':'{{ toponim.idtoponim.id }}', 'nom':'{{ toponim.idtoponim.nom }}',  });
+        {% endfor %}
+        var moretoponims = false;
+        {% if moretoponims %}
+        moretoponims = true;
+        {% endif %}
     </script>
 {% endblock %}
 {% block main %}
@@ -26,8 +34,17 @@
         <div class="container">
             <form action="{% url 'recursos_update' form.instance.id %}" method="post">
                 {% csrf_token %}
-                {% include 'georef/_recursos_fields.html' %}
+                {% include 'georef/_recursos_fields.html' with show_goto_buttons=True %}
             </form>
+        </div>
+        <div id="dialogListToponims" title="Topònims basats en el recurs">
+            <table>
+                {% for toponim in toponims_basats_recurs %}
+                <tr><td>
+                    <a target="_blank" href="/toponims/update/{{ toponim.idtoponim.id }}/-1" title="{{ toponim.idtoponim.nom }}"> <span class="label label-default">{{ toponim.idtoponim.nom }}</span></a>
+                </td></tr>
+                {% endfor %}
+            </table>
         </div>
     </main>
 {% endblock %}

@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
-from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, Suport
 import json
 from json import dumps
 import magic
@@ -220,6 +220,7 @@ class FiltrejsonViewSet(viewsets.ModelViewSet):
 
 
 class RecursGeoRefViewSet(viewsets.ModelViewSet):
+    queryset = Recursgeoref.objects.all()
     serializer_class = RecursgeorefSerializer
 
 @api_view(['GET'])
@@ -391,7 +392,7 @@ def users_list(request):
 @login_required
 def recursos(request):
     csrf_token = get_token(request)
-    llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
+    llista_tipus = Suport.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
     return render(request, 'georef/recursos_list.html', context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token})
 
@@ -936,8 +937,11 @@ def user_new(request):
 @login_required
 def recursos_update(request, id=None):
     recurs = get_object_or_404(Recursgeoref, pk=id)
+    queryset = Toponimversio.objects.filter(idrecursgeoref=recurs).order_by('nom')
+    toponimsversio = queryset
+    moretoponims = len(queryset) > 20
     form = RecursForm(request.POST or None, instance=recurs)
-    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str() }
+    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims }
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():

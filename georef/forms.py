@@ -147,6 +147,6 @@ class RecursForm(forms.ModelForm):
 
     class Meta:
         model = Recursgeoref
-        fields = ('nom', 'acronim', 'idtipusrecursgeoref', 'versio', 'campidtoponim', 'fitxergraficbase', 'idsuport',
+        fields = ('nom', 'acronim', 'idtipusrecursgeoref', 'versio', 'campidtoponim', 'fitxergraficbase','idsistemareferenciamm','idtipusunitatscarto','idsuport',
                   'urlsuport', 'actualitzaciosuport', 'ubicaciorecurs', 'comentariinfo', 'comentariconsulta',
                   'comentariqualitat', 'divisiopoliticoadministrativa')

@@ -48,6 +48,14 @@
             <ul id="autor_list"></ul>
         </div>
     </div>
+    {% if show_goto_buttons %}
+        {% if toponims_basats_recurs %}
+    <div class="row">
+        <div class="col-xs-2"><label>Versions de topònims basats en el recurs:</label></div>
+        <div id="toponimsbasats" class="col-xs-10"><ul></ul></div>
+    </div>
+        {% endif %}
+    {% endif %}
 </div>
 <div class="container separador_seccio">
     <p><strong>Toponímia:</strong></p>
@@ -88,47 +96,69 @@
 </div>
 <div class="container separador_seccio">
     <p><strong>Fonts:</strong></p>
-    <div class="col-xs-12">
-        <label for="{{ form.idsuport.id_for_label }}">Tipus de suport:</label>
-        {{ form.idsuport }}
-        {{ form.idsuport.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.idsuport.id_for_label }}">Tipus de suport:</label>
+            {{ form.idsuport }}
+            {{ form.idsuport.errors }}
+        </div>
     </div>
-    <div class="col-xs-12">
-        <label for="{{ form.urlsuport.id_for_label }}">URL o directori:</label>
-        {{ form.urlsuport }}
-        {{ form.urlsuport.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.urlsuport.id_for_label }}">URL o directori:</label>
+            {{ form.urlsuport }}
+            {{ form.urlsuport.errors }}
+            {% if show_goto_buttons %}
+                <button type="button" class="btn btn-primary" onclick="javascript:anarAUrl('id_urlsuport');">Anar-hi</button>
+            {% endif %}
+        </div>
     </div>
-    <div class="col-xs-12">
-        <label for="{{ form.actualitzaciosuport.id_for_label }}">Altres webs:</label>
-        {{ form.actualitzaciosuport }}
-        {{ form.actualitzaciosuport.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.actualitzaciosuport.id_for_label }}">Altres webs:</label>
+            {{ form.actualitzaciosuport }}
+            {{ form.actualitzaciosuport.errors }}
+            {% if show_goto_buttons %}
+                <button type="button" class="btn btn-primary" onclick="javascript:anarAUrl('id_actualitzaciosuport');">Anar-hi</button>
+            {% endif %}
+        </div>
     </div>
-    <div class="col-xs-12">
-        <label for="{{ form.ubicaciorecurs.id_for_label }}">Ubicació del recurs:</label>
-        {{ form.ubicaciorecurs }}
-        {{ form.ubicaciorecurs.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.ubicaciorecurs.id_for_label }}">Ubicació del recurs:</label>
+            {{ form.ubicaciorecurs }}
+            {{ form.ubicaciorecurs.errors }}
+        </div>
     </div>
 </div>
 <div class="container separador_seccio">
     <p><strong>Comentaris:</strong></p>
-    <div class="col-xs-12">
-        <label for="{{ form.comentariinfo.id_for_label }}">Informació:</label>
-        {{ form.comentariinfo }}
-        {{ form.comentariinfo.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.comentariinfo.id_for_label }}">Informació:</label>
+            {{ form.comentariinfo }}
+            {{ form.comentariinfo.errors }}
+        </div>
     </div>
-    <div class="col-xs-12">
-        <label for="{{ form.comentariinfo.id_for_label }}">Consulta:</label>
-        {{ form.comentariconsulta }}
-        {{ form.comentariconsulta.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.comentariinfo.id_for_label }}">Consulta:</label>
+            {{ form.comentariconsulta }}
+            {{ form.comentariconsulta.errors }}
+        </div>
     </div>
-    <div class="col-xs-12">
-        <label for="{{ form.comentariqualitat.id_for_label }}">Qualitat:</label>
-        {{ form.comentariqualitat }}
-        {{ form.comentariqualitat.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.comentariqualitat.id_for_label }}">Qualitat:</label>
+            {{ form.comentariqualitat }}
+            {{ form.comentariqualitat.errors }}
+        </div>
     </div>
-    <div class="col-xs-12">
-        <label for="{{ form.divisiopoliticoadministrativa.id_for_label }}">Divisió política administrativa:</label>
-        {{ form.divisiopoliticoadministrativa }}
-        {{ form.divisiopoliticoadministrativa.errors }}
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.divisiopoliticoadministrativa.id_for_label }}">Divisió política administrativa:</label>
+            {{ form.divisiopoliticoadministrativa }}
+            {{ form.divisiopoliticoadministrativa.errors }}
+        </div>
     </div>
 </div>

@@ -291,3 +291,15 @@ table#toponim_edit tbody tr td ul li{
 table#recurs_edit {
 	width: 100%;
 }
+
+#toponimsbasats ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#toponimsbasats ul li {
+    float: left;
+    padding: 5px;
+}

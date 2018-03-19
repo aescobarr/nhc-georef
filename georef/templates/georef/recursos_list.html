@@ -13,6 +13,7 @@
 {% block extrahead %}
     <script>
         var _recurs_list_url = "{% url 'recursos_datatable_list' %}";
+        var _recurs_delete_url = "{% url 'recursgeoref-list' %}";
         var _filtres_list_url = "{% url 'filtres-list' %}";
         var _filtres_delete_url = "{% url 'filtres-list' %}";
         var _filtres_update_url = "{% url 'filtres-list' %}";
@@ -26,7 +27,6 @@
         var _recursos_list_csv = "{% url 'recursos_list_csv' %}";
         var _recursos_list_pdf = "{% url 'recursos_list_pdf' %}";
         /*
-        var _toponim_delete_url = "{% url 'toponims-list' %}";
         var _filtres_list_url = "{% url 'filtres-list' %}";
         var _filtres_delete_url = "{% url 'filtres-list' %}";
         var _filtres_update_url = "{% url 'filtres-list' %}";
@@ -169,7 +169,7 @@
     <script src="{% static 'georef/javascript/cookies.js' %}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
     <script src="{% static 'georef/javascript/filtre_recursos.js' %}"></script>
-    <script src="{% static 'georef/javascript/filtrecql.js' %}"></script>
+    <script src="{% static 'georef/javascript/filtrecql_recursos.js' %}"></script>
     <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
     <script src="{% static 'georef/javascript/recursos_list.js' %}"></script>
     <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
