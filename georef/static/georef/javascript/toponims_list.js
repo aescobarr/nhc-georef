@@ -492,8 +492,8 @@ $(window).bind('beforeunload', function(){
     var state_string = JSON.stringify(state);
     setCookie('layers_t', state_string);
     var view = {};
-    var center = djangoRef.Map.map.getCenter();
-    var zoom = djangoRef.Map.map.getZoom();
+    var center = djangoRef.Map.getCenter();
+    var zoom = djangoRef.Map.getZoom();
     view = {center: center, zoom: zoom};
     var view_string = JSON.stringify(view);
     setCookie('view_t', view_string);

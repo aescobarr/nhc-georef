@@ -230,6 +230,18 @@
         return djangoRef.Map;
     };
 
+    djangoRef.Map.getCenter = function(){
+        return djangoRef.Map.map.getCenter();
+    };
+
+    djangoRef.Map.getZoom = function(){
+        return djangoRef.Map.map.getZoom();
+    };
+
+    djangoRef.Map.hasLayer = function(layer){
+        return djangoRef.Map.map.hasLayer(layer);
+    };
+
     djangoRef.Map.getDigitizedFeaturesJSON = function(){
         if(djangoRef.Map.editableLayers){
             var geoJson = djangoRef.Map.editableLayers.toGeoJSON();

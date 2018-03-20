@@ -77,7 +77,6 @@ var delete_versio = function(id){
 var refreshDigitizedGeometry = function(){
     var geometry = djangoRef.Map.editableLayers.toGeoJSON()
     var json_string = JSON.stringify(geometry);
-    //console.log(json_string);
     $('#geometria').val( json_string );
 };
 

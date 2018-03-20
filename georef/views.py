@@ -512,6 +512,17 @@ def toponims_create(request):
     return render(request, 'georef/toponim_create.html', {'form': form, 'wms_url': conf.GEOSERVER_WMS_URL, 'node_ini': node_ini, 'nodelist_full': nodelist_full})
 
 
+def recursgeoref_geometries_to_geojson(recurs):
+    geometries = recurs.geometries.all()
+    geos = []
+    for geom in geometries:
+        geos.append({'type': 'Feature', 'properties': {}, 'geometry': json.loads(geom.geometria.json) })
+    features = {
+        'type': 'FeatureCollection',
+        'features': geos
+    }
+    return json.dumps(features)
+
 def toponimversio_geometries_to_geojson(toponimversio):
     geometries = toponimversio.geometries.all()
     geos = []
@@ -626,6 +637,9 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 idversio = toponimversio.id
                 toponimversio.idtoponim = toponim
                 toponimversio.iduser = this_user
+                toponimversio.save()
+
+                toponimversio.geometries.clear()
                 toponimversio.save()
 
                 json_geometry_string = request.POST["geometria"]
@@ -937,11 +951,12 @@ def user_new(request):
 def recursos_update(request, id=None):
     recurs = get_object_or_404(Recursgeoref, pk=id)
     wms_url = conf.GEOSERVER_WMS_URL
+    geometries_json = recursgeoref_geometries_to_geojson(recurs)
     queryset = Toponimversio.objects.filter(idrecursgeoref=recurs).order_by('nom')
     toponimsversio = queryset
     moretoponims = len(queryset) > 20
     form = RecursForm(request.POST or None, instance=recurs)
-    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims, 'wms_url':wms_url }
+    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims, 'wms_url':wms_url, 'geometries_json': geometries_json }
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():
@@ -950,8 +965,12 @@ def recursos_update(request, id=None):
                 autors_string = request.POST.get("autors", "")
                 paraules_clau = paraules_clau_string.split(',')
                 autors = autors_string.split(',')
+
                 recurs.paraulesclau.clear()
                 recurs.autors.clear()
+                recurs.geometries.clear()
+
+                recurs.save()
 
                 json_geometry_string = request.POST["geometria"]
                 json_geometry = json.loads(json_geometry_string)
@@ -960,7 +979,6 @@ def recursos_update(request, id=None):
                     g = GeometriaRecurs(idrecurs=recurs, geometria=feature_geometry)
                     g.save()
 
-                recurs.save()
                 for paraula in paraules_clau:
                     try:
                         p = Paraulaclau.objects.get(paraula=paraula)
@@ -969,6 +987,7 @@ def recursos_update(request, id=None):
                         p.save()
                     pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
                     pcr.save()
+
                 for autor in autors:
                     try:
                         a = Autor.objects.get(nom=autor)
@@ -977,11 +996,9 @@ def recursos_update(request, id=None):
                         a.save()
                     arg = Autorrecursgeoref(autor=a, recurs=recurs)
                     arg.save()
+                    url = reverse('recursos_update', kwargs={'id': form.instance.id})
+                    return HttpResponseRedirect(url)
 
-                url = reverse('recursos')
-                return HttpResponseRedirect(url)
-    else:
-        pass
     return render(request, 'georef/recurs_update.html', context)
 
 

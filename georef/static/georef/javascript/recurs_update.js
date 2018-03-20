@@ -1,5 +1,5 @@
 var refreshDigitizedGeometry = function(){
-    var geometry = djangoRef.Map.editableLayers.toGeoJSON()
+    var geometry = djangoRef.Map.editableLayers.toGeoJSON();
     var json_string = JSON.stringify(geometry);
     $('#geometria').val( json_string );
 };
@@ -153,5 +153,30 @@ $(document).ready(function() {
     };
 
     djangoRef_map = new djangoRef.Map.createMap(map_options);
+
+    djangoRef_map.map.on(L.Draw.Event.CREATED, function (e) {
+        refreshDigitizedGeometry();
+    });
+
+    djangoRef_map.map.on(L.Draw.Event.EDITED, function (e) {
+        refreshDigitizedGeometry();
+    });
+
+    djangoRef_map.map.on(L.Draw.Event.DELETED, function (e) {
+        refreshDigitizedGeometry();
+    });
+
+    var geoJSONLayer = L.geoJson(geometries_json);
+    geoJSONLayer.eachLayer(
+        function(l){
+            djangoRef_map.editableLayers.addLayer(l);
+        }
+    );
+
+    refreshDigitizedGeometry();
+    djangoRef_map.editableLayers.bringToFront();
+    if(djangoRef_map.editableLayers.getBounds().isValid()){
+        djangoRef_map.map.fitBounds(djangoRef_map.editableLayers.getBounds());
+    }
 
 });
