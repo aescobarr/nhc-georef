@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^datatabletoponimfilters/list$', views.filters_datatable_list, name='toponimfilters_datatable_list'),
     url(r'^datatablerecursfilters/list$', views.filters_datatable_list, name='recursfilters_datatable_list'),
     url(r'^filtres/check$', views.check_filtre, name='check_filtre'),
+    url(r'^wmsmetadata/$', views.wmsmetadata, name='wmsmetadata'),
     url(r'^recursos$', views.recursos, name='recursos'),
     url(r'^recursos/create/$', views.recursos_create, name='recursos_create'),
     url(r'^recursos/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.recursos_update, name='recursos_update'),

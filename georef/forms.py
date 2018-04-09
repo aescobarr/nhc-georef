@@ -144,9 +144,10 @@ class RecursForm(forms.ModelForm):
     comentariconsulta = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
     comentariqualitat = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
     divisiopoliticoadministrativa = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','rows':'5'}), required=False)
+    base_url_wms = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Recursgeoref
         fields = ('nom', 'acronim', 'idtipusrecursgeoref', 'versio', 'campidtoponim', 'fitxergraficbase','idsistemareferenciamm','idtipusunitatscarto','idsuport',
                   'urlsuport', 'actualitzaciosuport', 'ubicaciorecurs', 'comentariinfo', 'comentariconsulta',
-                  'comentariqualitat', 'divisiopoliticoadministrativa')
+                  'comentariqualitat', 'divisiopoliticoadministrativa', 'base_url_wms')

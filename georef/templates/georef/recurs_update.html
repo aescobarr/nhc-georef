@@ -10,6 +10,12 @@
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
     <link href="{% static 'jquery-tagit/css/jquery.tagit.css' %}" rel="stylesheet">
     <link href="{% static 'jquery-tagit/css/tagit.ui-zendesk.css' %}" rel="stylesheet">
+    <style>
+        .hidden-capawms-id-value { display:none; }
+        ul#taulacapes {
+            list-style-type: none;
+        }
+    </style>
 {% endblock %}
 {% block extrahead %}
     <script>
@@ -29,6 +35,11 @@
         var cql_filter_ini = "idrecurs='{{ form.instance.id }}'";
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var geometries_json = {% if geometries_json %} JSON.parse('{{ geometries_json | safe }}') {% else %} null {% endif %};
+        var _wms_metadata_url = '{% url 'wmsmetadata' %}';
+        var capes_wms = [];
+        {% for capa in capeswms %}
+        capes_wms.push({'id': '{{capa.id}}', 'name':'{{capa.name}}', 'label':'{{capa.label}}'});
+        {% endfor %}
     </script>
 {% endblock %}
 {% block main %}
@@ -67,7 +78,7 @@
         }
     </script>
     <script src="{% static 'jquery-tagit/js/tag-it.min.js' %}"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
     <script src="{% static 'georef/javascript/leaflet/leaflet.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>

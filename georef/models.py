@@ -296,6 +296,31 @@ class Autorrecursgeoref(models.Model):
         unique_together = (('autor', 'recurs'),)
 
 
+class Capawms(models.Model):
+    id = models.CharField(primary_key=True, max_length=200,default=uuid.uuid4)
+    baseurlservidor = models.CharField(max_length=400)
+    name = models.CharField(max_length=400)
+    label = models.CharField(max_length=400, blank=True, null=True)
+    minx = models.FloatField(blank=True, null=True)
+    maxx = models.FloatField(blank=True, null=True)
+    miny = models.FloatField(blank=True, null=True)
+    maxy = models.FloatField(blank=True, null=True)
+    boundary = models.GeometryField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'capawms'
+
+
+class Capesrecurs(models.Model):
+    idcapa = models.ForeignKey(Capawms, models.DO_NOTHING, db_column='idcapa', blank=True, null=True)
+    idrecurs = models.ForeignKey('Recursgeoref', models.DO_NOTHING, db_column='idrecurs', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'capesrecurs'
+
+
 class Recursgeoref(models.Model):
     id = models.CharField(primary_key=True, max_length=100,default=uuid.uuid4)
     nom = models.CharField(max_length=500)
@@ -323,6 +348,7 @@ class Recursgeoref(models.Model):
     capes_wms_json = models.TextField(blank=True, null=True)
     paraulesclau = models.ManyToManyField(Paraulaclau,through=ParaulaclauRecurs)
     autors = models.ManyToManyField(Autor,through=Autorrecursgeoref)
+    capes_wms_recurs = models.ManyToManyField(Capawms,through=Capesrecurs)
 
     class Meta:
         managed = False

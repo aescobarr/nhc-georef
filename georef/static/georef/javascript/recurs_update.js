@@ -13,7 +13,29 @@ function showListToponims(){
     $( "#dialogListToponims" ).dialog( "open" );
 }
 
+var get_capawms_ids = function(){
+    var retVal = new Array();
+    $('.hidden-capawms-id-value').each(function(index,value){
+        retVal.push($(this).text());
+    });
+    return retVal;
+};
+
+var capawms_li_element_template = '<li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable"><span class="tagit-label">###label</span><span class="hidden-capawms-id-value">###id</span><a class="tagit-close close-capawms"><span class="text-icon">x</span><span class="ui-icon ui-icon-close"></span></a></li>';
+
 $(document).ready(function() {
+
+    var buildCapesWMSUI = function(){
+        $('#taulacapes').empty();
+        for(var i = 0; i < capes_wms.length; i++){
+            var new_template = capawms_li_element_template.replace('###label',capes_wms[i].label);
+            new_template = new_template.replace('###id',capes_wms[i].id);
+            $('#taulacapes').append(new_template);
+        }
+    }
+
+    buildCapesWMSUI();
+
     var buildTagsUI = function (){
         var paraula_array = paraulesclau.split(",");
         $("#paraulaclau_list").tagit("removeAll");
@@ -65,6 +87,30 @@ $(document).ready(function() {
             'csrf_xname': 'X-CSRFToken',
         }
     });
+
+    var connectwms = function(url){
+        $.ajax({
+            url: _wms_metadata_url,
+            data: 'url=' + encodeURI(url),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                $('#layersWms').empty();
+                resultat = data.detail;
+                for(var i = 0; i < resultat.length; i++){
+                    $('#layersWms').append('<option data-xmin='+resultat[i].minx+' data-xmax='+resultat[i].maxx+' data-ymin='+resultat[i].miny+' data-ymax='+resultat[i].maxy+' value='+resultat[i].name+'>' + resultat[i].title + '</option>');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+            }
+        });
+    }
 
     var importa_shapefile = function(filepath){
         $.ajax({
@@ -178,5 +224,24 @@ $(document).ready(function() {
     if(djangoRef_map.editableLayers.getBounds().isValid()){
         djangoRef_map.map.fitBounds(djangoRef_map.editableLayers.getBounds());
     }
+
+    $('#wms_connect').click(function(){
+        var url = $('#id_base_url_wms').val();
+        connectwms(url);
+    });
+
+    $('#wms_add').click(function(){
+        var selected = $('#layersWms').find(":selected");
+        console.log(selected);
+        console.log(selected.attr('data-xmin'));
+    });
+
+    $(document).on('click','a.close-capawms',function(){
+        var a = $(this);
+        var li = a.parent();
+        var ul = li.parent();
+        li.remove();
+        //var capawms_id = $(this).parent().find('.hidden-capawms-id-value').text();
+    });
 
 });

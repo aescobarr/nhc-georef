@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
-from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, Suport
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, Suport, Capawms
 import json
 from json import dumps
 import magic
@@ -39,6 +39,7 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from owslib.wms import WebMapService
 
 from weasyprint import HTML, CSS
 import csv
@@ -955,8 +956,9 @@ def recursos_update(request, id=None):
     queryset = Toponimversio.objects.filter(idrecursgeoref=recurs).order_by('nom')
     toponimsversio = queryset
     moretoponims = len(queryset) > 20
+    capeswms = recurs.capes_wms_recurs.all()
     form = RecursForm(request.POST or None, instance=recurs)
-    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims, 'wms_url':wms_url, 'geometries_json': geometries_json }
+    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'capeswms': capeswms, 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims, 'wms_url':wms_url, 'geometries_json': geometries_json }
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():
@@ -996,10 +998,38 @@ def recursos_update(request, id=None):
                         a.save()
                     arg = Autorrecursgeoref(autor=a, recurs=recurs)
                     arg.save()
-                    url = reverse('recursos_update', kwargs={'id': form.instance.id})
-                    return HttpResponseRedirect(url)
+
+                url = reverse('recursos_update', kwargs={'id': form.instance.id})
+                return HttpResponseRedirect(url)
 
     return render(request, 'georef/recurs_update.html', context)
+
+
+@api_view(['GET'])
+def wmsmetadata(request):
+    if request.method == 'GET':
+        url = request.query_params.get('url', None)
+        if url is None:
+            content = {'status': 'KO', 'detail':'mandatory param missing'}
+            return Response(data=content,status=400)
+        else:
+            try:
+                wms = WebMapService(url)
+                layers = list(wms.contents)
+                records = []
+                for layer in layers:
+                    bounds = wms[layer].boundingBoxWGS84
+                    try:
+                        cached_layer = Capawms.objects.get(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title)
+                    except Capawms.DoesNotExist:
+                        cached_layer = Capawms(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title, minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3])
+                        cached_layer.save()
+                    records.append({'name': cached_layer.name, 'title': cached_layer.label, 'minx': cached_layer.minx, 'miny': cached_layer.miny, 'maxx': cached_layer.maxx, 'maxy': cached_layer.maxy})
+                content = {'status': 'OK', 'detail': records}
+                return Response(data=content, status=200)
+            except Exception as e:
+                content = {'status': 'KO', 'detail': 'Unexpected exception ' + str(e)}
+                return Response(data=content, status=400)
 
 
 @login_required

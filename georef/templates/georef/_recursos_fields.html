@@ -98,6 +98,26 @@
 </div>
 <div class="container separador_seccio">
     <p><strong>Recursos WMS:</strong></p>
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="{{ form.base_url_wms.id_for_label }}">Servidor WMS:</label>
+            {{ form.base_url_wms }}
+            {{ form.base_url_wms.errors }}
+            <button id="wms_connect" type="button" class="btn btn-primary">Connectar</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <label>Capes:</label>
+            <select id="layersWms"></select>
+            <button id="wms_add" type="button" class="btn btn-primary">Afegir</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <ul id="taulacapes" class="tagit ui-widget ui-widget-content ui-corner-all"></ul>
+        </div>
+    </div>
 </div>
 <div class="container separador_seccio">
     <p><strong>Fonts:</strong></p>
@@ -172,3 +192,4 @@
     <input role="button" class="btn btn-success" type="submit" value="Desar" />
 </div>
 <input id="geometria" name="geometria" type="hidden" value=""/>
+<input id="capeswms" name="capeswms" type="hidden" value=""/>
