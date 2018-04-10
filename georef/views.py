@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
-from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, Suport, Capawms
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, Suport, Capawms, Capesrecurs
 import json
 from json import dumps
 import magic
@@ -40,6 +40,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from owslib.wms import WebMapService
+from django.contrib.gis.geos import Polygon, GEOSGeometry
 
 from weasyprint import HTML, CSS
 import csv
@@ -462,27 +463,41 @@ def recursos_create(request):
                 recurs = form.save(commit=False)
                 paraules_clau_string = request.POST.get("paraulesclau","")
                 autors_string = request.POST.get("autors", "")
+                capeswms_string = request.POST.get("capeswms", "")
                 paraules_clau = paraules_clau_string.split(',')
                 autors = autors_string.split(',')
+                capeswms_tokens = capeswms_string.split(',')
+
                 recurs.paraulesclau.clear()
                 recurs.autors.clear()
+                recurs.capes_wms_recurs.clear()
                 recurs.save()
+
                 for paraula in paraules_clau:
-                    try:
-                        p = Paraulaclau.objects.get(paraula=paraula)
-                    except Paraulaclau.DoesNotExist:
-                        p = Paraulaclau(paraula=paraula)
-                        p.save()
-                    pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
-                    pcr.save()
+                    if paraula != '':
+                        try:
+                            p = Paraulaclau.objects.get(paraula=paraula)
+                        except Paraulaclau.DoesNotExist:
+                            p = Paraulaclau(paraula=paraula)
+                            p.save()
+                        pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
+                        pcr.save()
+
                 for autor in autors:
-                    try:
-                        a = Autor.objects.get(nom=autor)
-                    except Autor.DoesNotExist:
-                        a = Autor(nom=autor)
-                        a.save()
-                    arg = Autorrecursgeoref(autor=a, recurs=recurs)
-                    arg.save()
+                    if autor != '':
+                        try:
+                            a = Autor.objects.get(nom=autor)
+                        except Autor.DoesNotExist:
+                            a = Autor(nom=autor)
+                            a.save()
+                        arg = Autorrecursgeoref(autor=a, recurs=recurs)
+                        arg.save()
+
+                for capa in capeswms_tokens:
+                    if capa != '':
+                        c = Capawms.objects.get(pk=capa)
+                        cr = Capesrecurs(idcapa=c,idrecurs=recurs)
+                        cr.save()
 
                 url = reverse('recursos')
                 return HttpResponseRedirect(url)
@@ -963,14 +978,17 @@ def recursos_update(request, id=None):
         if form.is_valid():
             with transaction.atomic():
                 recurs = form.save(commit=False)
+                capeswms_string = request.POST.get("capeswms", "")
                 paraules_clau_string = request.POST.get("paraulesclau", "")
                 autors_string = request.POST.get("autors", "")
                 paraules_clau = paraules_clau_string.split(',')
                 autors = autors_string.split(',')
+                capeswms_tokens = capeswms_string.split(',')
 
                 recurs.paraulesclau.clear()
                 recurs.autors.clear()
                 recurs.geometries.clear()
+                recurs.capes_wms_recurs.clear()
 
                 recurs.save()
 
@@ -982,22 +1000,30 @@ def recursos_update(request, id=None):
                     g.save()
 
                 for paraula in paraules_clau:
-                    try:
-                        p = Paraulaclau.objects.get(paraula=paraula)
-                    except Paraulaclau.DoesNotExist:
-                        p = Paraulaclau(paraula=paraula)
-                        p.save()
-                    pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
-                    pcr.save()
+                    if paraula != '':
+                        try:
+                            p = Paraulaclau.objects.get(paraula=paraula)
+                        except Paraulaclau.DoesNotExist:
+                            p = Paraulaclau(paraula=paraula)
+                            p.save()
+                        pcr = ParaulaclauRecurs(idparaula=p, idrecursgeoref=recurs)
+                        pcr.save()
 
                 for autor in autors:
-                    try:
-                        a = Autor.objects.get(nom=autor)
-                    except Autor.DoesNotExist:
-                        a = Autor(nom=autor)
-                        a.save()
-                    arg = Autorrecursgeoref(autor=a, recurs=recurs)
-                    arg.save()
+                    if autor != '':
+                        try:
+                            a = Autor.objects.get(nom=autor)
+                        except Autor.DoesNotExist:
+                            a = Autor(nom=autor)
+                            a.save()
+                        arg = Autorrecursgeoref(autor=a, recurs=recurs)
+                        arg.save()
+
+                for capa in capeswms_tokens:
+                    if capa != '':
+                        c = Capawms.objects.get(pk=capa)
+                        cr = Capesrecurs(idcapa=c,idrecurs=recurs)
+                        cr.save()
 
                 url = reverse('recursos_update', kwargs={'id': form.instance.id})
                 return HttpResponseRedirect(url)
@@ -1019,12 +1045,21 @@ def wmsmetadata(request):
                 records = []
                 for layer in layers:
                     bounds = wms[layer].boundingBoxWGS84
+                    p = Polygon.from_bbox(bounds)
+                    p_g = GEOSGeometry(str(p), srid=4326)
                     try:
                         cached_layer = Capawms.objects.get(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title)
+                        cached_layer.minx = bounds[0]
+                        cached_layer.miny = bounds[1]
+                        cached_layer.maxx = bounds[2]
+                        cached_layer.maxy = bounds[3]
+                        cached_layer.boundary = p_g
                     except Capawms.DoesNotExist:
-                        cached_layer = Capawms(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title, minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3])
-                        cached_layer.save()
-                    records.append({'name': cached_layer.name, 'title': cached_layer.label, 'minx': cached_layer.minx, 'miny': cached_layer.miny, 'maxx': cached_layer.maxx, 'maxy': cached_layer.maxy})
+                        cached_layer = Capawms(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title, minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3], boundary=p_g)
+
+                    cached_layer.save()
+
+                    records.append({'id': cached_layer.id, 'name': cached_layer.name, 'title': cached_layer.label, 'minx': cached_layer.minx, 'miny': cached_layer.miny, 'maxx': cached_layer.maxx, 'maxy': cached_layer.maxy})
                 content = {'status': 'OK', 'detail': records}
                 return Response(data=content, status=200)
             except Exception as e:
@@ -1091,3 +1126,8 @@ def toponims_update(request, id=None):
     return render(request, 'georef/toponim_update.html',context)
 
 import_uploader = AjaxFileUploader()
+
+@login_required
+def recursos_capeswms(request):
+    context = {}
+    return render(request, 'georef/capes_wms.html', context)

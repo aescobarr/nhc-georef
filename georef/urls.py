@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^recursos$', views.recursos, name='recursos'),
     url(r'^recursos/create/$', views.recursos_create, name='recursos_create'),
     url(r'^recursos/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.recursos_update, name='recursos_update'),
+    url(r'^recursos/capeswms/$', views.recursos_capeswms, name='recursos_capeswms'),
     url(r'^toponims$', views.toponims, name='toponims'),
     url(r'^toponims/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.toponims_update, name='toponims_update'),
     url(r'^toponims/update/(?P<idtoponim>[0-9A-Za-z_\-]+)/(?P<idversio>[0-9A-Za-z_\-]+)/$', views.toponims_update_2, name='toponims_update_2'),

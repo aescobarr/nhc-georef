@@ -313,8 +313,9 @@ class Capawms(models.Model):
 
 
 class Capesrecurs(models.Model):
-    idcapa = models.ForeignKey(Capawms, models.DO_NOTHING, db_column='idcapa', blank=True, null=True)
-    idrecurs = models.ForeignKey('Recursgeoref', models.DO_NOTHING, db_column='idrecurs', blank=True, null=True)
+    id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
+    idcapa = models.ForeignKey(Capawms, models.CASCADE, db_column='idcapa', blank=True, null=True)
+    idrecurs = models.ForeignKey('Recursgeoref', models.CASCADE, db_column='idrecurs', blank=True, null=True)
 
     class Meta:
         managed = False

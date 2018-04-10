@@ -303,3 +303,9 @@ table#recurs_edit {
     float: left;
     padding: 5px;
 }
+
+.asyncload {
+    background-image: url(/static/georef/css/icon/indicator.white.gif);
+    background-repeat: no-repeat;background-position: right;
+    padding-right: 18px;
+}

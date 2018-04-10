@@ -89,6 +89,8 @@ $(document).ready(function() {
     });
 
     var connectwms = function(url){
+        $('#wms_connect').prop('disabled', true);
+        $('#wms_connect').addClass("asyncload");
         $.ajax({
             url: _wms_metadata_url,
             data: 'url=' + encodeURI(url),
@@ -103,11 +105,15 @@ $(document).ready(function() {
                 $('#layersWms').empty();
                 resultat = data.detail;
                 for(var i = 0; i < resultat.length; i++){
-                    $('#layersWms').append('<option data-xmin='+resultat[i].minx+' data-xmax='+resultat[i].maxx+' data-ymin='+resultat[i].miny+' data-ymax='+resultat[i].maxy+' value='+resultat[i].name+'>' + resultat[i].title + '</option>');
+                    $('#layersWms').append('<option data-id='+resultat[i].id+' data-xmin='+resultat[i].minx+' data-xmax='+resultat[i].maxx+' data-ymin='+resultat[i].miny+' data-ymax='+resultat[i].maxy+' value='+resultat[i].name+'>' + resultat[i].title + '</option>');
                 }
+                $('#wms_connect').prop('disabled', false);
+                $('#wms_connect').removeClass("asyncload");
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+                toastr.error('Error connectant a servei wms:' + jqXHR.responseJSON.detail);
+                $('#wms_connect').prop('disabled', false);
+                $('#wms_connect').removeClass("asyncload");
             }
         });
     }
@@ -232,8 +238,14 @@ $(document).ready(function() {
 
     $('#wms_add').click(function(){
         var selected = $('#layersWms').find(":selected");
-        console.log(selected);
-        console.log(selected.attr('data-xmin'));
+        var id = selected.attr('data-id');
+        var ids = get_capawms_ids();
+        if(ids.indexOf(id) == -1){
+            var new_template = capawms_li_element_template.replace('###label',selected.text());
+            new_template = new_template.replace('###id',id);
+            $('#taulacapes').append(new_template);
+        }
+        $('#capeswms').val(get_capawms_ids());
     });
 
     $(document).on('click','a.close-capawms',function(){
@@ -241,7 +253,12 @@ $(document).ready(function() {
         var li = a.parent();
         var ul = li.parent();
         li.remove();
-        //var capawms_id = $(this).parent().find('.hidden-capawms-id-value').text();
+        $('#capeswms').val(get_capawms_ids());
     });
+
+    var url = $('#id_base_url_wms').val();
+    if(url != '' && url != null){
+        connectwms(url);
+    }
 
 });

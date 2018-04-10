@@ -2,16 +2,27 @@
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
     <link href="{% static 'jstree/dist/themes/default/style.min.css' %}" rel="stylesheet">
     <link href="{% static 'jquery-tagit/css/jquery.tagit.css' %}" rel="stylesheet">
     <link href="{% static 'jquery-tagit/css/tagit.ui-zendesk.css' %}" rel="stylesheet">
+    <style>
+        .hidden-capawms-id-value { display:none; }
+        ul#taulacapes {
+            list-style-type: none;
+        }
+    </style>
 {% endblock %}
 {% block extrahead %}
     <script>
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var csrf_token = '{{ csrf_token }}';
         var wms_url = "{{ wms_url }}";
+        var _wms_metadata_url = '{% url 'wmsmetadata' %}';
     </script>
 {% endblock %}
 {% block main %}

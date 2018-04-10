@@ -4,7 +4,47 @@ var refreshDigitizedGeometry = function(){
     $('#geometria').val( json_string );
 };
 
+var get_capawms_ids = function(){
+    var retVal = new Array();
+    $('.hidden-capawms-id-value').each(function(index,value){
+        retVal.push($(this).text());
+    });
+    return retVal;
+};
+
+var capawms_li_element_template = '<li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable"><span class="tagit-label">###label</span><span class="hidden-capawms-id-value">###id</span><a class="tagit-close close-capawms"><span class="text-icon">x</span><span class="ui-icon ui-icon-close"></span></a></li>';
+
 $(document).ready(function() {
+
+    var connectwms = function(url){
+        $('#wms_connect').prop('disabled', true);
+        $('#wms_connect').addClass("asyncload");
+        $.ajax({
+            url: _wms_metadata_url,
+            data: 'url=' + encodeURI(url),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                $('#layersWms').empty();
+                resultat = data.detail;
+                for(var i = 0; i < resultat.length; i++){
+                    $('#layersWms').append('<option data-id='+resultat[i].id+' data-xmin='+resultat[i].minx+' data-xmax='+resultat[i].maxx+' data-ymin='+resultat[i].miny+' data-ymax='+resultat[i].maxy+' value='+resultat[i].name+'>' + resultat[i].title + '</option>');
+                }
+                $('#wms_connect').prop('disabled', false);
+                $('#wms_connect').removeClass("asyncload");
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error connectant a servei wms:' + jqXHR.responseJSON.detail);
+                $('#wms_connect').prop('disabled', false);
+                $('#wms_connect').removeClass("asyncload");
+            }
+        });
+    }
 
     var uploader = new qq.FileUploader({
         action: _ajax_upload_url,
@@ -86,7 +126,7 @@ $(document).ready(function() {
         refreshDigitizedGeometry();
     });
 
-    var geoJSONLayer = L.geoJson(geometries_json);
+    /*var geoJSONLayer = L.geoJson(geometries_json);
     geoJSONLayer.eachLayer(
         function(l){
             djangoRef_map.editableLayers.addLayer(l);
@@ -97,6 +137,36 @@ $(document).ready(function() {
     djangoRef_map.editableLayers.bringToFront();
     if(djangoRef_map.editableLayers.getBounds().isValid()){
         djangoRef_map.map.fitBounds(djangoRef_map.editableLayers.getBounds());
+    }*/
+
+    $('#wms_connect').click(function(){
+        var url = $('#id_base_url_wms').val();
+        connectwms(url);
+    });
+
+    $('#wms_add').click(function(){
+        var selected = $('#layersWms').find(":selected");
+        var id = selected.attr('data-id');
+        var ids = get_capawms_ids();
+        if(ids.indexOf(id) == -1){
+            var new_template = capawms_li_element_template.replace('###label',selected.text());
+            new_template = new_template.replace('###id',id);
+            $('#taulacapes').append(new_template);
+        }
+        $('#capeswms').val(get_capawms_ids());
+    });
+
+    $(document).on('click','a.close-capawms',function(){
+        var a = $(this);
+        var li = a.parent();
+        var ul = li.parent();
+        li.remove();
+        $('#capeswms').val(get_capawms_ids());
+    });
+
+    var url = $('#id_base_url_wms').val();
+    if(url != '' && url != null){
+        connectwms(url);
     }
 
 });
