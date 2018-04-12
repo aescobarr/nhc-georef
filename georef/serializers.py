@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau
+from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau, Capawms, Capesrecurs
 from georef_addenda.models import Profile, Autor
 from django.contrib.auth.models import User
 
@@ -72,3 +72,9 @@ class ParaulaClauSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paraulaclau
         fields = ('id', 'paraula')
+
+
+class CapawmsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Capawms
+        fields = '__all__'

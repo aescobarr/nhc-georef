@@ -307,6 +307,13 @@ class Capawms(models.Model):
     maxy = models.FloatField(blank=True, null=True)
     boundary = models.GeometryField(blank=True, null=True)
 
+    def crea_query_de_filtre(json_filtre):
+        query = None
+        for criteri in json_filtre:
+            ids_capes = Capesrecurs.objects.filter(idrecurs=criteri['idrecurs']).values_list('idcapa', flat=True)
+            query = Q(id__in=ids_capes)
+        return query
+
     class Meta:
         managed = False
         db_table = 'capawms'
@@ -314,8 +321,8 @@ class Capawms(models.Model):
 
 class Capesrecurs(models.Model):
     id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
-    idcapa = models.ForeignKey(Capawms, models.CASCADE, db_column='idcapa', blank=True, null=True)
-    idrecurs = models.ForeignKey('Recursgeoref', models.CASCADE, db_column='idrecurs', blank=True, null=True)
+    idcapa = models.ForeignKey(Capawms, models.CASCADE, db_column='idcapa', blank=True, null=True, related_name='recursos')
+    idrecurs = models.ForeignKey('Recursgeoref', models.CASCADE, db_column='idrecurs', blank=True, null=True, related_name='capes')
 
     class Meta:
         managed = False

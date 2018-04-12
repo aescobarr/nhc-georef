@@ -1,6 +1,7 @@
 {% extends "georef/base.html" %}
 {% load staticfiles %}
 {% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
@@ -8,6 +9,8 @@
 {% block extrahead %}
     <script>
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
+        var _create_wms_url = "{% url 'wmslocal_create' %}";
+        var _capawmslocal_list_url = "{% url 'capeswmslocals_datatable_list' %}";
         var csrf_token = '{{ csrf_token }}';
     </script>
 {% endblock %}
@@ -29,7 +32,7 @@
                 <div class="col-xs-6">
                     <div class="form-group">
                         <label for="id_nomcapa">Nom de la capa:</label>
-                        <input name="nomcapa" class="form-control" id="id_nomcapa" required="" type="text">
+                        <input name="nomcapa" class="form-control" id="id_nomcapa" required="true" type="text">
                     </div>
                 </div>
                 <div class="col-xs-6">
@@ -37,9 +40,22 @@
                 </div>
             </div>
         </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-2">
+                    <input id="btnCreaCapa" role="button" class="btn btn-success" value="Crear capa WMS" />
+                </div>
+            </div>
+        </div>
+        <div class="container separador_seccio">
+            <table id="capeswmslocal" style="width:100%;"></table>
+        </div>
     </main>
+    <input id="filename" name="filename" type="hidden" value=""/>
 {% endblock %}
 {% block extra_js %}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
     <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
     <script src="{% static 'georef/javascript/capes_wms.js' %}"></script>

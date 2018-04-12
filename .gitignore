@@ -1,6 +1,6 @@
-georef/settings_local.py
-georef/settings_local*
-georef/settings/local.pyc
+djangoref/settings_local.py
+djangoref/settings_local*
+djangoref/settings/local.pyc
 uploads/
 *pyc
 *.egg-info

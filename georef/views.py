@@ -2,7 +2,7 @@ from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref
 from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio
 from django.contrib.auth.models import User
@@ -41,10 +41,15 @@ from django.template.loader import render_to_string
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from owslib.wms import WebMapService
 from django.contrib.gis.geos import Polygon, GEOSGeometry
+from osgeo import gdal, osr, ogr
 
 from weasyprint import HTML, CSS
 import csv
 import xlwt
+
+from geoserver.catalog import Catalog, ConflictingDataError
+from requests.exceptions import ConnectionError
+import geoserver.util
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -271,7 +276,12 @@ def toponims_datatable_list(request):
         response = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,field_translation_list,sort_translation_list)
         return response
 
-
+@api_view(['GET'])
+def capeswmslocals_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('name', 'label',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Capawms, CapawmsSerializer)
+        return response
 
 @api_view(['GET'])
 def filters_datatable_list(request):
@@ -1131,3 +1141,114 @@ import_uploader = AjaxFileUploader()
 def recursos_capeswms(request):
     context = {}
     return render(request, 'georef/capes_wms.html', context)
+
+
+@api_view(['POST'])
+def wmslocal_create(request):
+    file_name = request.POST.get('filename', None)
+    title = request.POST.get('title', None)
+    if file_name is None:
+        content = {'status': 'KO', 'detail': 'mandatory param missing'}
+        return Response(data=content, status=400)
+    filepath = UPLOAD_DIR + '/' + file_name
+    filename = ntpath.basename(os.path.splitext(filepath)[0])
+    layer_name = filename
+    store_name = filename
+    file_type = magic.from_file(filepath)
+    if file_type.lower().startswith('zip archive'):
+        #decompress, check shapefile
+        # Extract file
+        zip_ref = zipfile.ZipFile(filepath, 'r')
+        zip_ref.extractall(UPLOAD_DIR + '/' + filename)
+        zip_ref.close()
+        # Check shapefile
+        # Find and import shapefile
+        os.chdir(UPLOAD_DIR + '/' + filename)
+        for file in glob.glob("*.shp"):
+            presumed_shapefile = magic.from_file(UPLOAD_DIR + '/' + filename + "/" + file)
+            if presumed_shapefile.lower().startswith('esri shapefile'):
+                #OK, apparently is a shapefile. Let's check if the projection is ok
+                infile = ogr.Open(UPLOAD_DIR + '/' + filename + '/' + file)
+                layer = infile.GetLayer()
+                spatialRef = layer.GetSpatialRef()
+                authority = spatialRef.GetAttrValue('authority', 0)
+                srs_code = spatialRef.GetAttrValue('authority', 1)
+                if authority == 'EPSG' and srs_code == '4326':
+                    try:
+                        cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
+                        ws = cat.get_workspace(conf.GEOSERVER_WORKSPACE)
+                        #create_featurestore takes as parameter the whole zipped file
+                        ft = cat.create_featurestore(layer_name, filepath, ws)
+                        resource = cat.get_resource(ntpath.basename(os.path.splitext(file)[0]), workspace=conf.GEOSERVER_WORKSPACE)
+                        resource.title = title
+                        cat.save(resource)
+                        #create associated capawms
+                        wms = WebMapService(conf.GEOSERVER_WMS_URL_CLEAN)
+                        wms_layer = wms.contents[ conf.GEOSERVER_WORKSPACE + ':' + ntpath.basename(os.path.splitext(file)[0]) ]
+                        bounds = wms_layer.boundingBoxWGS84
+                        p = Polygon.from_bbox(bounds)
+                        p_g = GEOSGeometry(str(p), srid=4326)
+                        with transaction.atomic():
+                            capawms = Capawms(baseurlservidor=conf.GEOSERVER_WMS_URL_CLEAN, name=ntpath.basename(os.path.splitext(file)[0]), label=wms_layer.title, minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3], boundary=p_g)
+                            capawms.save()
+                            recurs = Recursgeoref.objects.get(pk='mz_recursgeoref_r')
+                            cr = Capesrecurs(idcapa=capawms, idrecurs=recurs)
+                            cr.save()
+                        content = {'status': 'OK', 'detail': 'its a shapefile, called {}'.format(UPLOAD_DIR + '/' + filename + "/" + file)}
+                        return Response(data=content, status=200)
+                    except ConflictingDataError as ce:
+                        content = {'status': 'KO', 'detail': 'Ja existeix una capa amb el nom {}:{} al servidor geoserver'.format(conf.GEOSERVER_WORKSPACE, layer_name)}
+                        return Response(data=content, status=400)
+                    except ConnectionError as ce:
+                        content = {'status': 'KO','detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(conf.GEOSERVER_REST_URL)}
+                        return Response(data=content, status=400)
+                    except Exception as e:
+                        content = {'status': 'KO', 'detail': 'Error no esperat'}
+                        return Response(data=content, status=400)
+                else:
+                    content = {'status': 'KO', 'detail': 'Projecció {}:{} no suportada. Cal que el shapefile estigui en EPSG:4326'.format(authority,srs_code)}
+                    return Response(data=content, status=400)
+        pass
+    elif file_type.lower().startswith('tiff image data'):
+        #check projection
+        ds = gdal.Open(filepath)
+        prj = ds.GetProjection()
+        srs = osr.SpatialReference(wkt=prj)
+        authority = srs.GetAttrValue('authority',0)
+        srs_code = srs.GetAttrValue('authority',1)
+        if authority == 'EPSG' and srs_code == '4326':
+            cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
+            try:
+                ws = cat.get_workspace(conf.GEOSERVER_WORKSPACE)
+                cat.create_coveragestore(filename, filepath, ws)
+                resource = cat.get_resource(filename, workspace=conf.GEOSERVER_WORKSPACE)
+                resource.title = title
+                cat.save(resource)
+                # create associated capawms
+                wms = WebMapService(conf.GEOSERVER_WMS_URL_CLEAN)
+                wms_layer = wms.contents[conf.GEOSERVER_WORKSPACE + ':' + layer_name]
+                bounds = wms_layer.boundingBoxWGS84
+                p = Polygon.from_bbox(bounds)
+                p_g = GEOSGeometry(str(p), srid=4326)
+                with transaction.atomic():
+                    capawms = Capawms(baseurlservidor=conf.GEOSERVER_WMS_URL_CLEAN, name=layer_name,
+                                      label=wms_layer.title, minx=bounds[0], miny=bounds[1], maxx=bounds[2],
+                                      maxy=bounds[3], boundary=p_g)
+                    capawms.save()
+                    recurs = Recursgeoref.objects.get(pk='mz_recursgeoref_r')
+                    cr = Capesrecurs(idcapa=capawms, idrecurs=recurs)
+                    cr.save()
+                content = {'status': 'OK', 'detail': 'layer name will be {}, store name will be {}'.format(layer_name, store_name)}
+                return Response(data=content, status=200)
+            except ConnectionError as ce:
+                content = {'status': 'KO','detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(conf.GEOSERVER_REST_URL)}
+                return Response(data=content, status=400)
+            except Exception as e:
+                content = {'status': 'KO', 'detail': 'Error no esperat'}
+                return Response(data=content, status=400)
+        else:
+            content = {'status': 'KO','detail': 'La projecció {}:{}, del ràster no està suportada. Cal que el ràster estigui en EPSG:4326'.format(authority,srs_code)}
+            return Response(data=content, status=400)
+    else:
+        content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format( file_type )}
+        return Response(data=content, status=400)
