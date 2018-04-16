@@ -1213,20 +1213,26 @@ def wmslocal_create(request):
                         #cleanup
                         #Delete exploded zip
                         rmtree(UPLOAD_DIR + '/' + filename)
-                        #Delete zip
-                        #os.remove(filepath)
                         content = {'status': 'OK', 'detail': 'its a shapefile, called {}'.format(UPLOAD_DIR + '/' + filename + "/" + file)}
                         return Response(data=content, status=200)
                     except ConflictingDataError as ce:
+                        # Delete exploded zip
+                        rmtree(UPLOAD_DIR + '/' + filename)
                         content = {'status': 'KO', 'detail': 'Ja existeix una capa amb el nom {}:{} al servidor geoserver'.format(conf.GEOSERVER_WORKSPACE, layer_name)}
                         return Response(data=content, status=400)
                     except ConnectionError as ce:
+                        # Delete exploded zip
+                        rmtree(UPLOAD_DIR + '/' + filename)
                         content = {'status': 'KO','detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(conf.GEOSERVER_REST_URL)}
                         return Response(data=content, status=400)
                     except Exception as e:
+                        # Delete exploded zip
+                        rmtree(UPLOAD_DIR + '/' + filename)
                         content = {'status': 'KO', 'detail': 'Error no esperat'}
                         return Response(data=content, status=400)
                 else:
+                    # Delete exploded zip
+                    rmtree(UPLOAD_DIR + '/' + filename)
                     content = {'status': 'KO', 'detail': 'Projecció {}:{} no suportada. Cal que el shapefile estigui en EPSG:4326'.format(authority,srs_code)}
                     return Response(data=content, status=400)
         pass
