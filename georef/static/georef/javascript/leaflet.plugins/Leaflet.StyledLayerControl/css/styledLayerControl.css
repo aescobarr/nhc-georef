@@ -30,7 +30,8 @@
 
 div[id^="leaflet-control-accordion-layers"] > label {
 	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-	padding: 5px 20px;
+	/*padding: 5px 20px;*/
+	padding: 5px 10px;
 	position: relative;
 	z-index: 20;
 	display: block;
@@ -39,7 +40,8 @@ div[id^="leaflet-control-accordion-layers"] > label {
 	color: #777;
 	text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
 	line-height: 33px;
-	font-size: 19px;
+	/*font-size: 19px;*/
+	font-size: 10px;
 	background: #ffffff;
 	background: -moz-linear-gradient(top, #ffffff 1%, #eaeaea 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#ffffff), color-stop(100%,#eaeaea));
@@ -114,7 +116,8 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	max-height : 100px;
 	padding: 8px 0;
 	overflow-y: auto;
-    line-height: 18px;
+    /*line-height: 18px;*/
+    line-height: 14px;
 }
 
 .ac-container article label {
@@ -137,13 +140,15 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 
 .menu-item-radio{
 	font-family: 'Ubuntu-Regular', Arial, sans-serif;
-	font-size: 13px;
+	/*font-size: 13px;*/
+	font-size: 10px;
 
 }
 
 .menu-item-checkbox{
 	font-family: 'Ubuntu-Regular', Arial, sans-serif;
-	font-size: 13px;
+	/*font-size: 13px;*/
+	font-size: 10px;
 
 }
 

@@ -26,6 +26,7 @@ $(document).ready(function() {
             { "data": "name" }
             ,{ "data": "label" }
             ,{ "data": "baseurlservidor" }
+            ,{ "data": "button_delete" }
         ],
         "columnDefs": [
             {
@@ -39,6 +40,12 @@ $(document).ready(function() {
             {
                 "targets":2,
                 "title": "URL servidor wms"
+            },
+            {
+                "targets": -1,
+                "data": null,
+                "defaultContent": "<button class=\"delete_button btn btn-danger\">Esborrar</button>",
+                "sortable": false
             }
         ]
     } );
@@ -73,6 +80,7 @@ $(document).ready(function() {
         multiple: false,
         onSubmit: function(id, fileName){
             $('#filename').val('');
+            this.params.deletePrevious = true;
         },
         onComplete: function(id, fileName, responseJSON) {
             if(responseJSON.success) {
@@ -113,5 +121,53 @@ $(document).ready(function() {
         }else{
             creacapawms(nomCapa,filename);
         }
+    });
+
+    var delete_capawmslocal = function(id){
+        $.ajax({
+            url: _capawmslocal_delete_url + id,
+            method: "DELETE",
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                 toastr.success("Esborrat amb èxit!");
+                 table.ajax.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error("Error esborrant");
+            }
+        });
+    };
+
+    var confirmDialog = function(message,id){
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>'+message+'</h6></div>')
+            .dialog({
+                modal: true, title: 'Esborrant capa wms local...', zIndex: 10000, autoOpen: true,
+                width: 'auto', resizable: false,
+                buttons: {
+                    Yes: function () {
+                        delete_capawmslocal(id);
+                        $(this).dialog("close");
+                    },
+                    No: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+        });
+    };
+
+    $('#capeswmslocal tbody').on('click', 'td button.delete_button', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var id = row.data().id
+        confirmDialog("S'esborrarà la capa local WMS, incloent la capa del servidor geoserver. Vols continuar?",id);
     });
 });

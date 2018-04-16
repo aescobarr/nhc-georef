@@ -50,6 +50,7 @@ import xlwt
 from geoserver.catalog import Catalog, ConflictingDataError
 from requests.exceptions import ConnectionError
 import geoserver.util
+from shutil import rmtree
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -1142,6 +1143,21 @@ def recursos_capeswms(request):
     context = {}
     return render(request, 'georef/capes_wms.html', context)
 
+@api_view(['DELETE'])
+def wmslocal_delete(request):
+    id = request.POST.get('id', None)
+    if id is None:
+        content = {'status': 'KO', 'detail': 'mandatory param missing'}
+        return Response(data=content, status=400)
+    try:
+        c = Capawms.objects.get(pk=id)
+    except Capawms.DoesNotExist as e:
+        content = {'status': 'KO', 'detail': 'object does not exist'}
+        return Response(data=content, status=400)
+    cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
+
+
+
 
 @api_view(['POST'])
 def wmslocal_create(request):
@@ -1178,7 +1194,7 @@ def wmslocal_create(request):
                         cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
                         ws = cat.get_workspace(conf.GEOSERVER_WORKSPACE)
                         #create_featurestore takes as parameter the whole zipped file
-                        ft = cat.create_featurestore(layer_name, filepath, ws)
+                        ft = cat.create_featurestore(ntpath.basename(os.path.splitext(file)[0]), filepath, ws)
                         resource = cat.get_resource(ntpath.basename(os.path.splitext(file)[0]), workspace=conf.GEOSERVER_WORKSPACE)
                         resource.title = title
                         cat.save(resource)
@@ -1194,6 +1210,11 @@ def wmslocal_create(request):
                             recurs = Recursgeoref.objects.get(pk='mz_recursgeoref_r')
                             cr = Capesrecurs(idcapa=capawms, idrecurs=recurs)
                             cr.save()
+                        #cleanup
+                        #Delete exploded zip
+                        rmtree(UPLOAD_DIR + '/' + filename)
+                        #Delete zip
+                        #os.remove(filepath)
                         content = {'status': 'OK', 'detail': 'its a shapefile, called {}'.format(UPLOAD_DIR + '/' + filename + "/" + file)}
                         return Response(data=content, status=200)
                     except ConflictingDataError as ce:
@@ -1238,17 +1259,22 @@ def wmslocal_create(request):
                     recurs = Recursgeoref.objects.get(pk='mz_recursgeoref_r')
                     cr = Capesrecurs(idcapa=capawms, idrecurs=recurs)
                     cr.save()
+                os.remove(filepath)
                 content = {'status': 'OK', 'detail': 'layer name will be {}, store name will be {}'.format(layer_name, store_name)}
                 return Response(data=content, status=200)
             except ConnectionError as ce:
+                os.remove(filepath)
                 content = {'status': 'KO','detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(conf.GEOSERVER_REST_URL)}
                 return Response(data=content, status=400)
             except Exception as e:
+                os.remove(filepath)
                 content = {'status': 'KO', 'detail': 'Error no esperat'}
                 return Response(data=content, status=400)
         else:
+            os.remove(filepath)
             content = {'status': 'KO','detail': 'La projecció {}:{}, del ràster no està suportada. Cal que el ràster estigui en EPSG:4326'.format(authority,srs_code)}
             return Response(data=content, status=400)
     else:
+        os.remove(filepath)
         content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format( file_type )}
         return Response(data=content, status=400)
