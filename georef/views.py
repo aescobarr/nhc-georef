@@ -214,7 +214,7 @@ class ToponimViewSet(viewsets.ModelViewSet):
         queryset = Toponim.objects.all()
         term = self.request.query_params.get('term', None)
         if term is not None:
-            queryset = queryset.filter(nom__icontains=term)
+            queryset = queryset.filter(nom__icontains=term).order_by('nom')
         return queryset
 
 
@@ -495,6 +495,10 @@ def recursos_create(request):
         form = RecursForm()
     return render(request, 'georef/recurs_create.html', {'form': form})
 
+
+def toponims_search(request):
+    context = {}
+    return render(request, 'georef/toponim_search.html', context)
 
 @login_required
 def toponims_create(request):

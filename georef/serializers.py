@@ -29,6 +29,9 @@ class ToponimSerializer(serializers.ModelSerializer):
     nom_str = serializers.ReadOnlyField()
     idtipustoponim = TipusToponimSerializer(required=True)
     editable = serializers.SerializerMethodField()
+    coordenada_x_centroide = serializers.SerializerMethodField()
+    coordenada_y_centroide = serializers.SerializerMethodField()
+    precisio = serializers.SerializerMethodField()
 
     class Meta:
         model = Toponim
@@ -41,6 +44,27 @@ class ToponimSerializer(serializers.ModelSerializer):
         if user.profile.toponim_permission in obj.denormalized_toponimtree:
             return True
         return False
+
+    def get_coordenada_x_centroide(self, obj):
+        darrera_versio = obj.get_darrera_versio()
+        if darrera_versio is None:
+            return None
+        else:
+            return darrera_versio.get_coordenada_x_centroide
+
+    def get_coordenada_y_centroide(self, obj):
+        darrera_versio = obj.get_darrera_versio()
+        if darrera_versio is None:
+            return None
+        else:
+            return darrera_versio.get_coordenada_y_centroide
+
+    def get_precisio(self, obj):
+        darrera_versio = obj.get_darrera_versio()
+        if darrera_versio is None:
+            return None
+        else:
+            return darrera_versio.precisio_h
 
 
 class ToponimVersioSerializer(serializers.ModelSerializer):

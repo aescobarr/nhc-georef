@@ -1,0 +1,49 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _toponim_search_url = "{% url 'toponims-list' %}";
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+      <div class="page-header"></div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Utilitats</li>
+                <li class="breadcrumb-item active">Cerca topònims</li>
+            </ol>
+        </div>
+        <div class="container separador_seccio">
+            <p><strong>Cerca de topònims:</strong></p>
+        </div>
+        <div class="container separador_seccio">
+            <label for="autoc_toponim">Cerca:</label>
+            <input class="form-control" id="autoc_toponim" type="text">
+        </div>
+        <div class="container separador_seccio">
+            <div class="row">
+                <div class="col-xs-2"><label>Topònim:</label></div>
+                <div class="col-xs-10" id="val_nom"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2"><label>Coordenada Y centroide (lat):</label></div>
+                <div class="col-xs-2" id="val_y"></div>
+                <div class="col-xs-2"><label>Coordenada X centroide (long):</label></div>
+                <div class="col-xs-2" id="val_x"></div>
+                <div class="col-xs-2"><label>Incertesa de coordenades (m):</label></div>
+                <div class="col-xs-2" id="val_prec"></div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'georef/javascript/toponim_search.js' %}"></script>
+{% endblock %}

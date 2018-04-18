@@ -93,6 +93,19 @@ class Toponim(models.Model):
         managed = False
         db_table = 'toponim'
 
+    def get_darrera_versio(self):
+        max = -1
+        tv = None
+        for versio in self.versions.all():
+            if max == -1:
+                max = versio.numero_versio
+                tv = versio
+            else:
+                if max >= versio.numero_versio:
+                    max = versio.numero_versio
+                    tv = versio
+        return tv
+
     @property
     def aquatic_str(self):
         return "Sí" if self.aquatic == "S" else "No"
@@ -268,15 +281,29 @@ class Toponimversio(models.Model):
     def centroide_x(self):
         centroide = self.union_geometry()
         if centroide:
-            return centroide.x
+            return centroide.centroid.x
         return None
 
     @property
     def centroide_y(self):
         centroide = self.union_geometry()
         if centroide:
-            return centroide.y
+            return centroide.centroid.y
         return None
+
+    @property
+    def get_coordenada_y_centroide(self):
+        if self.coordenada_y_centroide is None:
+            return self.centroide_y
+        else:
+            return self.coordenada_y_centroide
+
+    @property
+    def get_coordenada_x_centroide(self):
+        if self.coordenada_x_centroide is None:
+            return self.centroide_x
+        else:
+            return self.coordenada_x_centroide
 
 class Paraulaclau(models.Model):
     id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)

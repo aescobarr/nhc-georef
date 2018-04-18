@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^toponims/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.toponims_update, name='toponims_update'),
     url(r'^toponims/update/(?P<idtoponim>[0-9A-Za-z_\-]+)/(?P<idversio>[0-9A-Za-z_\-]+)/$', views.toponims_update_2, name='toponims_update_2'),
     url(r'^toponims/create/$', views.toponims_create, name='toponims_create'),
+    url(r'^toponims/search/$', views.toponims_search, name='toponims_search'),
     url(r'^toponims/list/pdf/$', views.toponims_list_pdf, name='toponims_list_pdf'),
     url(r'^toponims/detail/pdf/(?P<idtoponim>[0-9A-Za-z_\-]+)/$', views.toponims_detail_pdf, name='toponims_detail_pdf'),
     url(r'^toponims/list/csv/$', views.toponims_list_csv, name='toponims_list_csv'),
