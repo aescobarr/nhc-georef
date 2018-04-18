@@ -208,6 +208,18 @@ class Sistemareferenciamm(models.Model):
     def __str__(self):
         return '%s' % (self.nom)
 
+
+class PrefsVisibilitatCapes(models.Model):
+    id = models.CharField(primary_key=True, max_length=100,default=uuid.uuid4)
+    #idusuari = models.ForeignKey('Usuaris', models.CASCADE, db_column='idusuari')
+    iduser = models.ForeignKey(User, models.CASCADE, db_column='iduser', related_name='prefswms', unique=True)
+    prefscapesjson = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'prefs_visibilitat_capes'
+
+
 class Toponimversio(models.Model):
     id = models.CharField(primary_key=True, max_length=200,default=uuid.uuid4)
     codi = models.CharField(max_length=50, blank=True, null=True)

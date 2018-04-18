@@ -2,6 +2,7 @@ from rest_framework import serializers
 from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau, Capawms, Capesrecurs
 from georef_addenda.models import Profile, Autor
 from django.contrib.auth.models import User
+import json
 
 
 class TipusToponimSerializer(serializers.ModelSerializer):
@@ -75,6 +76,19 @@ class ParaulaClauSerializer(serializers.ModelSerializer):
 
 
 class CapawmsSerializer(serializers.ModelSerializer):
+
+    visible = serializers.SerializerMethodField()
+
     class Meta:
         model = Capawms
-        fields = '__all__'
+        fields = ('id','baseurlservidor','name','label','minx','maxx','miny','maxy','boundary','visible')
+
+    def get_visible(self, obj):
+        user = self.context['request'].user
+        if len(user.prefswms.all()) > 0:
+            prefs = user.prefswms.first()
+            p_json = json.loads(prefs.prefscapesjson)
+            for elem in p_json:
+                if elem['id'] == obj.id:
+                    return True
+        return False

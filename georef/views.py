@@ -1,8 +1,9 @@
 from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
-from rest_framework import status,viewsets
-from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer
+from rest_framework import status, viewsets
+from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, \
+    UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref
 from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio
 from django.contrib.auth.models import User
@@ -14,13 +15,14 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
-from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, Suport, Capawms, Capesrecurs
+from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, \
+    Suport, Capawms, Capesrecurs, PrefsVisibilitatCapes
 import json
 from json import dumps
 import magic
 import zipfile
 from djangoref.settings import *
-import glob,os
+import glob, os
 import ntpath
 import shapefile
 import djangoref.settings as conf
@@ -29,10 +31,12 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm, NewUserForm, RecursForm
+from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm, NewUserForm, \
+    RecursForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
-from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, compute_denormalized_toponim_tree_val_to_root
+from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, \
+    compute_denormalized_toponim_tree_val_to_root
 from django.contrib.gis.geos import GEOSGeometry, GeometryCollection
 
 from django.core.files.storage import FileSystemStorage
@@ -51,6 +55,7 @@ from geoserver.catalog import Catalog, ConflictingDataError
 from requests.exceptions import ConnectionError
 import geoserver.util
 from shutil import rmtree
+from georef.jsonprefs import JsonPrefsUtil
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -83,18 +88,21 @@ def get_filter_clause(params_dict, fields, translation_dict=None):
             for field in fields:
                 if translation_dict:
                     translated_field_name = translation_dict[field]
-                    filter_clause.append( Q(**{translated_field_name+'__icontains':q}) )
+                    filter_clause.append(Q(**{translated_field_name + '__icontains': q}))
                 else:
                     filter_clause.append(Q(**{field + '__icontains': q}))
     except KeyError:
         pass
     return filter_clause
 
+
 """
 Request is a rest_framework request
 """
-def generic_datatable_list_endpoint(request, search_field_list, queryClass, classSerializer, field_translation_dict=None, order_translation_dict=None, paginate=True):
 
+
+def generic_datatable_list_endpoint(request, search_field_list, queryClass, classSerializer,
+                                    field_translation_dict=None, order_translation_dict=None, paginate=True):
     '''
     request.query_params works only for rest_framework requests, but not for WSGI requests. request.GET[key] works for
     both types of requests
@@ -148,18 +156,18 @@ def generic_datatable_list_endpoint(request, search_field_list, queryClass, clas
         recordsFiltered = recordsTotal
         page = int(start) / int(length) + 1
 
-        serializer = classSerializer(paginator.page(page), many=True, context={'request':request})
+        serializer = classSerializer(paginator.page(page), many=True, context={'request': request})
     else:
-        serializer = classSerializer(queryset, many=True, context={'request':request})
+        serializer = classSerializer(queryset, many=True, context={'request': request})
         recordsTotal = queryset.count()
         recordsFiltered = recordsTotal
 
-    return Response({'draw': draw, 'recordsTotal': recordsTotal, 'recordsFiltered': recordsFiltered, 'data': serializer.data})
+    return Response(
+        {'draw': draw, 'recordsTotal': recordsTotal, 'recordsFiltered': recordsFiltered, 'data': serializer.data})
 
 
 def index(request):
     return render(request, 'georef/index.html')
-
 
 
 class AutorViewSet(viewsets.ModelViewSet):
@@ -192,6 +200,7 @@ class ToponimVersioViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -230,14 +239,15 @@ class RecursGeoRefViewSet(viewsets.ModelViewSet):
     queryset = Recursgeoref.objects.all()
     serializer_class = RecursgeorefSerializer
 
+
 @api_view(['GET'])
 def check_filtre(request):
     if request.method == 'GET':
         nomfiltre = request.query_params.get('nomfiltre', None)
         modul = request.query_params.get('modul', None)
         if nomfiltre is None:
-            content = {'status': 'KO', 'detail':'mandatory param missing'}
-            return Response(data=content,status=400)
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
         if modul is None:
             content = {'status': 'KO', 'detail': 'mandatory param missing'}
             return Response(data=content, status=400)
@@ -250,14 +260,19 @@ def check_filtre(request):
                 content = {'status': 'KO', 'detail': 'exists_not'}
                 return Response(data=content, status=200)
 
+
 @api_view(['GET'])
 def users_datatable_list(request):
     if request.method == 'GET':
         search_field_list = ('user.username', 'user.first_name', 'user.last_name', 'user.email')
-        sort_translation_list = {'user.username':'user__username', 'user.first_name':'user__first_name', 'user.last_name':'user__last_name', 'user.email':'user__email'}
-        field_translation_list = {'user.username':'user__username', 'user.first_name':'user__first_name', 'user.last_name':'user__last_name', 'user.email':'user__email'}
-        response = generic_datatable_list_endpoint(request, search_field_list, Profile, ProfileSerializer, field_translation_list, sort_translation_list)
+        sort_translation_list = {'user.username': 'user__username', 'user.first_name': 'user__first_name',
+                                 'user.last_name': 'user__last_name', 'user.email': 'user__email'}
+        field_translation_list = {'user.username': 'user__username', 'user.first_name': 'user__first_name',
+                                  'user.last_name': 'user__last_name', 'user.email': 'user__email'}
+        response = generic_datatable_list_endpoint(request, search_field_list, Profile, ProfileSerializer,
+                                                   field_translation_list, sort_translation_list)
         return response
+
 
 @api_view(['GET'])
 def recursos_datatable_list(request):
@@ -265,17 +280,23 @@ def recursos_datatable_list(request):
         search_field_list = ('nom',)
         sort_translation_list = {}
         field_translation_list = {}
-        response = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer,field_translation_list,sort_translation_list)
+        response = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer,
+                                                   field_translation_list, sort_translation_list)
         return response
+
 
 @api_view(['GET'])
 def toponims_datatable_list(request):
     if request.method == 'GET':
         search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
-        sort_translation_list = {'nom_str' : 'nom', 'aquatic_str' : 'aquatic', 'idtipustoponim.nom' : 'idtipustoponim__nom' }
-        field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom' : 'idtipustoponim__nom' }
-        response = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,field_translation_list,sort_translation_list)
+        sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic',
+                                 'idtipustoponim.nom': 'idtipustoponim__nom'}
+        field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic',
+                                  'idtipustoponim.nom': 'idtipustoponim__nom'}
+        response = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,
+                                                   field_translation_list, sort_translation_list)
         return response
+
 
 @api_view(['GET'])
 def capeswmslocals_datatable_list(request):
@@ -283,6 +304,7 @@ def capeswmslocals_datatable_list(request):
         search_field_list = ('name', 'label',)
         response = generic_datatable_list_endpoint(request, search_field_list, Capawms, CapawmsSerializer)
         return response
+
 
 @api_view(['GET'])
 def filters_datatable_list(request):
@@ -294,49 +316,6 @@ def filters_datatable_list(request):
 
 @api_view(['GET'])
 def process_shapefile(request):
-    if request.method == 'GET':
-        path = request.query_params.get('path', None)
-        if path is None:
-            content = {'success': False, 'detail': 'Ruta de fitxer incorrecta o fitxer no trobat!'}
-            return Response(data=content, status=400)
-        else:
-            filepath = path
-            filename = ntpath.basename(os.path.splitext(filepath)[0])
-            presumed_zipfile = magic.from_file(filepath)
-            if not presumed_zipfile.lower().startswith('zip archive'):
-                content = {'success': False, 'detail': 'No sembla que el fitxer sigui un zip correcte'}
-                return Response(data=content, status=400)
-            else:
-                #Extract file
-                zip_ref = zipfile.ZipFile(filepath, 'r')
-                zip_ref.extractall(BASE_DIR + "/uploads/" + filename)
-                zip_ref.close()
-                #Find and import shapefile
-                os.chdir(BASE_DIR + "/uploads/" + filename)
-                for file in glob.glob("*.shp"):
-                    presumed_shapefile = magic.from_file(BASE_DIR + "/uploads/" + filename + "/" + file)
-                    if presumed_shapefile.lower().startswith('esri shapefile'):
-                        sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
-                        fields = sf.fields[1:]
-                        field_names = [field[0] for field in fields]
-                        buffer = []
-                        for sr in sf.shapeRecords():
-                            atr = dict(zip(field_names, sr.record))
-                            geom = sr.shape.__geo_interface__
-                            buffer.append(dict(type="Feature", geometry=geom, properties=atr))
-                        geojson = dumps({"type": "FeatureCollection", "features": buffer})
-                        content = {'success': True, 'detail': geojson}
-                        return Response(data=content, status=200)
-                    else:
-                        content = {'success': False, 'detail': 'El fitxer shapefile té un format incorrecte'}
-                        return Response(data=content, status=200)
-                content = {'success': False, 'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
-                return Response(data=content, status=200)
-
-
-'''
-@api_view(['GET'])
-def get_centroid_from_shapefile(request):
     if request.method == 'GET':
         path = request.query_params.get('path', None)
         if path is None:
@@ -364,13 +343,11 @@ def get_centroid_from_shapefile(request):
                         field_names = [field[0] for field in fields]
                         buffer = []
                         for sr in sf.shapeRecords():
+                            atr = dict(zip(field_names, sr.record))
                             geom = sr.shape.__geo_interface__
-                            geojson = dumps(geom)
-                            geosgeom = GEOSGeometry(geojson)
-                            buffer.append(geosgeom)
-                        gc = GeometryCollection(buffer)
-                        centroid_geojson = dumps(gc.centroid.geojson)
-                        content = {'success': True, 'detail': centroid_geojson}
+                            buffer.append(dict(type="Feature", geometry=geom, properties=atr))
+                        geojson = dumps({"type": "FeatureCollection", "features": buffer})
+                        content = {'success': True, 'detail': geojson}
                         return Response(data=content, status=200)
                     else:
                         content = {'success': False, 'detail': 'El fitxer shapefile té un format incorrecte'}
@@ -378,7 +355,6 @@ def get_centroid_from_shapefile(request):
                 content = {'success': False,
                            'detail': 'No he trobat cap fitxer amb extensió *.shp dins del zip, no puc importar res.'}
                 return Response(data=content, status=200)
-'''
 
 
 @login_required
@@ -406,7 +382,8 @@ def recursos(request):
     csrf_token = get_token(request)
     llista_tipus = Suport.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
-    return render(request, 'georef/recursos_list.html', context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token})
+    return render(request, 'georef/recursos_list.html',
+                  context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token})
 
 
 @login_required
@@ -415,7 +392,9 @@ def toponims(request):
     wms_url = conf.GEOSERVER_WMS_URL
     llista_tipus = Tipustoponim.objects.order_by('nom')
     llista_paisos = Pais.objects.order_by('nom')
-    return render(request, 'georef/toponims_list.html', context={ 'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token, 'wms_url':wms_url })
+    return render(request, 'georef/toponims_list.html',
+                  context={'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token,
+                           'wms_url': wms_url})
 
 
 @login_required
@@ -425,7 +404,7 @@ def toponimstree(request):
 
 def get_node_from_toponim(toponim):
     if Toponim.objects.filter(idpare=toponim.id).exists():
-        toponim_node = { 'text' : toponim.nom_str, 'id': toponim.id, 'children':True}
+        toponim_node = {'text': toponim.nom_str, 'id': toponim.id, 'children': True}
     else:
         toponim_node = {'text': toponim.nom_str, 'id': toponim.id}
     return toponim_node
@@ -438,7 +417,7 @@ def toponimstreenode(request):
         data = []
         node_id = request.query_params.get('id', None)
         if node_id == '#':
-            elem = {'text': 'Tots els topònims', 'id': '1', 'parent': '#', 'children' : True }
+            elem = {'text': 'Tots els topònims', 'id': '1', 'parent': '#', 'children': True}
             return Response(data=elem, status=200)
         elif node_id == '1':
             toponims = Toponim.objects.filter(idpare__isnull=True).order_by('nom')
@@ -472,7 +451,7 @@ def recursos_create(request):
         if form.is_valid():
             with transaction.atomic():
                 recurs = form.save(commit=False)
-                paraules_clau_string = request.POST.get("paraulesclau","")
+                paraules_clau_string = request.POST.get("paraulesclau", "")
                 autors_string = request.POST.get("autors", "")
                 capeswms_string = request.POST.get("capeswms", "")
                 paraules_clau = paraules_clau_string.split(',')
@@ -507,14 +486,14 @@ def recursos_create(request):
                 for capa in capeswms_tokens:
                     if capa != '':
                         c = Capawms.objects.get(pk=capa)
-                        cr = Capesrecurs(idcapa=c,idrecurs=recurs)
+                        cr = Capesrecurs(idcapa=c, idrecurs=recurs)
                         cr.save()
 
                 url = reverse('recursos')
                 return HttpResponseRedirect(url)
     else:
         form = RecursForm()
-    return render(request, 'georef/recurs_create.html',{'form':form})
+    return render(request, 'georef/recurs_create.html', {'form': form})
 
 
 @login_required
@@ -523,7 +502,7 @@ def toponims_create(request):
         form = ToponimsUpdateForm(request.POST or None)
         if form.is_valid():
             form.save()
-            url = reverse('toponims_update_2', kwargs = {'idtoponim': form.instance.id, 'idversio':'-1'})
+            url = reverse('toponims_update_2', kwargs={'idtoponim': form.instance.id, 'idversio': '-1'})
             return HttpResponseRedirect(url)
     else:
         this_user = request.user
@@ -536,30 +515,34 @@ def toponims_create(request):
             node_ini = '1'
             nodelist_full = ['1']
         form = ToponimsUpdateForm()
-    return render(request, 'georef/toponim_create.html', {'form': form, 'wms_url': conf.GEOSERVER_WMS_URL, 'node_ini': node_ini, 'nodelist_full': nodelist_full})
+    return render(request, 'georef/toponim_create.html',
+                  {'form': form, 'wms_url': conf.GEOSERVER_WMS_URL, 'node_ini': node_ini,
+                   'nodelist_full': nodelist_full})
 
 
 def recursgeoref_geometries_to_geojson(recurs):
     geometries = recurs.geometries.all()
     geos = []
     for geom in geometries:
-        geos.append({'type': 'Feature', 'properties': {}, 'geometry': json.loads(geom.geometria.json) })
+        geos.append({'type': 'Feature', 'properties': {}, 'geometry': json.loads(geom.geometria.json)})
     features = {
         'type': 'FeatureCollection',
         'features': geos
     }
     return json.dumps(features)
 
+
 def toponimversio_geometries_to_geojson(toponimversio):
     geometries = toponimversio.geometries.all()
     geos = []
     for geom in geometries:
-        geos.append({'type': 'Feature', 'properties': {}, 'geometry': json.loads(geom.geometria.json) })
+        geos.append({'type': 'Feature', 'properties': {}, 'geometry': json.loads(geom.geometria.json)})
     features = {
         'type': 'FeatureCollection',
         'features': geos
     }
     return json.dumps(features)
+
 
 @login_required
 def toponims_update_2(request, idtoponim=None, idversio=None):
@@ -578,14 +561,16 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             node_ini = this_user.profile.toponim_permission
         else:
             toponim_mes_alt = Toponim.objects.get(pk=this_user.profile.toponim_permission)
-            message = ('No tens permís per editar aquest topònim. El topònim més alt a l\'arbre que pots editar és %s i aquest està jeràrquicament per sobre. Operació no permesa.') % (toponim_mes_alt.nom_str)
+            message = (
+                          'No tens permís per editar aquest topònim. El topònim més alt a l\'arbre que pots editar és %s i aquest està jeràrquicament per sobre. Operació no permesa.') % (
+                          toponim_mes_alt.nom_str)
             return HttpResponse(message)
     if request.method == 'GET':
         if idversio == '-1':
             if (len(toponimsversio) > 0):
                 versio = toponimsversio[0]
                 id_darrera_versio = versio.id
-        elif idversio == '-2': #Afegint nova versió
+        elif idversio == '-2':  # Afegint nova versió
             id_darrera_versio = '-2'
         else:
             versio = get_object_or_404(Toponimversio, pk=idversio)
@@ -698,7 +683,8 @@ def recursos_list_csv(request):
     search_field_list = ('nom',)
     sort_translation_list = {}
     field_translation_list = {}
-    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer, field_translation_list, sort_translation_list, paginate=False)
+    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer,
+                                           field_translation_list, sort_translation_list, paginate=False)
 
     records = data.data['data']
 
@@ -711,12 +697,14 @@ def recursos_list_csv(request):
 
     return response
 
+
 @login_required
 def recursos_list_xls(request):
     search_field_list = ('nom',)
     sort_translation_list = {}
     field_translation_list = {}
-    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer, field_translation_list, sort_translation_list, paginate=False)
+    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer,
+                                           field_translation_list, sort_translation_list, paginate=False)
     records = data.data['data']
 
     response = HttpResponse(content_type='application/ms-excel')
@@ -746,12 +734,14 @@ def recursos_list_xls(request):
     wb.save(response)
     return response
 
+
 @login_required
 def toponims_list_xls(request):
     search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
     sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
     field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
-    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,field_translation_list, sort_translation_list, paginate=False)
+    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,
+                                           field_translation_list, sort_translation_list, paginate=False)
     records = data.data['data']
 
     response = HttpResponse(content_type='application/ms-excel')
@@ -789,7 +779,8 @@ def recursos_list_pdf(request):
     search_field_list = ('nom',)
     sort_translation_list = {}
     field_translation_list = {}
-    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer, field_translation_list, sort_translation_list, paginate=False)
+    data = generic_datatable_list_endpoint(request, search_field_list, Recursgeoref, RecursgeorefSerializer,
+                                           field_translation_list, sort_translation_list, paginate=False)
 
     records = data.data['data']
     html_string = render_to_string('georef/reports/recursos_list_pdf.html',
@@ -812,10 +803,12 @@ def toponims_list_pdf(request):
     search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
     sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
     field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
-    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer, field_translation_list, sort_translation_list,paginate=False)
+    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,
+                                           field_translation_list, sort_translation_list, paginate=False)
 
     records = data.data['data']
-    html_string = render_to_string('georef/reports/toponims_list_pdf.html', {'title': 'Llistat de topònims', 'records': records})
+    html_string = render_to_string('georef/reports/toponims_list_pdf.html',
+                                   {'title': 'Llistat de topònims', 'records': records})
 
     html = HTML(string=html_string)
     html.write_pdf(target='/tmp/mypdf.pdf');
@@ -828,20 +821,19 @@ def toponims_list_pdf(request):
 
     return response
 
+
 @login_required
 def toponims_detail_pdf(request, idtoponim=None):
+    toponim = get_object_or_404(Toponim, pk=idtoponim)
 
-    toponim = get_object_or_404(Toponim,pk=idtoponim)
-
-    html_string = render_to_string('georef/reports/toponim_detail_pdf.html',{'toponim':toponim})
+    html_string = render_to_string('georef/reports/toponim_detail_pdf.html', {'toponim': toponim})
     georef_css = CSS('georef/static/georef/css/georef.css')
-    #simple_grid = CSS('georef/static/georef/css/grid/simple-grid.css')
-    #styles = [simple_grid, georef_css]
+    # simple_grid = CSS('georef/static/georef/css/grid/simple-grid.css')
+    # styles = [simple_grid, georef_css]
     styles = [georef_css]
 
     html = HTML(string=html_string)
     html.write_pdf(target='/tmp/mypdf.pdf', stylesheets=styles)
-
 
     fs = FileSystemStorage('/tmp')
     with fs.open('mypdf.pdf') as pdf:
@@ -857,18 +849,20 @@ def toponims_list_csv(request):
     search_field_list = ('nom_str', 'aquatic_str', 'idtipustoponim.nom')
     sort_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
     field_translation_list = {'nom_str': 'nom', 'aquatic_str': 'aquatic', 'idtipustoponim.nom': 'idtipustoponim__nom'}
-    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer, field_translation_list, sort_translation_list, paginate=False)
+    data = generic_datatable_list_endpoint(request, search_field_list, Toponim, ToponimSerializer,
+                                           field_translation_list, sort_translation_list, paginate=False)
 
     records = data.data['data']
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
     writer = csv.writer(response, delimiter=';')
-    writer.writerow(['nom_toponim','aquatic?','tipus_toponim'])
+    writer.writerow(['nom_toponim', 'aquatic?', 'tipus_toponim'])
     for record in records:
         writer.writerow([record['nom_str'], record['aquatic'], record['idtipustoponim']['nom']])
 
     return response
+
 
 @login_required
 def my_profile(request):
@@ -883,7 +877,7 @@ def my_profile(request):
             successfully_saved = False
     else:
         user_form = UserForm(instance=this_user)
-    return render(request, 'georef/profile.html',{'user_form': user_form, 'successfully_saved': successfully_saved})
+    return render(request, 'georef/profile.html', {'user_form': user_form, 'successfully_saved': successfully_saved})
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -909,8 +903,10 @@ def user_profile(request, user_id=None):
             nodelist_full = ['1']
         else:
             toponim = get_object_or_404(Toponim, pk=this_user.profile.toponim_permission)
-            nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim,[]))
-    return render(request, 'georef/user_profile.html', {'user_id': this_user.id,'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
+            nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val_to_root(toponim, []))
+    return render(request, 'georef/user_profile.html',
+                  {'user_id': this_user.id, 'user_form': user_form, 'profile_form': profile_form,
+                   'nodelist_full': nodelist_full})
 
 
 @login_required
@@ -931,7 +927,7 @@ def change_my_password(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 @login_required
-def change_password(request,user_id=None):
+def change_password(request, user_id=None):
     this_user = get_object_or_404(User, pk=user_id)
     if request.method == 'POST':
         form = ChangePasswordForm(request.POST)
@@ -971,7 +967,8 @@ def user_new(request):
     else:
         user_form = NewUserForm()
         profile_form = ProfileForm()
-    return render(request, 'georef/user_new.html', {'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
+    return render(request, 'georef/user_new.html',
+                  {'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
 
 
 @login_required
@@ -984,7 +981,9 @@ def recursos_update(request, id=None):
     moretoponims = len(queryset) > 20
     capeswms = recurs.capes_wms_recurs.all()
     form = RecursForm(request.POST or None, instance=recurs)
-    context = { 'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'capeswms': capeswms, 'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims, 'wms_url':wms_url, 'geometries_json': geometries_json }
+    context = {'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'capeswms': capeswms,
+               'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims,
+               'wms_url': wms_url, 'geometries_json': geometries_json}
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():
@@ -1033,7 +1032,7 @@ def recursos_update(request, id=None):
                 for capa in capeswms_tokens:
                     if capa != '':
                         c = Capawms.objects.get(pk=capa)
-                        cr = Capesrecurs(idcapa=c,idrecurs=recurs)
+                        cr = Capesrecurs(idcapa=c, idrecurs=recurs)
                         cr.save()
 
                 url = reverse('recursos_update', kwargs={'id': form.instance.id})
@@ -1047,8 +1046,8 @@ def wmsmetadata(request):
     if request.method == 'GET':
         url = request.query_params.get('url', None)
         if url is None:
-            content = {'status': 'KO', 'detail':'mandatory param missing'}
-            return Response(data=content,status=400)
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
         else:
             try:
                 wms = WebMapService(url)
@@ -1059,18 +1058,23 @@ def wmsmetadata(request):
                     p = Polygon.from_bbox(bounds)
                     p_g = GEOSGeometry(str(p), srid=4326)
                     try:
-                        cached_layer = Capawms.objects.get(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title)
+                        cached_layer = Capawms.objects.get(baseurlservidor=url, name=wms[layer].name,
+                                                           label=wms[layer].title)
                         cached_layer.minx = bounds[0]
                         cached_layer.miny = bounds[1]
                         cached_layer.maxx = bounds[2]
                         cached_layer.maxy = bounds[3]
                         cached_layer.boundary = p_g
                     except Capawms.DoesNotExist:
-                        cached_layer = Capawms(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title, minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3], boundary=p_g)
+                        cached_layer = Capawms(baseurlservidor=url, name=wms[layer].name, label=wms[layer].title,
+                                               minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3],
+                                               boundary=p_g)
 
                     cached_layer.save()
 
-                    records.append({'id': cached_layer.id, 'name': cached_layer.name, 'title': cached_layer.label, 'minx': cached_layer.minx, 'miny': cached_layer.miny, 'maxx': cached_layer.maxx, 'maxy': cached_layer.maxy})
+                    records.append({'id': cached_layer.id, 'name': cached_layer.name, 'title': cached_layer.label,
+                                    'minx': cached_layer.minx, 'miny': cached_layer.miny, 'maxx': cached_layer.maxx,
+                                    'maxy': cached_layer.maxy})
                 content = {'status': 'OK', 'detail': records}
                 return Response(data=content, status=200)
             except Exception as e:
@@ -1083,7 +1087,7 @@ def toponims_update(request, id=None):
     toponim = get_object_or_404(Toponim, pk=id)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
     desat_amb_exit = False
-    ToponimversioFormSet = formset_factory(ToponimversioForm,extra=0)
+    ToponimversioFormSet = formset_factory(ToponimversioForm, extra=0)
     toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
     toponimsversio_data = [
         {
@@ -1105,7 +1109,7 @@ def toponims_update(request, id=None):
             toponim_form.save()
             versions = []
             for form in toponimversio_form:
-                #toponimversio = form.instance
+                # toponimversio = form.instance
                 toponimversio = Toponimversio(
                     numero_versio=form.cleaned_data.get('numero_versio'),
                     idqualificador=form.cleaned_data.get('idqualificador'),
@@ -1134,29 +1138,110 @@ def toponims_update(request, id=None):
         'saved_success': desat_amb_exit,
         'wms_url': conf.GEOSERVER_WMS_URL
     }
-    return render(request, 'georef/toponim_update.html',context)
+    return render(request, 'georef/toponim_update.html', context)
+
 
 import_uploader = AjaxFileUploader()
+
 
 @login_required
 def recursos_capeswms(request):
     context = {}
     return render(request, 'georef/capes_wms.html', context)
 
+
+@login_required
+def prefsvisualitzaciowms(request):
+    context = {}
+    return render(request, 'georef/prefsvisualitzaciowms.html', context)
+
+
+@api_view(['POST'])
+def toggle_prefs_wms(request):
+    if request.method == 'POST':
+        current_user = request.user
+        id = request.POST.get('id', None)
+        value = request.POST.get('value', None)
+        if id is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        if value is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            if value == 'true':
+                b_val = True
+            else:
+                b_val = False
+        try:
+            prefs = PrefsVisibilitatCapes.objects.get(iduser=current_user)
+        except PrefsVisibilitatCapes.DoesNotExist as e:
+            prefs = PrefsVisibilitatCapes(iduser=current_user, prefscapesjson='[]')
+            prefs.save()
+        json_prefs = JsonPrefsUtil(prefs.prefscapesjson)
+        if b_val:
+            # Add layer to json
+            json_prefs.set_layer_to_visible(id)
+        else:
+            json_prefs.set_layer_not_visible(id)
+        prefs.prefscapesjson = json_prefs.to_string()
+        prefs.save()
+        content = {'status': 'OK', 'detail': 'all cool'}
+        return Response(data=content, status=200)
+
+
 @api_view(['DELETE'])
-def wmslocal_delete(request):
-    id = request.POST.get('id', None)
-    if id is None:
-        content = {'status': 'KO', 'detail': 'mandatory param missing'}
-        return Response(data=content, status=400)
-    try:
-        c = Capawms.objects.get(pk=id)
-    except Capawms.DoesNotExist as e:
-        content = {'status': 'KO', 'detail': 'object does not exist'}
-        return Response(data=content, status=400)
-    cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
+def wmslocal_delete(request, id=None):
+    if request.method == 'DELETE':
+        if id is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        try:
+            c = Capawms.objects.get(pk=id)
+        except Capawms.DoesNotExist as e:
+            content = {'status': 'KO', 'detail': 'object does not exist'}
+            return Response(data=content, status=400)
 
+        try:
+            r = Recursgeoref.objects.get(pk='mz_recursgeoref_r')
+        except Recursgeoref.DoesNotExist as e:
+            content = {'status': 'KO', 'detail': 'recurs does not exist'}
+            return Response(data=content, status=400)
 
+        try:
+            cr = Capesrecurs(idcapa=c, idrecurs=r)
+        except Capesrecurs.DoesNotExist as e:
+            # Not critical
+            pass
+
+        ## REMOVE FROM GEOSERVER ##
+        try:
+            cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
+            st = cat.get_store(c.name)
+            # Load layer
+            layer = cat.get_layer(c.name)
+            # Delete layer
+            cat.delete(layer)
+            # Reload catalog to make it aware it no longer contains the layer
+            cat.reload()
+            # Remove store
+            cat.delete(st)
+        except ConnectionError as ce:
+            content = {'status': 'KO', 'detail': 'Error de connexio amb la instancia de geoserver'}
+            return Response(data=content, status=400)
+
+        ## REMOVE FROM DATABASE ##
+        try:
+            with transaction.atomic():
+                if cr is not None:
+                    cr.delete()
+                c.delete()
+        except Exception as e:
+            content = {'status': 'KO', 'detail': 'unexpected error: ' + str(e)}
+            return Response(data=content, status=400)
+
+        content = {'status': 'OK', 'detail': 'deleted'}
+        return Response(data=content, status=200)
 
 
 @api_view(['POST'])
@@ -1172,7 +1257,7 @@ def wmslocal_create(request):
     store_name = filename
     file_type = magic.from_file(filepath)
     if file_type.lower().startswith('zip archive'):
-        #decompress, check shapefile
+        # decompress, check shapefile
         # Extract file
         zip_ref = zipfile.ZipFile(filepath, 'r')
         zip_ref.extractall(UPLOAD_DIR + '/' + filename)
@@ -1183,7 +1268,7 @@ def wmslocal_create(request):
         for file in glob.glob("*.shp"):
             presumed_shapefile = magic.from_file(UPLOAD_DIR + '/' + filename + "/" + file)
             if presumed_shapefile.lower().startswith('esri shapefile'):
-                #OK, apparently is a shapefile. Let's check if the projection is ok
+                # OK, apparently is a shapefile. Let's check if the projection is ok
                 infile = ogr.Open(UPLOAD_DIR + '/' + filename + '/' + file)
                 layer = infile.GetLayer()
                 spatialRef = layer.GetSpatialRef()
@@ -1193,37 +1278,47 @@ def wmslocal_create(request):
                     try:
                         cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
                         ws = cat.get_workspace(conf.GEOSERVER_WORKSPACE)
-                        #create_featurestore takes as parameter the whole zipped file
+                        # create_featurestore takes as parameter the whole zipped file
                         ft = cat.create_featurestore(ntpath.basename(os.path.splitext(file)[0]), filepath, ws)
-                        resource = cat.get_resource(ntpath.basename(os.path.splitext(file)[0]), workspace=conf.GEOSERVER_WORKSPACE)
+                        resource = cat.get_resource(ntpath.basename(os.path.splitext(file)[0]),
+                                                    workspace=conf.GEOSERVER_WORKSPACE)
                         resource.title = title
                         cat.save(resource)
-                        #create associated capawms
+                        # create associated capawms
                         wms = WebMapService(conf.GEOSERVER_WMS_URL_CLEAN)
-                        wms_layer = wms.contents[ conf.GEOSERVER_WORKSPACE + ':' + ntpath.basename(os.path.splitext(file)[0]) ]
+                        wms_layer = wms.contents[
+                            conf.GEOSERVER_WORKSPACE + ':' + ntpath.basename(os.path.splitext(file)[0])]
                         bounds = wms_layer.boundingBoxWGS84
                         p = Polygon.from_bbox(bounds)
                         p_g = GEOSGeometry(str(p), srid=4326)
                         with transaction.atomic():
-                            capawms = Capawms(baseurlservidor=conf.GEOSERVER_WMS_URL_CLEAN, name=ntpath.basename(os.path.splitext(file)[0]), label=wms_layer.title, minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3], boundary=p_g)
+                            capawms = Capawms(baseurlservidor=conf.GEOSERVER_WMS_URL_CLEAN,
+                                              name=ntpath.basename(os.path.splitext(file)[0]), label=wms_layer.title,
+                                              minx=bounds[0], miny=bounds[1], maxx=bounds[2], maxy=bounds[3],
+                                              boundary=p_g)
                             capawms.save()
                             recurs = Recursgeoref.objects.get(pk='mz_recursgeoref_r')
                             cr = Capesrecurs(idcapa=capawms, idrecurs=recurs)
                             cr.save()
-                        #cleanup
-                        #Delete exploded zip
+                        # cleanup
+                        # Delete exploded zip
                         rmtree(UPLOAD_DIR + '/' + filename)
-                        content = {'status': 'OK', 'detail': 'its a shapefile, called {}'.format(UPLOAD_DIR + '/' + filename + "/" + file)}
+                        content = {'status': 'OK', 'detail': 'its a shapefile, called {}'.format(
+                            UPLOAD_DIR + '/' + filename + "/" + file)}
                         return Response(data=content, status=200)
                     except ConflictingDataError as ce:
                         # Delete exploded zip
                         rmtree(UPLOAD_DIR + '/' + filename)
-                        content = {'status': 'KO', 'detail': 'Ja existeix una capa amb el nom {}:{} al servidor geoserver'.format(conf.GEOSERVER_WORKSPACE, layer_name)}
+                        content = {'status': 'KO',
+                                   'detail': 'Ja existeix una capa amb el nom {}:{} al servidor geoserver'.format(
+                                       conf.GEOSERVER_WORKSPACE, layer_name)}
                         return Response(data=content, status=400)
                     except ConnectionError as ce:
                         # Delete exploded zip
                         rmtree(UPLOAD_DIR + '/' + filename)
-                        content = {'status': 'KO','detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(conf.GEOSERVER_REST_URL)}
+                        content = {'status': 'KO',
+                                   'detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(
+                                       conf.GEOSERVER_REST_URL)}
                         return Response(data=content, status=400)
                     except Exception as e:
                         # Delete exploded zip
@@ -1233,16 +1328,18 @@ def wmslocal_create(request):
                 else:
                     # Delete exploded zip
                     rmtree(UPLOAD_DIR + '/' + filename)
-                    content = {'status': 'KO', 'detail': 'Projecció {}:{} no suportada. Cal que el shapefile estigui en EPSG:4326'.format(authority,srs_code)}
+                    content = {'status': 'KO',
+                               'detail': 'Projecció {}:{} no suportada. Cal que el shapefile estigui en EPSG:4326'.format(
+                                   authority, srs_code)}
                     return Response(data=content, status=400)
         pass
     elif file_type.lower().startswith('tiff image data'):
-        #check projection
+        # check projection
         ds = gdal.Open(filepath)
         prj = ds.GetProjection()
         srs = osr.SpatialReference(wkt=prj)
-        authority = srs.GetAttrValue('authority',0)
-        srs_code = srs.GetAttrValue('authority',1)
+        authority = srs.GetAttrValue('authority', 0)
+        srs_code = srs.GetAttrValue('authority', 1)
         if authority == 'EPSG' and srs_code == '4326':
             cat = Catalog(conf.GEOSERVER_REST_URL, conf.GEOSERVER_USER, conf.GEOSERVER_PASSWORD)
             try:
@@ -1266,11 +1363,14 @@ def wmslocal_create(request):
                     cr = Capesrecurs(idcapa=capawms, idrecurs=recurs)
                     cr.save()
                 os.remove(filepath)
-                content = {'status': 'OK', 'detail': 'layer name will be {}, store name will be {}'.format(layer_name, store_name)}
+                content = {'status': 'OK',
+                           'detail': 'layer name will be {}, store name will be {}'.format(layer_name, store_name)}
                 return Response(data=content, status=200)
             except ConnectionError as ce:
                 os.remove(filepath)
-                content = {'status': 'KO','detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(conf.GEOSERVER_REST_URL)}
+                content = {'status': 'KO',
+                           'detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(
+                               conf.GEOSERVER_REST_URL)}
                 return Response(data=content, status=400)
             except Exception as e:
                 os.remove(filepath)
@@ -1278,9 +1378,11 @@ def wmslocal_create(request):
                 return Response(data=content, status=400)
         else:
             os.remove(filepath)
-            content = {'status': 'KO','detail': 'La projecció {}:{}, del ràster no està suportada. Cal que el ràster estigui en EPSG:4326'.format(authority,srs_code)}
+            content = {'status': 'KO',
+                       'detail': 'La projecció {}:{}, del ràster no està suportada. Cal que el ràster estigui en EPSG:4326'.format(
+                           authority, srs_code)}
             return Response(data=content, status=400)
     else:
         os.remove(filepath)
-        content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format( file_type )}
+        content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format(file_type)}
         return Response(data=content, status=400)

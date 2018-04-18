@@ -1,0 +1,38 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var csrf_token = '{{ csrf_token }}';
+        var _capawmslocal_list_url = "{% url 'capeswmslocals_datatable_list' %}";
+        var _toggle_prefs_wms = "{% url 'toggle_prefs_wms' %}";
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+      <div class="page-header"></div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Recursos cartogràfics</li>
+                <li class="breadcrumb-item active">Preferències visualització capes WMS</li>
+            </ol>
+        </div>
+        <div class="container separador_seccio">
+            <p><strong>Preferències de visualització de capes WMS:</strong></p>
+        </div>
+        <div class="container separador_seccio">
+            <table id="prefscapes" style="width:100%;"></table>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'georef/javascript/prefsvisualitzaciowms.js' %}"></script>
+{% endblock %}

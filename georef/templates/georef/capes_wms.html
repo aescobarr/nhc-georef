@@ -10,6 +10,7 @@
     <script>
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var _create_wms_url = "{% url 'wmslocal_create' %}";
+        var _delete_wms_url = "{% url 'wmslocal_delete_noparam' %}";
         var _capawmslocal_list_url = "{% url 'capeswmslocals_datatable_list' %}";
         var csrf_token = '{{ csrf_token }}';
     </script>
@@ -20,7 +21,7 @@
         <div class="container">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Recursos</li>
+                <li class="breadcrumb-item">Recursos cartogràfics</li>
                 <li class="breadcrumb-item active">Càrrega de capes WMS pròpies</li>
             </ol>
         </div>
