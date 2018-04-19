@@ -23,12 +23,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = '__all__'
 
-
-class ToponimSerializer(serializers.ModelSerializer):
+class ToponimSearchSerializer(serializers.ModelSerializer):
     aquatic_str = serializers.ReadOnlyField()
     nom_str = serializers.ReadOnlyField()
     idtipustoponim = TipusToponimSerializer(required=True)
-    editable = serializers.SerializerMethodField()
     coordenada_x_centroide = serializers.SerializerMethodField()
     coordenada_y_centroide = serializers.SerializerMethodField()
     precisio = serializers.SerializerMethodField()
@@ -36,14 +34,6 @@ class ToponimSerializer(serializers.ModelSerializer):
     class Meta:
         model = Toponim
         fields = '__all__'
-
-    def get_editable(self, obj):
-        user = self.context['request'].user
-        if user.profile.toponim_permission == '1':
-            return True
-        if user.profile.toponim_permission in obj.denormalized_toponimtree:
-            return True
-        return False
 
     def get_coordenada_x_centroide(self, obj):
         darrera_versio = obj.get_darrera_versio()
@@ -65,6 +55,24 @@ class ToponimSerializer(serializers.ModelSerializer):
             return None
         else:
             return darrera_versio.precisio_h
+
+class ToponimSerializer(serializers.ModelSerializer):
+    aquatic_str = serializers.ReadOnlyField()
+    nom_str = serializers.ReadOnlyField()
+    idtipustoponim = TipusToponimSerializer(required=True)
+    editable = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Toponim
+        fields = '__all__'
+
+    def get_editable(self, obj):
+        user = self.context['request'].user
+        if user.profile.toponim_permission == '1':
+            return True
+        if user.profile.toponim_permission in obj.denormalized_toponimtree:
+            return True
+        return False
 
 
 class ToponimVersioSerializer(serializers.ModelSerializer):

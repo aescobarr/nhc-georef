@@ -6,7 +6,7 @@
 {% endblock %}
 {% block extrahead %}
     <script>
-        var _toponim_search_url = "{% url 'toponims-list' %}";
+        var _toponim_search_url = "{% url 'toponimsearch-list' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -28,15 +28,17 @@
         </div>
         <div class="container separador_seccio">
             <div class="row">
-                <div class="col-xs-2"><label>Topònim:</label></div>
+                <div class="col-xs-2"><span class="label label-primary">Topònim:</span></div>
                 <div class="col-xs-10" id="val_nom"></div>
             </div>
+        </div>
+        <div class="container separador_seccio">
             <div class="row">
-                <div class="col-xs-2"><label>Coordenada Y centroide (lat):</label></div>
+                <div class="col-xs-2"><span class="label label-primary">Coordenada Y centroide (lat):</span></div>
                 <div class="col-xs-2" id="val_y"></div>
-                <div class="col-xs-2"><label>Coordenada X centroide (long):</label></div>
+                <div class="col-xs-2"><span class="label label-primary">Coordenada X centroide (long):</span></div>
                 <div class="col-xs-2" id="val_x"></div>
-                <div class="col-xs-2"><label>Incertesa de coordenades (m):</label></div>
+                <div class="col-xs-2"><span class="label label-primary">Incertesa de coordenades (m):</span></div>
                 <div class="col-xs-2" id="val_prec"></div>
             </div>
         </div>
