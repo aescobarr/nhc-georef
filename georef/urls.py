@@ -6,6 +6,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'toponims', views.ToponimViewSet, base_name='toponims')
+router.register(r'toponimsearch', views.ToponimSearchViewSet, base_name='toponimsearch')
 router.register(r'filtres', views.FiltrejsonViewSet, base_name='filtres')
 router.register(r'recursgeoref', views.RecursGeoRefViewSet, base_name='recursgeoref')
 router.register(r'versions', views.ToponimVersioViewSet, base_name='versions')
@@ -47,6 +48,7 @@ urlpatterns = [
     url(r'^recursos/list/pdf/$', views.recursos_list_pdf, name='recursos_list_pdf'),
     url(r'^users/list/$', views.users_list, name='users_list'),
     url(r'^toponimstree$', views.toponimstree, name='toponimstree'),
+    url(r'^calculcentroides', views.calculcentroides, name='calculcentroides'),
     #url(r'^toponimstree/(?P<node_id>[\w\-]+)/$', views.toponimstreenode, name='toponimstreenode'),
     url(r'^toponimstree/$', views.toponimstreenode, name='toponimstreenode'),
     url(r'^toponimfilters$', views.toponimfilters, name='toponimfilters'),

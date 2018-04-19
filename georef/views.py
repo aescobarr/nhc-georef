@@ -3,7 +3,7 @@ from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status, viewsets
 from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, \
-    UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer
+    UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer, ToponimSearchSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref
 from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio
 from django.contrib.auth.models import User
@@ -207,6 +207,16 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
+class ToponimSearchViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ToponimSearchSerializer
+
+    def get_queryset(self):
+        queryset = Toponim.objects.all()
+        term = self.request.query_params.get('term', None)
+        if term is not None:
+            queryset = queryset.filter(nom__icontains=term).order_by('nom')
+        return queryset
+
 class ToponimViewSet(viewsets.ModelViewSet):
     serializer_class = ToponimSerializer
 
@@ -395,6 +405,10 @@ def toponims(request):
     return render(request, 'georef/toponims_list.html',
                   context={'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token,
                            'wms_url': wms_url})
+
+@login_required
+def calculcentroides(request):
+    return render(request, 'georef/calculcentroides.html')
 
 
 @login_required
@@ -1247,6 +1261,57 @@ def wmslocal_delete(request, id=None):
         content = {'status': 'OK', 'detail': 'deleted'}
         return Response(data=content, status=200)
 
+@api_view(['POST'])
+def compute_shapefile_centroid(request):
+    file_name = request.POST.get('filename', None)
+    if file_name is None:
+        content = {'status': 'KO', 'detail': 'mandatory param missing'}
+        return Response(data=content, status=400)
+    filepath = UPLOAD_DIR + '/' + file_name
+    filename = ntpath.basename(os.path.splitext(filepath)[0])
+    file_type = magic.from_file(filepath)
+    if file_type.lower().startswith('zip archive'):
+        # decompress, check shapefile
+        # Extract file
+        zip_ref = zipfile.ZipFile(filepath, 'r')
+        zip_ref.extractall(UPLOAD_DIR + '/' + filename)
+        zip_ref.close()
+        # Check shapefile
+        # Find and import shapefile
+        os.chdir(UPLOAD_DIR + '/' + filename)
+        for file in glob.glob("*.shp"):
+            presumed_shapefile = magic.from_file(UPLOAD_DIR + '/' + filename + "/" + file)
+            if presumed_shapefile.lower().startswith('esri shapefile'):
+                # OK, apparently is a shapefile. Let's check if the projection is ok
+                infile = ogr.Open(UPLOAD_DIR + '/' + filename + '/' + file)
+                layer = infile.GetLayer()
+                spatialRef = layer.GetSpatialRef()
+                authority = spatialRef.GetAttrValue('authority', 0)
+                srs_code = spatialRef.GetAttrValue('authority', 1)
+                if authority == 'EPSG' and srs_code == '4326':
+                    sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
+                    fields = sf.fields[1:]
+                    field_names = [field[0] for field in fields]
+                    buffer = []
+                    for sr in sf.shapeRecords():
+                        atr = dict(zip(field_names, sr.record))
+                        geom = sr.shape.__geo_interface__
+                        buffer.append(dict(type="Feature", geometry=geom, properties=atr))
+                    geojson = dumps({"type": "FeatureCollection", "features": buffer})
+                    content = {'success': True, 'detail': geojson}
+                    return Response(data=content, status=200)
+                else:
+                    # Delete exploded zip
+                    rmtree(UPLOAD_DIR + '/' + filename)
+                    content = {'status': 'KO',
+                               'detail': 'Projecció {}:{} no suportada. Cal que el shapefile estigui en EPSG:4326'.format(
+                                   authority, srs_code)}
+                    return Response(data=content, status=400)
+
+    else:
+        os.remove(filepath)
+        content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format(file_type)}
+        return Response(data=content, status=400)
 
 @api_view(['POST'])
 def wmslocal_create(request):

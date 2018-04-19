@@ -1,0 +1,44 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _ajax_upload_url = "{% url 'ajax_upload' %}";
+        var csrf_token = '{{ csrf_token }}';
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="page-header"></div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Utilitats</li>
+                <li class="breadcrumb-item active">Calcula centroides</li>
+            </ol>
+        </div>
+        <div class="container separador_seccio">
+            <p><strong>Càlcul de centroides:</strong></p>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div id="fileuploader"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <input id="filename" name="filename" type="hidden" value=""/>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
+    <script src="{% static 'georef/javascript/calculcentroides.js' %}"></script>
+{% endblock %}
