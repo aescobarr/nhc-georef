@@ -28,6 +28,13 @@
         </div>
         <div class="container separador_seccio">
             <div class="row">
+                <div class="col-xs-12">
+                    <button data-toggle="tooltip" title="Copiar resultats al portapapers" id="clipboard" type="button" class="btn btn-primary"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container separador_seccio">
+            <div class="row">
                 <div class="col-xs-2"><span class="label label-primary">Topònim:</span></div>
                 <div class="col-xs-10" id="val_nom"></div>
             </div>
@@ -47,5 +54,6 @@
 {% block extra_js %}
     <script src="{% static 'georef/javascript/cookies.js'%}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'georef/javascript/utils.js'%}"></script>
     <script src="{% static 'georef/javascript/toponim_search.js' %}"></script>
 {% endblock %}

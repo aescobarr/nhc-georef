@@ -26,4 +26,11 @@ $(document).ready(function() {
             return false;
         }
     });
+
+    $( '#clipboard' ).click(function() {
+        var text = '';
+        text = $('#val_nom').text() + ' lat:' + $('#val_y').text() + ' long:' + $('#val_x').text() + ' prec:' + $('#val_prec').text();
+        copyToClipboard(text);
+        toastr.success("Resultats copiats al portapapers!");
+    });
 });

@@ -56,6 +56,7 @@ from requests.exceptions import ConnectionError
 import geoserver.util
 from shutil import rmtree
 from georef.jsonprefs import JsonPrefsUtil
+import pyproj
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -1261,9 +1262,19 @@ def wmslocal_delete(request, id=None):
         content = {'status': 'OK', 'detail': 'deleted'}
         return Response(data=content, status=200)
 
+
+def get_max_distance(coords, centroid):
+    max_dist = 0
+    geod = pyproj.Geod(ellps='WGS84')
+    for coord in coords:
+        angle1, angle2, distance = geod.inv(centroid.x, centroid.y, coord[0], coord[1])
+        if distance >= 0:
+            max_dist = distance
+    return max_dist
+
+
 @api_view(['POST'])
-def compute_shapefile_centroid(request):
-    file_name = request.POST.get('filename', None)
+def compute_shapefile_centroid(request, file_name=None):
     if file_name is None:
         content = {'status': 'KO', 'detail': 'mandatory param missing'}
         return Response(data=content, status=400)
@@ -1293,13 +1304,37 @@ def compute_shapefile_centroid(request):
                     fields = sf.fields[1:]
                     field_names = [field[0] for field in fields]
                     buffer = []
+                    geometry_union = None
+                    coords = []
                     for sr in sf.shapeRecords():
                         atr = dict(zip(field_names, sr.record))
                         geom = sr.shape.__geo_interface__
-                        buffer.append(dict(type="Feature", geometry=geom, properties=atr))
-                    geojson = dumps({"type": "FeatureCollection", "features": buffer})
-                    content = {'success': True, 'detail': geojson}
-                    return Response(data=content, status=200)
+                        geometry = GEOSGeometry(dumps(geom))
+                        if geometry.geom_type == 'LineString':
+                            for coord in geometry.coords:
+                                coords.append(coord)
+                        elif geometry.geom_type == 'Point':
+                            coords.append(geometry.coords)
+                        elif geometry.geom_type == 'Polygon':
+                            for linestring in geometry.coords:
+                                for coord in linestring:
+                                    coords.append(coord)
+                        else:
+                            content = {'status': 'KO', 'detail': 'Tipus de geometria desconegut: ' + geometry.geom_type}
+                            return Response(data=content, status=400)
+                        if geometry_union is None:
+                            geometry_union = geometry
+                        else:
+                            geometry_union = geometry_union.union(geometry)
+                    if geometry_union is None:
+                        content = {'status': 'KO','detail': 'El fitxer shapefile no conté geometria. No puc calcular res.'}
+                        return Response(data=content, status=400)
+                    else:
+                        centroid = geometry_union.centroid
+                        radi_incertesa = get_max_distance(coords, centroid)
+                        results = { 'centroid_x': centroid.x, 'centroid_y': centroid.y, 'inc': radi_incertesa}
+                        content = {'status': 'OK', 'detail': results}
+                        return Response(data=content, status=200)
                 else:
                     # Delete exploded zip
                     rmtree(UPLOAD_DIR + '/' + filename)
@@ -1310,7 +1345,7 @@ def compute_shapefile_centroid(request):
 
     else:
         os.remove(filepath)
-        content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format(file_type)}
+        content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat: "{}"'.format(file_type)}
         return Response(data=content, status=400)
 
 @api_view(['POST'])

@@ -70,10 +70,10 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                table.ajax.reload();
+                table.ajax.reload(null,false);
             },
             error: function(jqXHR, textStatus, errorThrown){
-                table.ajax.reload();
+                table.ajax.reload(null,false);
             }
         });
     }
