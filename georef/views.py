@@ -57,6 +57,7 @@ import geoserver.util
 from shutil import rmtree
 from georef.jsonprefs import JsonPrefsUtil
 import pyproj
+from georef.csv_import import check_file_structure, NumberOfColumnsException, EmptyFileException
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -753,6 +754,10 @@ def recursos_list_xls(request):
     wb.save(response)
     return response
 
+@login_required
+def toponims_import(request):
+    context = {}
+    return render(request, 'georef/toponims_import.html', context)
 
 @login_required
 def toponims_list_xls(request):
@@ -1272,6 +1277,43 @@ def get_max_distance(coords, centroid):
             max_dist = distance
     return max_dist
 
+
+@api_view(['POST'])
+def import_toponims(request, file_name=None):
+    if file_name is None or file_name.strip() == '':
+        content = {'status': 'KO', 'detail': 'mandatory param missing'}
+        return Response(data=content, status=400)
+    filepath = UPLOAD_DIR + '/' + file_name
+    filename = ntpath.basename(os.path.splitext(filepath)[0])
+    file_type = magic.from_file(filepath)
+    if not 'text' in file_type:
+        content = {'status': 'KO', 'detail': file_type}
+        return Response(data=content, status=400)
+    else: #seems to be text file
+        #read file
+        file_array = []
+        errors = []
+        with open(filepath,'rt') as csvfile:
+            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            csvfile.seek(0)
+            reader = csv.reader(csvfile,dialect)
+            for row in reader:
+                file_array.append(row)
+            try:
+                check_file_structure(file_array)
+            except NumberOfColumnsException as n:
+                details = n.args[0]
+                msg = "Problema amb l'estructura del fitxer. S'esperaven 17 columnes i se n'han trobat " + details["numcols"] + " a la fila " + details["numrow"]
+                errors.append(msg)
+            except EmptyFileException as e:
+                msg = "Sembla que el fitxer té menys de 2 línies"
+                errors.append(msg)
+        if len(errors) > 0:
+            content = {'status': 'KO', 'detail': errors}
+            return Response(data=content, status=400)
+        else:
+            content = {'status': 'OK', 'detail': file_type}
+            return Response(data=content, status=200)
 
 @api_view(['POST'])
 def compute_shapefile_centroid(request, file_name=None):

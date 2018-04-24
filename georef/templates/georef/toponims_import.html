@@ -1,0 +1,74 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _ajax_upload_url = "{% url 'ajax_upload' %}";
+        var csrf_token = '{{ csrf_token }}';
+        var _import_csv_url = "{% url 'import_toponims' %}";
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+      <div class="page-header"></div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Utilitats</li>
+                <li class="breadcrumb-item active">Importació de topònims</li>
+            </ol>
+        </div>
+        <div class="container separador_seccio">
+            <p><strong>Utilitat d'importació de topònims des de CSV:</strong></p>
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+            <p>Aquesta eina permet importar topònims des d'un fitxer csv.</p>
+            <button data-toggle="tooltip" title="Detalls" id="details" type="button" class="btn btn-primary">Explica'm més...</button>
+            <div class="persiana" style="display: none;">
+                <p>Per tal que el csv sigui compatible, cal que s'acompleixi el següent:</p>
+                <p>El fitxer ha de ser un csv vàlid, amb el símbol ";" com a separador de columnes. Es considera que el fitxer té una primera fila amb
+                    els noms de columnes, de manera que la primera línia del fitxer no es processa mai. Per evitar problemes amb caràcters especials,
+                    el fitxer hauria de tenir codificació UTF-8. Les columnes del fitxer han de ser les següents, en el següent ordre:</p>
+                <p><ul>
+                    <li>Nom</li>
+                    <li>Tipus</li>
+                    <li>País</li>
+                    <li>Aquàtic</li>
+                    <li>Node superior</li>
+                    <li>Número de versió</li>
+                    <li>Qualificador de la versió</li>
+                    <li>Versió capturada del recurs</li>
+                    <li>Nom del topònim al recurs</li>
+                    <li>Data</li>
+                    <li>Coordenada X original (LONG)</li>
+                    <li>Coordenada Y original (LAT)</li>
+                    <li>Coordenada Z</li>
+                    <li>Incertesa de coordenades (m)</li>
+                    <li>Incertesa d'altitud (m)</li>
+                    <li>Georeferenciador</li>
+                    <li>Observacions</li>
+                    <li>Georef a Node Superior</li>
+                </ul></p>
+                <p>En carregar el fitxer, es repassen totes les files del mateix per comprovar que no hi hagi errors. Si hi
+                    ha errors, es mostrarà una finestra amb un llistat dels mateixos indicant la línia i columna
+                    problemàtiques. Caldrà que l'usuari solventi tots aquests errors abans de carregar les dades.
+                    Un cop carregades les dades, es mostrarà un informe de sortida amb un llistat dels informes que s'han
+                    afegit. Es podrà descarregar un informe de sortida en format csv.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-md-offset-3 separador_seccio">
+            <div id="fileuploader"></div>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'georef/javascript/utils.js'%}"></script>
+    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponims_import.js' %}"></script>
+{% endblock %}
