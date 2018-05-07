@@ -11,15 +11,14 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                //toastr.success('Capa WMS creada amb èxit!');
-                //table.ajax.reload();
-                //$('#id_nomcapa').val('');
-                console.log(data.detail);
+                //console.log(data.detail);
+                processResponse(data.detail);
                 $('.qq-upload-list').empty();
             },
             error: function(jqXHR, textStatus, errorThrown){
                 console.log(jqXHR.responseJSON);
                 toastr.error(jqXHR.responseJSON.detail);
+                processResponse(jqXHR.responseJSON);
             }
         });
     }
@@ -35,8 +34,8 @@ $(document).ready(function() {
         onComplete: function(id, fileName, responseJSON) {
             if(responseJSON.success) {
                 //$('#filename').val(responseJSON.filename);
-                toastr.success('Fitxer carregat al servidor amb èxit!')
-                console.log(responseJSON.detail);
+                //toastr.success('Fitxer carregat al servidor amb èxit!')
+                //console.log(responseJSON.detail);
                 import_csv(responseJSON.filename);
             } else {
                 toastr.error('Error pujant fitxer!')
@@ -62,6 +61,42 @@ $(document).ready(function() {
             $('.persiana').fadeOut( "slow", function(){});
         }
     });
+
+    var processResponse = function(responseJSON){
+        if(responseJSON.status=='KO'){
+            var message = responseToHTML(responseJSON.detail);
+            mostrarCaixaErrors(message);
+        }else{
+            buildTable(responseJSON);
+        }
+    };
+
+    var mostrarCaixaErrors = function(text){
+            var missatge = "<h3>El fitxer csv conté alguns errors:</h3><ul>";
+            missatge += "<li>"+text+"</li>";
+            var caixa = $("#errors");
+            //caixa.innerHTML = missatge+"</ul>";
+            caixa.html(missatge+"</ul>");
+            caixa.show();
+            /*caixa.style.display = "block";
+            caixa.style.visibility = "visible";*/
+    };
+
+    var responseToHTML = function(response){
+        var html = new Array();
+        for(var i=0; i < response.length; i++){
+            result = response[i];
+            if(result[0] == -1){
+                html.push("<p><strong>Error general de fitxer:</strong></p>");
+            }else{
+                html.push("<p><strong>Línia " + result[0] + " :</strong></p>");
+            }
+            for(var j=0; j < result[1].length; j++){
+                html.push("<p>   * " + result[1][j] + "</p>");
+            }
+        }
+        return html.join("");
+    };
 
 
 });

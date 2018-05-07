@@ -1,3 +1,5 @@
+import uuid
+
 def append_string_to_toponim(toponim, current_elements):
     if toponim.idpare:
         current_elements.append(toponim.idpare.id + '$' + toponim.idpare.nom)

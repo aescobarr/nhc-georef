@@ -57,7 +57,7 @@ import geoserver.util
 from shutil import rmtree
 from georef.jsonprefs import JsonPrefsUtil
 import pyproj
-from georef.csv_import import check_file_structure, NumberOfColumnsException, EmptyFileException
+from georef.csv_import import check_file_structure, NumberOfColumnsException, EmptyFileException, process_line
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -1292,7 +1292,11 @@ def import_toponims(request, file_name=None):
     else: #seems to be text file
         #read file
         file_array = []
+        raw_lines = []
         errors = []
+        with open(filepath) as f:
+            raw_lines = f.readlines()
+        raw_lines = [x.strip() for x in raw_lines]
         with open(filepath,'rt') as csvfile:
             dialect = csv.Sniffer().sniff(csvfile.read(1024))
             csvfile.seek(0)
@@ -1308,6 +1312,16 @@ def import_toponims(request, file_name=None):
             except EmptyFileException as e:
                 msg = "Sembla que el fitxer té menys de 2 línies"
                 errors.append(msg)
+
+            contador_fila = 1
+            toponims_exist = []
+            toponims_to_create = []
+            problems = {}
+            if len(errors) == 0:
+                for fila, linia in zip(file_array[1:], raw_lines[1:]):
+                    process_line(fila, linia, errors, toponims_exist, toponims_to_create, contador_fila, problems, filename)
+                    contador_fila += 1
+
         if len(errors) > 0:
             content = {'status': 'KO', 'detail': errors}
             return Response(data=content, status=400)
