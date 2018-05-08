@@ -46,10 +46,15 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from owslib.wms import WebMapService
 from django.contrib.gis.geos import Polygon, GEOSGeometry
 from osgeo import gdal, osr, ogr
+from django.conf import settings
 
 from weasyprint import HTML, CSS
 import csv
 import xlwt
+from tempfile import mkstemp
+import os
+import uuid
+
 
 from geoserver.catalog import Catalog, ConflictingDataError
 from requests.exceptions import ConnectionError
@@ -1326,8 +1331,48 @@ def import_toponims(request, file_name=None):
             content = {'status': 'KO', 'detail': errors}
             return Response(data=content, status=400)
         else:
-            content = {'status': 'OK', 'detail': file_type}
+            for toponim_and_versio in toponims_to_create:
+                t = toponim_and_versio['toponim']
+                v = toponim_and_versio['versio']
+                t.save()
+                v.idtoponim = t
+                v.save()
+            success_report = create_success_report(toponims_to_create, toponims_exist)
+            filelink = create_result_csv(toponims_to_create, toponims_exist, request)
+            content = {'status': 'OK', 'detail': file_type, 'results': success_report, 'fileLink': filelink}
             return Response(data=content, status=200)
+
+
+def create_result_csv(toponims_to_create, toponims_exist, request):
+    file_name = str(uuid.uuid4()) + ".csv"
+    file_path = UPLOAD_DIR + "/" + file_name
+    with open(file_path, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter = ';', quotechar='"')
+        csvwriter.writerow(['Nom topònim', 'Enllaç al topònim' , 'Afegit o existent?'])
+        for info_elem in toponims_to_create:
+            toponim_url = request.build_absolute_uri( reverse('toponims_update_2', args=[info_elem['toponim'].id,'-1']) )
+            csvwriter.writerow([info_elem['toponim'].nom, toponim_url,'afegit'])
+        for toponim in toponims_exist:
+            toponim_url = request.build_absolute_uri( reverse('toponims_update_2', args=[toponim.id, '-1']) )
+            csvwriter.writerow([toponim.nom, toponim_url, 'existent'])
+    csvfile.close()
+    return "/" + settings.MEDIA_URL + file_name
+
+
+def create_success_report(toponims_to_create, toponims_exist):
+    report = []
+    report.append({'numToponimsCreats': len(toponims_to_create) })
+    report.append({'numToponimsJaExisteixen': len(toponims_exist)})
+    created = []
+    existing = []
+    for info_elem in toponims_to_create:
+        created.append({ 'id': info_elem['toponim'].id, 'nom': info_elem['toponim'].nom })
+    report.append( { 'creats': created } )
+    for toponim in toponims_exist:
+        existing.append( { 'id': toponim.id, 'nom': toponim.nom } )
+    report.append({'existents': existing })
+    return report
+
 
 @api_view(['POST'])
 def compute_shapefile_centroid(request, file_name=None):
