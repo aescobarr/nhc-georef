@@ -309,3 +309,30 @@ table#recurs_edit {
     background-repeat: no-repeat;background-position: right;
     padding-right: 18px;
 }
+
+/*
+table.toponimsimportats{
+    border: 0px;
+}
+
+table.toponimsimportats tr{
+    border: 0px;
+}
+
+table.toponimsimportats tr td{
+    border: 0px;
+    font-size: 9px;
+}
+
+table.toponimsimportats th{
+    border: 0px;
+}
+*/
+
+table.toponimsimportats tbody tr.even{
+    background-color: #D2D2D2;
+}
+
+table.toponimsimportats tbody tr.odd{
+    background-color: #ffdbbc;
+}

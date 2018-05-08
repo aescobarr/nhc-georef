@@ -12,12 +12,12 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 //console.log(data.detail);
-                processResponse(data.detail);
+                processResponse(jqXHR.responseJSON);
                 $('.qq-upload-list').empty();
             },
             error: function(jqXHR, textStatus, errorThrown){
                 console.log(jqXHR.responseJSON);
-                toastr.error(jqXHR.responseJSON.detail);
+                //toastr.error(jqXHR.responseJSON.detail);
                 processResponse(jqXHR.responseJSON);
             }
         });
@@ -29,6 +29,7 @@ $(document).ready(function() {
         multiple: false,
         onSubmit: function(id, fileName){
             $('#filename').val('');
+            resetInterface();
             this.params.deletePrevious = true;
         },
         onComplete: function(id, fileName, responseJSON) {
@@ -71,8 +72,12 @@ $(document).ready(function() {
         }
     };
 
+    var resetInterface = function(){
+        $("#errors").hide();
+    }
+
     var mostrarCaixaErrors = function(text){
-            var missatge = "<h3>El fitxer csv conté alguns errors:</h3><ul>";
+            var missatge = "<h3>El fitxer csv conté alguns errors. Cal arreglar-los i tornar-ho a intentar:</h3><ul>";
             missatge += "<li>"+text+"</li>";
             var caixa = $("#errors");
             //caixa.innerHTML = missatge+"</ul>";
@@ -96,6 +101,62 @@ $(document).ready(function() {
             }
         }
         return html.join("");
+    };
+
+    var buildTable = function(responseJSON){
+        var tbl_summary_body = "";
+        var tbl_summary_head = "";
+        var tbl_creats_body = "";
+        var tbl_creats_head = "";
+        var tbl_existents_body = "";
+        var tbl_existents_head = "";
+        var tbl_body = "";
+        var tbl_head = "";
+        var odd_even = false;
+
+        tbl_summary_head = "<tr><th>Sumari de resultats importacio</th><th>&nbsp;</th></tr>"
+        tbl_summary_body = "<tr><td>Número de topònims creats</td><td>" + responseJSON.results[0].numToponimsCreats + "</td></tr><tr><td>Topònims que ja existien</td><td>" + responseJSON.results[1].numToponimsJaExisteixen + "</td></tr>"
+        $("#sumari thead").html(tbl_summary_head);
+        $("#sumari tbody").html(tbl_summary_body);
+
+        if(responseJSON.results[2].creats.length > 0){
+            tbl_creats_head = "<tr><th>Topònims creats</th><th>&nbsp;</th></tr>";
+            tbl_creats_head += "<tr><th>Nom del topònim</th><th>Enllaç al topònim</th></tr>";
+            var creats_body_arr = new Array();
+            for( var i = 0; i < responseJSON.results[2].creats.length; i++ ){
+                var fila = "<tr class=\""+( odd_even ? "odd" : "even")+"\">" + "<td>" + responseJSON.results[2].creats[i].nom + "</td><td><a target=\"_blank\" href=\"/Zoologia/toponims/editartoponim.htm?idtoponim=" + responseJSON.results[2].creats[i].id + "\">Link</a></td></tr>";
+                creats_body_arr.push(fila);
+                odd_even = !odd_even;
+            }
+            tbl_creats_body = creats_body_arr.join("");
+            $("#creats thead").html(tbl_creats_head);
+            $("#creats tbody").html(tbl_creats_body);
+        }else{
+            $("#creats thead").html("");
+            $("#creats tbody").html("");
+        }
+
+        if(responseJSON.results[3].existents.length > 0){
+            tbl_existents_head = "<tr><th>Topònims que ja existien a la base de dades (no s'han importat)</th><th>&nbsp;</th></tr>";
+            tbl_existents_head += "<tr><th>Nom del topònim</th><th>Enllaç al topònim</th></tr>";
+            var existents_body_arr = new Array();
+            odd_even = false;
+            for( var i = 0; i < responseJSON.results[3].existents.length; i++ ){
+                var fila = "<tr class=\""+( odd_even ? "odd" : "even")+"\">" + "<td>" + responseJSON.results[3].existents[i].nom + "</td><td><a target=\"_blank\" href=\"/toponims/update/" + responseJSON.results[3].existents[i].id + "/-1/\">Link</a></td></tr>";
+                existents_body_arr.push(fila);
+                odd_even = !odd_even;
+            }
+            tbl_existents_body = existents_body_arr.join("");
+            $("#existents thead").html(tbl_existents_head);
+            $("#existents tbody").html(tbl_existents_body);
+        }else{
+            $("#existents thead").html("");
+            $("#existents tbody").html("");
+        }
+
+        $("#resultats tbody").html(tbl_body);
+        $("#linkDescarrega").attr("href",responseJSON.fileLink);
+        $("a#linkDescarrega").text('Descarrega fitxer csv de resum');
     };
 
 

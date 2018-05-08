@@ -1,6 +1,8 @@
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from rest_framework import routers
 from georef import views
+from django.conf import settings
 
 from . import views
 
@@ -67,4 +69,4 @@ urlpatterns = [
     url(r'^user/password/change/(?P<user_id>[0-9A-Za-z_\-]+)/$', views.change_password, name='change_password'),
     url(r'ajax-upload$', views.import_uploader, name='ajax_upload'),
     url(r'ajax-process-shapefile$', views.process_shapefile, name='process_shapefile'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

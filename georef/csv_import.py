@@ -103,7 +103,7 @@ def process_line(line, line_string, errors, toponims_exist, toponims_to_create, 
         # [2] - Pais --> Buscar pais per nom Pais
         p = None
         # [3] - Aquatic --> Cap comprovacio
-        aquatic = False
+        aquatic = 'N'
         # [4] - Node superior --> Buscar toponim per nom(multiples resultats?)
         pare = None
         # [5] - Numero de versio
@@ -169,7 +169,8 @@ def process_line(line, line_string, errors, toponims_exist, toponims_to_create, 
             errorsLiniaActual.append("Aquatic en blanc a la columna 4")
             register_error(line_counter, "Aquatic en blanc a la columna 4", problemes)
         else:
-            aquatic = line[3].strip().lower() in ['true', 'cert', 'sí', 'si', '1', 'cierto', 'verdadero']
+            if line[3].strip().lower() in ['true', 'cert', 'sí', 'si', '1', 'cierto', 'verdadero']:
+                aquatic = 'S'
 
         if line[4] == '' or line[4].strip() == "":
             pare = None
