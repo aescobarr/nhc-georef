@@ -316,6 +316,14 @@ def toponims_datatable_list(request):
 
 
 @api_view(['GET'])
+def autors_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nom',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Autor, AutorSerializer)
+        return response
+
+
+@api_view(['GET'])
 def capeswmslocals_datatable_list(request):
     if request.method == 'GET':
         search_field_list = ('name', 'label',)
@@ -1591,3 +1599,9 @@ def wmslocal_create(request):
         os.remove(filepath)
         content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format(file_type)}
         return Response(data=content, status=400)
+
+
+@login_required
+def t_authors(request):
+    context = {}
+    return render(request, 'georef/t_authors.html', context)

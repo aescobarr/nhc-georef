@@ -72,11 +72,24 @@
                     <li><a href="{% url 'toponims_search' %}">Cerca topònim</a></li>
                     <li><a href="{% url 'calculcentroides' %}">Calcula centroides</a></li>
                     <li><a href="{% url 'toponims_import' %}">Importació de topònims</a></li>
-                    <li><a href="#">Anar a google</a></li>
-                    <li><a href="#">Anar a ICC</a></li>
+                    <li><a href="https://www.google.es" target="_blank">Anar a google</a></li>
+                    <li><a href="http://www.icgc.cat/" target="_blank">Anar a ICC</a></li>
                 </ul>
             </li>
-            <li><a href="#">Tesaurus</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tesaures<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 't_authors' %}">Autors</a></li>
+                    <li><a href="#">Georeferenciadors</a></li>
+                    <li><a href="#">Qualificadors de versió</a></li>
+                    <li><a href="#">Països</a></li>
+                    <li><a href="#">Paraules clau</a></li>
+                    <li><a href="#">Tipus de contingut</a></li>
+                    <li><a href="#">Tipus de suport</a></li>
+                    <li><a href="#">Tipus topònim</a></li>
+                    <li><a href="#">Tipus unitats</a></li>
+                </ul>
+            </li>
             <li><a href="#">Gràfiques</a></li>
             <li><a href="#">Capes de georeferenciació</a></li>
             <li><a href="#">Ajut</a></li>
