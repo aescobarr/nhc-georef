@@ -1,0 +1,55 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extrahead %}
+    <script>
+        var _list_url = "{% url 'autors_datatable_list' %}";
+        var _delete_url = "{% url 'autors-list' %}";
+        var _create_url = "{% url 'autors-list' %}";
+    </script>
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="page-header">
+        </div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Tesaures</li>
+                <li class="breadcrumb-item active">Autors</li>
+            </ol>
+        </div>
+        <div class="container separador_seccio">
+            <div class="pull-right">
+                <button id="add" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
+        <div class="container">
+            <table id="autors_list" style="width:100%;"></table>
+        </div>
+
+        <div id="dialog-form" title="Crear nou Autor">
+          <p class="validateTips">Tots els camps són obligatoris.</p>
+
+          <form>
+            <div class="form-group">
+              <label for="name">Nom</label>
+              <input type="text" name="name" id="name" value="" class="form-control">
+              <!-- Allow form submission with keyboard without duplicating the dialog button -->
+              <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </div>
+          </form>
+        </div>
+
+    </main>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
+    <script src="{% static 'georef/javascript/generic_datatable.js' %}"></script>
+    <script src="{% static 'georef/javascript/t_autors_list.js' %}"></script>
+{% endblock %}

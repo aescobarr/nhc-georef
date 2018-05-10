@@ -163,11 +163,11 @@ $(document).ready(function() {
         });
     };
 
-    $('#recursos_list tbody').on('click', 'td button.delete_button', function () {
+    $('#autors_list tbody').on('click', 'td button.delete_button', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().id;
-        confirmDialog("S'esborrarà el recurs '" + row.data().nom + "' i tota la informació associada! Segur que vols continuar?",id);
+        confirmDialog("Segur que vols esborrar?",id);
     });
 
     $('#recursos_list tbody').on('click', 'td button.edit_button', function () {
