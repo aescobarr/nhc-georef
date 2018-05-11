@@ -6,11 +6,12 @@
 {% endblock %}
 {% block extrahead %}
 <script>
-        var _list_url = "{% url 'autors_datatable_list' %}";
-        var _delete_url = "{% url 'autors-list' %}";
-        var _create_url = "{% url 'autors-list' %}";
-        var _update_url = "{% url 'autors-list' %}";
-
+        var options = {
+            column_name : "{{ column_name }}",
+            data_url : "{{ list_url }}",
+            crud_url: "{{ crud_url }}",
+            text_field_name: "{{ text_field_name }}",
+        };
 </script>
 {% endblock %}
 {% block main %}
@@ -21,7 +22,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
             <li class="breadcrumb-item">Tesaures</li>
-            <li class="breadcrumb-item active">Autors</li>
+            <li class="breadcrumb-item active">{{ class_name_sing }}</li>
         </ol>
     </div>
     <div class="container separador_seccio">
@@ -31,7 +32,7 @@
         </div>
     </div>
     <div class="container">
-        <table id="autors_list" style="width:100%;"></table>
+        <table id="element_list" style="width:100%;"></table>
     </div>
 
     <div id="dialog-form-update" title="Editar">
@@ -39,7 +40,7 @@
 
         <form>
             <div class="form-group">
-                <label for="name">Nom</label>
+                <label for="name">{{ column_name }}</label>
                 <input type="text" name="name_update" id="name_update" value="" class="form-control">
                 <input type="hidden" name="id" id="id" value="">
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
@@ -53,7 +54,7 @@
 
         <form>
             <div class="form-group">
-                <label for="name">Nom</label>
+                <label for="name">{{ column_name }}</label>
                 <input type="text" name="name" id="name" value="" class="form-control">
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
@@ -68,5 +69,5 @@
 <script src="{% static 'georef/javascript/cookies.js' %}"></script>
 <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
 <script src="{% static 'georef/javascript/generic_thesaurus.js' %}"></script>
-<script src="{% static 'georef/javascript/t_autors_list.js' %}"></script>
+<script src="{% static 'georef/javascript/generic_thesaurus_init.js' %}"></script>
 {% endblock %}
