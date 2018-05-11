@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau, Capawms, Capesrecurs
+from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau, Capawms, \
+    Capesrecurs, Qualificadorversio, Pais, Tipusrecursgeoref, Suport, Tipusunitats
 from georef_addenda.models import Profile, Autor
 from django.contrib.auth.models import User
 import json
@@ -22,6 +23,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
+
 
 class ToponimSearchSerializer(serializers.ModelSerializer):
     aquatic_str = serializers.ReadOnlyField()
@@ -96,10 +98,41 @@ class RecursgeorefSerializer(serializers.ModelSerializer):
         fields = ('id', 'nom')
 
 
+class TipusunitatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tipusunitats
+        fields = ('id', 'tipusunitat')
+
+
+class PaisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pais
+        fields = ('id', 'nom')
+
+
+class SuportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Suport
+        fields = ('id', 'nom')
+
+
+class TipusrecursgeorefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tipusrecursgeoref
+        fields = ('id', 'nom')
+
+
+class QualificadorversioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Qualificadorversio
+        fields = ('id', 'qualificador')
+
+
 class AutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Autor
         fields = ('id', 'nom')
+
 
 class ParaulaClauSerializer(serializers.ModelSerializer):
     class Meta:

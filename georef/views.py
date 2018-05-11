@@ -3,8 +3,10 @@ from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
 from rest_framework import status, viewsets
 from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, \
-    UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer, ToponimSearchSerializer
-from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref
+    UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer, ToponimSearchSerializer, \
+    QualificadorversioSerializer, PaisSerializer, TipusrecursgeorefSerializer, SuportSerializer, TipusToponimSerializer, \
+    TipusunitatsSerializer
+from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref, Tipusunitats
 from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -177,6 +179,71 @@ def index(request):
     return render(request, 'georef/index.html')
 
 
+class PaisViewSet(viewsets.ModelViewSet):
+    serializer_class = PaisSerializer
+
+    def get_queryset(self):
+        queryset = Pais.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
+class TipusUnitatsViewSet(viewsets.ModelViewSet):
+    serializer_class = TipusunitatsSerializer
+
+    def get_queryset(self):
+        queryset = Tipusunitats.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(tipusunitat__icontains=name)
+        return queryset
+
+class TipusToponimViewSet(viewsets.ModelViewSet):
+    serializer_class = TipusToponimSerializer
+
+    def get_queryset(self):
+        queryset = Tipustoponim.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
+class TipusSuportViewSet(viewsets.ModelViewSet):
+    serializer_class = SuportSerializer
+
+    def get_queryset(self):
+        queryset = Suport.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
+class TipusrecursgeorefViewSet(viewsets.ModelViewSet):
+    serializer_class = TipusrecursgeorefSerializer
+
+    def get_queryset(self):
+        queryset = Tipusrecursgeoref.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
+class QualificadorViewSet(viewsets.ModelViewSet):
+    serializer_class = QualificadorversioSerializer
+
+    def get_queryset(self):
+        queryset = Qualificadorversio.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
 class AutorViewSet(viewsets.ModelViewSet):
     serializer_class = AutorSerializer
 
@@ -316,6 +383,54 @@ def toponims_datatable_list(request):
 
 
 @api_view(['GET'])
+def tipusunitats_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('tipusunitat',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Tipusunitats, TipusunitatsSerializer)
+        return response
+
+
+@api_view(['GET'])
+def tipustoponim_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nom',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Tipustoponim, TipusToponimSerializer)
+        return response
+
+
+@api_view(['GET'])
+def suport_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nom',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Suport, SuportSerializer)
+        return response
+
+
+@api_view(['GET'])
+def tipusrecurs_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nom',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Tipusrecursgeoref, TipusrecursgeorefSerializer)
+        return response
+
+
+@api_view(['GET'])
+def paraulaclau_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('paraula',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Paraulaclau, ParaulaClauSerializer)
+        return response
+
+
+@api_view(['GET'])
+def paisos_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('nom',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Pais, PaisSerializer)
+        return response
+
+
+@api_view(['GET'])
 def autors_datatable_list(request):
     if request.method == 'GET':
         search_field_list = ('nom',)
@@ -328,6 +443,14 @@ def capeswmslocals_datatable_list(request):
     if request.method == 'GET':
         search_field_list = ('name', 'label',)
         response = generic_datatable_list_endpoint(request, search_field_list, Capawms, CapawmsSerializer)
+        return response
+
+
+@api_view(['GET'])
+def qualificadors_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('qualificador',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Qualificadorversio, QualificadorversioSerializer)
         return response
 
 
@@ -1603,5 +1726,94 @@ def wmslocal_create(request):
 
 @login_required
 def t_authors(request):
-    context = {}
-    return render(request, 'georef/t_authors.html', context)
+    context = {
+        'text_field_name' : 'nom',
+        'column_name': 'Nom autor',
+        'class_name_sing': 'Autor',
+        'crud_url': reverse('autors-list'),
+        'list_url': reverse('autors_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+
+@login_required
+def t_qualificadors(request):
+    context = {
+        'text_field_name' : 'qualificador',
+        'column_name': 'Nom qualificador',
+        'class_name_sing': 'Qualificador versió',
+        'crud_url': reverse('qualificadorsversio-list'),
+        'list_url': reverse('qualificadors_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+
+@login_required
+def t_paisos(request):
+    context = {
+        'text_field_name' : 'nom',
+        'column_name': 'Nom país',
+        'class_name_sing': 'País',
+        'crud_url': reverse('paisos-list'),
+        'list_url': reverse('paisos_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+
+@login_required
+def t_paraulesclau(request):
+    context = {
+        'text_field_name' : 'paraula',
+        'column_name': 'Paraula clau',
+        'class_name_sing': 'Paraula clau',
+        'crud_url': reverse('paraulesclau-list'),
+        'list_url': reverse('paraulaclau_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+
+@login_required
+def t_tipuscontingut(request):
+    context = {
+        'text_field_name' : 'nom',
+        'column_name': 'Tipus de contingut',
+        'class_name_sing': 'Tipus de contingut',
+        'crud_url': reverse('tipusrecurs-list'),
+        'list_url': reverse('tipusrecurs_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+
+@login_required
+def t_tipussuport(request):
+    context = {
+        'text_field_name' : 'nom',
+        'column_name': 'Tipus de suport',
+        'class_name_sing': 'Tipus de suport',
+        'crud_url': reverse('tipussuport-list'),
+        'list_url': reverse('suport_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+
+@login_required
+def t_tipustoponim(request):
+    context = {
+        'text_field_name' : 'nom',
+        'column_name': 'Tipus de topònim',
+        'class_name_sing': 'Tipus de topònim',
+        'crud_url': reverse('tipustoponim-list'),
+        'list_url': reverse('tipustoponim_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
+
+@login_required
+def t_tipusunitats(request):
+    context = {
+        'text_field_name' : 'tipusunitat',
+        'column_name': "Tipus d'unitats",
+        'class_name_sing': "Tipus d'unitats",
+        'crud_url': reverse('tipusunitats-list'),
+        'list_url': reverse('tipusunitats_datatable_list'),
+    }
+    return render(request, 'georef/t_generic.html', context)
