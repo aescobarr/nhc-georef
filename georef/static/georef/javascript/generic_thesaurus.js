@@ -4,11 +4,11 @@
 
     if (typeof djangoRef === 'undefined') this.djangoRef = {};
 
-    if (typeof djangoRef.DataTableThesaurus === 'undefined') this.djangoRef.DataTableThesaurus = {};
+    if (typeof djangoRef.GenericThesaurus === 'undefined') this.djangoRef.GenericThesaurus = {};
 
-    djangoRef.DataTableThesaurus.table = null;
+    djangoRef.GenericThesaurus.table = null;
 
-    djangoRef.DataTableThesaurus.create = function(options){
+    djangoRef.GenericThesaurus.create = function(options){
         options = options || {};
         options = $.extend({},
         {
@@ -19,7 +19,9 @@
 
         if (options.data_url == null) throw 'Missing mandatory parameter data_url';
 
-        djangoRef.DataTableThesaurus.table = $('#' + options.div_id).DataTable( {
+        if (options.update_url == null) throw 'Missing mandatory parameter update_url';
+
+        djangoRef.GenericThesaurus.table = $('#' + options.div_id).DataTable( {
             'ajax': {
                 'url': options.data_url,
                 'dataType': 'json'
@@ -60,7 +62,7 @@
             ]
         } );
 
-        return djangoRef.DataTableThesaurus.table;
+        return djangoRef.GenericThesaurus.table;
     }
 
 })();
