@@ -57,7 +57,6 @@ from tempfile import mkstemp
 import os
 import uuid
 
-
 from geoserver.catalog import Catalog, ConflictingDataError
 from requests.exceptions import ConnectionError
 import geoserver.util
@@ -65,6 +64,7 @@ from shutil import rmtree
 from georef.jsonprefs import JsonPrefsUtil
 import pyproj
 from georef.csv_import import check_file_structure, NumberOfColumnsException, EmptyFileException, process_line
+from django.db import connection
 
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -560,6 +560,76 @@ def get_node_from_toponim(toponim):
     else:
         toponim_node = {'text': toponim.nom_str, 'id': toponim.id}
     return toponim_node
+
+
+@login_required
+def graphs(request):
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        select count(idtoponim), u.last_name || ', ' || u.first_name
+        from 
+        toponimversio t,
+        auth_user u
+        where 
+        iduser is not null AND
+        t.iduser = u.id
+        group by u.last_name || ', ' || u.first_name order by 1 desc     
+    """)
+
+    toponims_georeferenciador = cursor.fetchall()
+
+    cursor.execute("""
+        select
+        p.nom, count(t.id) from
+        toponim t, pais p 
+        where idpais is not null AND t.idpais = p.id group by p.nom order by 2 desc
+    """)
+
+    toponims_pais = cursor.fetchall()
+
+    cursor.execute("""
+        select tp.nom, count(t.id)
+        from 
+        toponim t,
+        tipustoponim tp
+        where idpais is not null AND
+        t.idtipustoponim = tp.id
+        group by tp.nom order by 2 desc;
+    """)
+
+    toponims_tipus = cursor.fetchall()
+
+    cursor.execute("""
+        select aquatic,count(id)
+        from 
+        toponim t
+        group by aquatic
+    """)
+
+    toponims_aquatic = cursor.fetchall()
+
+    cursor.execute("""
+        select t.nom, count(r.id)
+        from 
+        recursgeoref r,
+        tipusrecursgeoref t
+        where 
+        r.idtipusrecursgeoref = t.id
+        group by t.nom order by 2 desc
+    """)
+
+    recursos_tipus = cursor.fetchall()
+
+    context = {
+        'toponims_georeferenciador': json.dumps(toponims_georeferenciador),
+        'toponims_pais': json.dumps(toponims_pais),
+        'toponims_tipus': json.dumps(toponims_tipus),
+        'toponims_aquatic': json.dumps(toponims_aquatic),
+        'recursos_tipus' : json.dumps(recursos_tipus),
+    }
+
+    return render(request, 'georef/graphs.html', context)
 
 
 @api_view(['GET'])
