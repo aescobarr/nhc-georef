@@ -1386,6 +1386,13 @@ def prefsvisualitzaciowms(request):
     return render(request, 'georef/prefsvisualitzaciowms.html', context)
 
 
+@login_required
+def georef_layers(request):
+    wms_url = conf.GEOSERVER_WMS_URL
+    context = {'wms_url' : wms_url}
+    return render(request, 'georef/georef_layers.html', context)
+
+
 @api_view(['POST'])
 def toggle_prefs_wms(request):
     if request.method == 'POST':

@@ -48,6 +48,7 @@ urlpatterns = [
     url(r'^wmslocal/delete/(?P<id>[0-9A-Za-z_\-]+)/$', views.wmslocal_delete, name='wmslocal_delete'),
     url(r'^prefsvisualitzaciowms/$', views.prefsvisualitzaciowms, name='prefsvisualitzaciowms'),
     url(r'^prefsvisualitzaciowms/toggle/$', views.toggle_prefs_wms, name='toggle_prefs_wms'),
+    url(r'^georef_layers/$', views.georef_layers, name='georef_layers'),
 
     url(r'^toponims$', views.toponims, name='toponims'),
     url(r'^toponims/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.toponims_update, name='toponims_update'),
