@@ -31,9 +31,9 @@ $(document).ready(function() {
             'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
             {
                 layers: 'mzoologia:toponimsdarreraversio',
-                format: 'image/png',
-                transparent: true,
-                opacity: 0.4
+                format: 'image/png'
+                ,transparent: true,
+                /*opacity: 0.4*/
             }
         )
     };
@@ -176,6 +176,37 @@ $(document).ready(function() {
         'recursosgeoreferenciacio_wms_bound' : recursosgeoreferenciacio_wms_bound_formatter
     };
 
+    var valorView = getCookie('view_lg');
+    if(valorView){
+        var jsonView = JSON.parse(valorView);
+        map_options.center = jsonView.center;
+        map_options.zoom = jsonView.zoom;
+    }
+
+    var valorEstat = getCookie('layers_lg');
+    if(valorEstat){
+        var jsonState = JSON.parse(valorEstat);
+        map_options.state = jsonState;
+    }else{
+        map_options.state = {
+            overlays: [toponims.name],
+            base: 'djangoRef.Map.roads',
+            view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
+        };
+    }
+
     map = new djangoRef.Map.createMap(map_options);
 
+});
+
+$(window).bind('beforeunload', function(){
+    var state = djangoRef.Map.getState();
+    var state_string = JSON.stringify(state);
+    setCookie('layers_lg', state_string);
+    var view = {};
+    var center = djangoRef.Map.getCenter();
+    var zoom = djangoRef.Map.getZoom();
+    view = {center: center, zoom: zoom};
+    var view_string = JSON.stringify(view);
+    setCookie('view_lg', view_string);
 });
