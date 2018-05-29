@@ -40,6 +40,8 @@
 
     djangoRef.Map.editableLayers = new L.FeatureGroup();
 
+    djangoRef.Map.featureInfoFormatters = null;
+
     djangoRef.Map.createMap = function(options) {
         options = options || {};
         options = $.extend({},
@@ -88,6 +90,10 @@
             group_maxHeight     : '120px',
             exclusive       	: false
         };
+
+        if(options.formatters){
+            djangoRef.Map.featureInfoFormatters = options.formatters;
+        }
 
         if(options.show_coordinates){
             coordControl = L.control.coordinates({position:"bottomleft",enableUserInput:false});
@@ -187,10 +193,18 @@
             map.on('click', function(evt){
                 var param_layers = [];
                 for(var i=0; i < options.consultable.length; i++){
-                    param_layers.push( options.consultable[i].wmsParams.layers );
+                    //Just query currently active layers
+                    activeLayers = djangoRef.Map.getActiveOverlays();
+                    for(var j = 0; j < activeLayers.length; j++){
+                        if( options.consultable[i].wmsParams.layers == activeLayers[j].options.layers ){
+                            param_layers.push( options.consultable[i].wmsParams.layers );
+                        }
+                    }
                 }
-                var querylayers = param_layers.join(',');
-                getFeatureInfo(evt,querylayers);
+                if(param_layers.length > 0){
+                    var querylayers = param_layers.join(',');
+                    getFeatureInfo(evt,querylayers);
+                }
             });
         }
 
@@ -349,7 +363,19 @@
         // do nothing if there's an error
         // Otherwise show the content in a popup, or something.
         if(content){
-            L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(content).openOn(map.map);
+            var html = "";
+            for (feature in content.features){
+                var feature_formatter_name = content.features[feature].id.split('.')[0];
+                if(djangoRef.Map.featureInfoFormatters && djangoRef.Map.featureInfoFormatters[feature_formatter_name]){
+                    html = html + djangoRef.Map.featureInfoFormatters[feature_formatter_name](content.features[feature]);
+                }else{
+                    html = html + JSON.stringify(content.features[feature]);
+                }
+            }
+            if(html != ""){
+                html = '<div style="height:250px;overflow:auto;">' + html + '</div>';
+                L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(html).openOn(map.map);
+            }
         }
     };
 
@@ -359,7 +385,8 @@
         $.ajax({
             url: url,
             success: function (data, status, xhr) {
-                var err = typeof data === 'string' ? null : data;
+                //var err = typeof data === 'string' ? null : data;
+                var err = null;
                 showGetFeatureInfo(err, evt.latlng, data);
             },
             error: function (xhr, status, error) {
@@ -386,7 +413,8 @@
             width: size.x,
             layers: querylayers,
             query_layers: querylayers,
-            info_format: 'text/html',
+            //info_format: 'text/html',
+            info_format: 'application/json',
             feature_count: 10
         };
 
