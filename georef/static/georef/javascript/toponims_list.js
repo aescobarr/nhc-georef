@@ -32,7 +32,10 @@ var exportKML = function(){
     var filtrejson = extreureJSONDeFiltre();
     if(filtrejson!=null && filtrejson!=''){
         var cql = transformarJSONACQL(filtrejson);
-        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        var cql_filter_text = '1=1';
+        if(cql != null){
+            cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        }
         document.kml.CQL_FILTER.value = cql_filter_text;
     }else{
         document.kml.CQL_FILTER.value = "TRUE=TRUE";
@@ -44,7 +47,10 @@ var exportSHP = function(){
     var filtrejson = extreureJSONDeFiltre();
     if(filtrejson!=null && filtrejson!=''){
         var cql = transformarJSONACQL(filtrejson);
-        var cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        var cql_filter_text = '1=1';
+        if(cql != null){
+            cql_filter_text = new OpenLayers.Format.CQL().write(cql);
+        }
         document.shp.CQL_FILTER.value = cql_filter_text;
     }else{
         document.shp.CQL_FILTER.value = "TRUE=TRUE";
@@ -451,6 +457,25 @@ $(document).ready(function() {
         overlays_control_config: overlays_control_config,
         wms_url: wms_url
     };
+
+    var toponimsdarreraversio_formatter = function(data){
+        var html = '';
+        html += '<style type="text/css">li.titol {font-size: 80%;padding:2px; } li.text {font-size: 100%;padding:2px;} a.linkFitxa{color:#00008B;text-align:right;padding:2px;} table.contingut{font-size: 80%;width:100%;} th, td {border: none;} td.atribut {text-align:right;vertical-align:top;padding:2px;} td.valor {text-align:left;padding:2px;} th.aladreta{text-align:right;padding:2px;} th.alesquerra{text-align:left;padding:2px;}</style>';
+        html += '<table class="contingut"><tbody>';
+        html += '<tr><th class="alesquerra">Darreres versions de topònims</th>';
+        html += '<tr><td class="atribut">Nom topònim : </td><td class="valor">' + data.properties.nomtoponim + '</td></tr>';
+        html += '<tr><td class="atribut">Aquàtic? : </td><td class="valor">' + data.properties.aquatic + '</td></tr>';
+        html += '<tr><td class="atribut">Tipus de topònim : </td><td class="valor">' + data.properties.tipustoponim + '</td></tr>';
+        html += '<tr><td class="atribut">Número de versió : </td><td class="valor">' + data.properties.numero_versio + '</td></tr>';
+        html += '</tbody></table></br>';
+        return html;
+    }
+
+    map_options.formatters = {
+        'toponimsdarreraversio' : toponimsdarreraversio_formatter
+    };
+
+    map_options.consultable = [toponims.layer];
 
     var valorView = getCookie('view_t');
     if(valorView){

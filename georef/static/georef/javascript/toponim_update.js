@@ -403,6 +403,25 @@ $(document).ready(function() {
         view:{ center:new L.LatLng(40.58, -3.25),zoom:2}
     };
 
+    var toponimsdarreraversio_formatter = function(data){
+        var html = '';
+        html += '<style type="text/css">li.titol {font-size: 80%;padding:2px; } li.text {font-size: 100%;padding:2px;} a.linkFitxa{color:#00008B;text-align:right;padding:2px;} table.contingut{font-size: 80%;width:100%;} th, td {border: none;} td.atribut {text-align:right;vertical-align:top;padding:2px;} td.valor {text-align:left;padding:2px;} th.aladreta{text-align:right;padding:2px;} th.alesquerra{text-align:left;padding:2px;}</style>';
+        html += '<table class="contingut"><tbody>';
+        html += '<tr><th class="alesquerra">Darreres versions de topònims</th>';
+        html += '<tr><td class="atribut">Nom topònim : </td><td class="valor">' + data.properties.nomtoponim + '</td></tr>';
+        html += '<tr><td class="atribut">Aquàtic? : </td><td class="valor">' + data.properties.aquatic + '</td></tr>';
+        html += '<tr><td class="atribut">Tipus de topònim : </td><td class="valor">' + data.properties.tipustoponim + '</td></tr>';
+        html += '<tr><td class="atribut">Número de versió : </td><td class="valor">' + data.properties.numero_versio + '</td></tr>';
+        html += '</tbody></table></br>';
+        return html;
+    }
+
+    map_options.formatters = {
+        'toponimsdarreraversio' : toponimsdarreraversio_formatter
+    };
+
+    map_options.consultable = [toponims.layer];
+
     djangoRef_map = new djangoRef.Map.createMap(map_options);
 
 

@@ -191,11 +191,29 @@ $(document).ready(function() {
 
     map_options = {
         editable:true,
+        consultable: true,
         show_centroid_after_edit: false,
         show_coordinates: false,
         overlays: overlay_list,
         overlays_control_config: overlays_control_config,
         wms_url: wms_url
+    };
+
+    map_options.consultable = [toponims_b_recurs.layer];
+
+    var toponimsbasatsenrecurs_formatter = function(data){
+        var html = '';
+        html += '<style type="text/css">li.titol {font-size: 80%;padding:2px; } li.text {font-size: 100%;padding:2px;} a.linkFitxa{color:#00008B;text-align:right;padding:2px;} table.contingut{font-size: 80%;width:100%;} th, td {border: none;} td.atribut {text-align:right;vertical-align:top;padding:2px;} td.valor {text-align:left;padding:2px;} th.aladreta{text-align:right;padding:2px;} th.alesquerra{text-align:left;padding:2px;}</style>';
+        html += '<table class="contingut"><tbody>';
+        html += '<tr><th class="alesquerra">Topònims basats en recurs</th>';
+        html += '<tr><td class="atribut">Nom del topònim : </td><td class="valor">' + data.properties.nom + '</td></tr>';
+        html += '<tr><td class="atribut">Nom del recurs : </td><td class="valor">' + data.properties.nomrecurs + '</td></tr>';
+        html += '</tbody></table></br>';
+        return html;
+    }
+
+    map_options.formatters = {
+        'toponimsbasatsenrecurs' : toponimsbasatsenrecurs_formatter
     };
 
     map_options.state = {

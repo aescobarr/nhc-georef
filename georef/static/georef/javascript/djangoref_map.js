@@ -373,8 +373,8 @@
                 }
             }
             if(html != ""){
-                html = '<div style="height:250px;overflow:auto;">' + html + '</div>';
-                L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(html).openOn(map.map);
+                html = '<div style="height:150px;overflow:auto;">' + html + '</div>';
+                L.popup({ maxWidth: 800}).setLatLng(latlng).setContent(html).openOn(djangoRef.Map.map);
             }
         }
     };
@@ -396,9 +396,9 @@
     };
 
     var getFeatureInfoUrl = function(latlng,querylayers){
-        var zoom = map.map.getZoom();
-        var point = map.map.latLngToContainerPoint(latlng, zoom);
-        var size = map.map.getSize();
+        var zoom = djangoRef.Map.map.getZoom();
+        var point = djangoRef.Map.map.latLngToContainerPoint(latlng, zoom);
+        var size = djangoRef.Map.map.getSize();
 
         var params = {
             request: 'GetFeatureInfo',
@@ -408,7 +408,7 @@
             transparent: true,
             version: '1.1.1',
             format: 'image/jpeg',
-            bbox: map.map.getBounds().toBBoxString(),
+            bbox: djangoRef.Map.map.getBounds().toBBoxString(),
             height: size.y,
             width: size.x,
             layers: querylayers,
