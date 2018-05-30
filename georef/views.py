@@ -774,6 +774,7 @@ def toponimversio_geometries_to_geojson(toponimversio):
 def toponims_update_2(request, idtoponim=None, idversio=None):
     versio = None
     geometries_json = None
+    wms_url = conf.GEOSERVER_WMS_URL
     id_darrera_versio = None
     toponim = get_object_or_404(Toponim, pk=idtoponim)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
@@ -816,7 +817,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             'nodelist_full': nodelist_full,
             'versions': toponimsversio,
             'id_darrera_versio': id_darrera_versio,
-            'node_ini': node_ini
+            'node_ini': node_ini,
+            'wms_url': wms_url
         }
         return render(request, 'georef/toponim_update_2.html', context)
     elif request.method == 'POST':
@@ -848,7 +850,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'nodelist_full': nodelist_full,
                     'versions': toponimsversio,
                     'id_darrera_versio': id_darrera_versio,
-                    'node_ini': node_ini
+                    'node_ini': node_ini,
+                    'wms_url': wms_url
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
         elif 'save_versio_from_toponimversio' in request.POST:
@@ -899,7 +902,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'nodelist_full': nodelist_full,
                     'versions': toponimsversio,
                     'id_darrera_versio': id_darrera_versio,
-                    'node_ini': node_ini
+                    'node_ini': node_ini,
+                    'wms_url': wms_url
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
 
