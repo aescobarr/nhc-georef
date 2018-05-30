@@ -1504,7 +1504,7 @@ def import_toponims(request, file_name=None):
     filename = ntpath.basename(os.path.splitext(filepath)[0])
     file_type = magic.from_file(filepath)
     if not 'text' in file_type:
-        content = {'status': 'KO', 'detail': file_type}
+        content = {'status': 'KO', 'detail': [file_type]}
         return Response(data=content, status=400)
     else: #seems to be text file
         #read file

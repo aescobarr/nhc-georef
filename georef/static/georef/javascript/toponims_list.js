@@ -32,7 +32,7 @@ var exportKML = function(){
     var filtrejson = extreureJSONDeFiltre();
     if(filtrejson!=null && filtrejson!=''){
         var cql = transformarJSONACQL(filtrejson);
-        var cql_filter_text = '1=1';
+        var cql_filter_text = 'TRUE=TRUE';
         if(cql != null){
             cql_filter_text = new OpenLayers.Format.CQL().write(cql);
         }
@@ -47,7 +47,7 @@ var exportSHP = function(){
     var filtrejson = extreureJSONDeFiltre();
     if(filtrejson!=null && filtrejson!=''){
         var cql = transformarJSONACQL(filtrejson);
-        var cql_filter_text = '1=1';
+        var cql_filter_text = 'TRUE=TRUE';
         if(cql != null){
             cql_filter_text = new OpenLayers.Format.CQL().write(cql);
         }
