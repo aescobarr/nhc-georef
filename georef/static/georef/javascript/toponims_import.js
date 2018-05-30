@@ -89,18 +89,30 @@ $(document).ready(function() {
 
     var responseToHTML = function(response){
         var html = new Array();
-        for(var i=0; i < response.length; i++){
-            result = response[i];
-            if(result[0] == -1){
-                html.push("<p><strong>Error general de fitxer:</strong></p>");
+        if(typeof response == 'string'){
+            html.push("<p><strong>Error general de fitxer:</strong></p>");
+            html.push("<p>   * " + response + "</p>");
+            return html.join("");
+        }else{
+            if(response.length == 1){
+                html.push("<p><strong>S'ha produït un error:</strong></p>");
+                html.push("<p>   * " + response[0] + "</p>");
+                return html.join("");
             }else{
-                html.push("<p><strong>Línia " + result[0] + " :</strong></p>");
-            }
-            for(var j=0; j < result[1].length; j++){
-                html.push("<p>   * " + result[1][j] + "</p>");
+                for(var i=0; i < response.length; i++){
+                    result = response[i];
+                    if(result[0] == -1){
+                        html.push("<p><strong>Error general de fitxer:</strong></p>");
+                    }else{
+                        html.push("<p><strong>Línia " + result[0] + " :</strong></p>");
+                    }
+                    for(var j=0; j < result[1].length; j++){
+                        html.push("<p>   * " + result[1][j] + "</p>");
+                    }
+                }
+                return html.join("");
             }
         }
-        return html.join("");
     };
 
     var buildTable = function(responseJSON){
