@@ -16,7 +16,7 @@ $(document).ready(function() {
                 $('.qq-upload-list').empty();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                console.log(jqXHR.responseJSON);
+                //console.log(jqXHR.responseJSON);
                 //toastr.error(jqXHR.responseJSON.detail);
                 processResponse(jqXHR.responseJSON);
             }
@@ -65,7 +65,7 @@ $(document).ready(function() {
 
     var processResponse = function(responseJSON){
         if(responseJSON.status=='KO'){
-            var message = responseToHTML(responseJSON.detail);
+            var message = responseToHTML(responseJSON);
             mostrarCaixaErrors(message);
         }else{
             buildTable(responseJSON);
@@ -87,15 +87,20 @@ $(document).ready(function() {
             caixa.style.visibility = "visible";*/
     };
 
-    var responseToHTML = function(response){
+    var responseToHTML = function(responseJSON){
+        var response = responseJSON.detail;
         var html = new Array();
         if(typeof response == 'string'){
-            html.push("<p><strong>Error general de fitxer:</strong></p>");
+            html.push("<p><strong>Error general:</strong></p>");
             html.push("<p>   * " + response + "</p>");
             return html.join("");
         }else{
             if(response.length == 1){
-                html.push("<p><strong>S'ha produït un error:</strong></p>");
+                if(responseJSON.status_type != null && responseJSON.status_type == 'FILE_TYPE_WRONG'){
+                    html.push("<p><strong>Tipus de fitxer incorrecte. El fitxer és de tipus:</strong></p>");
+                }else{
+                    html.push("<p><strong>Error general de fitxer:</strong></p>");
+                }
                 html.push("<p>   * " + response[0] + "</p>");
                 return html.join("");
             }else{

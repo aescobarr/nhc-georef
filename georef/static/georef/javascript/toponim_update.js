@@ -389,6 +389,34 @@ $(document).ready(function() {
         }
     ];
 
+    if(wmslayers && wmslayers.length > 0){
+        var added_layers = {};
+        for(var i = 0; i < wmslayers.length; i++){
+            layer_data_i = wmslayers[i];
+            var layer_i = {
+                name: layer_data_i.name,
+                layer : L.tileLayer.wms(
+                    layer_data_i.baseurlservidor + '?',
+                    {
+                        layers: layer_data_i.name,
+                        format: 'image/png',
+                        transparent: true,
+                        opacity: 0.4
+                    }
+                )
+            };
+            layer_i.layer.on('tileerror', function(error, tile) {
+                console.log(error);
+            });
+            added_layers[layer_data_i.label] = layer_i.layer;
+        }
+        overlays_control_config.push({
+            groupName: 'Capes WMS pròpies',
+            expanded: true,
+            layers: added_layers
+        });
+    }
+
     map_options = {
         editable:true,
         show_centroid_after_edit: true,

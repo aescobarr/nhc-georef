@@ -26,6 +26,8 @@
         var _toponims_list_pdf = "{% url 'toponims_list_pdf' %}";
         var _toponims_list_csv = "{% url 'toponims_list_csv' %}";
         var _toponims_list_xls = "{% url 'toponims_list_xls' %}";
+
+        var wmslayers = JSON.parse('{{ wmslayers | escapejs }}');
     </script>
 {% endblock %}
 {% block main %}
