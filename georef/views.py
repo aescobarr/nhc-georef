@@ -441,7 +441,7 @@ def autors_datatable_list(request):
 @api_view(['GET'])
 def capeswmslocals_datatable_list(request):
     if request.method == 'GET':
-        search_field_list = ('name', 'label',)
+        search_field_list = ('name', 'label')
         response = generic_datatable_list_endpoint(request, search_field_list, Capawms, CapawmsSerializer)
         return response
 
@@ -525,24 +525,48 @@ def users_list(request):
         return render(request, 'georef/user_list.html')
 
 
+def build_wms_layer_dict(user_id):
+    try:
+        prefs = PrefsVisibilitatCapes.objects.get(iduser=user_id)
+    except PrefsVisibilitatCapes.DoesNotExist:
+        pass
+    retval_dict = []
+    if prefs is not None:
+        layer_list_json = json.loads(prefs.prefscapesjson)
+        layers = []
+        for layer in layer_list_json:
+            layers.append(layer['id'])
+        wmslayers = Capawms.objects.filter(id__in=layers).all().order_by('label')
+        for layer in wmslayers:
+            retval_dict.append({
+                'id': layer.id,
+                'baseurlservidor': layer.baseurlservidor,
+                'name': layer.name,
+                'label': layer.label
+            })
+    return retval_dict
+
+
 @login_required
 def recursos(request):
     csrf_token = get_token(request)
+    wms_dict = build_wms_layer_dict(request.user.id)
     llista_tipus = Suport.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
     return render(request, 'georef/recursos_list.html',
-                  context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token})
+                  context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token, 'wmslayers': json.dumps(wms_dict) })
 
 
 @login_required
 def toponims(request):
     csrf_token = get_token(request)
+    wms_dict = build_wms_layer_dict(request.user.id)
     wms_url = conf.GEOSERVER_WMS_URL
     llista_tipus = Tipustoponim.objects.order_by('nom')
     llista_paisos = Pais.objects.order_by('nom')
     return render(request, 'georef/toponims_list.html',
                   context={'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token,
-                           'wms_url': wms_url})
+                           'wms_url': wms_url, 'wmslayers': json.dumps(wms_dict)})
 
 @login_required
 def calculcentroides(request):
@@ -775,6 +799,7 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
     versio = None
     geometries_json = None
     wms_url = conf.GEOSERVER_WMS_URL
+    wms_dict = build_wms_layer_dict(request.user.id)
     id_darrera_versio = None
     toponim = get_object_or_404(Toponim, pk=idtoponim)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
@@ -818,7 +843,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
             'versions': toponimsversio,
             'id_darrera_versio': id_darrera_versio,
             'node_ini': node_ini,
-            'wms_url': wms_url
+            'wms_url': wms_url,
+            'wmslayers': json.dumps(wms_dict)
         }
         return render(request, 'georef/toponim_update_2.html', context)
     elif request.method == 'POST':
@@ -851,7 +877,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'versions': toponimsversio,
                     'id_darrera_versio': id_darrera_versio,
                     'node_ini': node_ini,
-                    'wms_url': wms_url
+                    'wms_url': wms_url,
+                    'wmslayers': json.dumps(wms_dict)
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
         elif 'save_versio_from_toponimversio' in request.POST:
@@ -903,7 +930,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                     'versions': toponimsversio,
                     'id_darrera_versio': id_darrera_versio,
                     'node_ini': node_ini,
-                    'wms_url': wms_url
+                    'wms_url': wms_url,
+                    'wmslayers': json.dumps(wms_dict)
                 }
                 return render(request, 'georef/toponim_update_2.html', context)
 
@@ -1504,7 +1532,7 @@ def import_toponims(request, file_name=None):
     filename = ntpath.basename(os.path.splitext(filepath)[0])
     file_type = magic.from_file(filepath)
     if not 'text' in file_type:
-        content = {'status': 'KO', 'detail': [file_type]}
+        content = {'status': 'KO', 'detail': [file_type], 'status_type': 'FILE_TYPE_WRONG'}
         return Response(data=content, status=400)
     else: #seems to be text file
         #read file

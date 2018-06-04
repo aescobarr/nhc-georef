@@ -321,6 +321,34 @@ $(document).ready(function() {
         }
     ];
 
+    if(wmslayers && wmslayers.length > 0){
+        var added_layers = {};
+        for(var i = 0; i < wmslayers.length; i++){
+            layer_data_i = wmslayers[i];
+            var layer_i = {
+                name: layer_data_i.name,
+                layer : L.tileLayer.wms(
+                    layer_data_i.baseurlservidor + '?',
+                    {
+                        layers: layer_data_i.name,
+                        format: 'image/png',
+                        transparent: true,
+                        opacity: 0.4
+                    }
+                )
+            };
+            layer_i.layer.on('tileerror', function(error, tile) {
+                console.log(error);
+            });
+            added_layers[layer_data_i.label] = layer_i.layer;
+        }
+        overlays_control_config.push({
+            groupName: 'Capes WMS pròpies',
+            expanded: true,
+            layers: added_layers
+        });
+    }
+
     map_options = {
         editable:true,
         overlays: overlay_list,
@@ -365,4 +393,16 @@ $(document).ready(function() {
     map_options.consultable = [recursos.layer];
 
     map = new djangoRef.Map.createMap(map_options);
+});
+
+$(window).bind('beforeunload', function(){
+    var state = djangoRef.Map.getState();
+    var state_string = JSON.stringify(state);
+    setCookie('layers_r', state_string);
+    var view = {};
+    var center = djangoRef.Map.getCenter();
+    var zoom = djangoRef.Map.getZoom();
+    view = {center: center, zoom: zoom};
+    var view_string = JSON.stringify(view);
+    setCookie('view_r', view_string);
 });

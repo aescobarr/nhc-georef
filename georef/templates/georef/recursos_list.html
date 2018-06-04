@@ -26,13 +26,9 @@
         var _recursos_list_xls = "{% url 'recursos_list_xls' %}";
         var _recursos_list_csv = "{% url 'recursos_list_csv' %}";
         var _recursos_list_pdf = "{% url 'recursos_list_pdf' %}";
-        /*
-        var _filtres_list_url = "{% url 'filtres-list' %}";
-        var _filtres_delete_url = "{% url 'filtres-list' %}";
-        var _filtres_update_url = "{% url 'filtres-list' %}";
-        var _filtres_create_url = "{% url 'filtres-list' %}";
-        var _check_filtre_url = "{% url 'check_filtre' %}";
-        */
+
+        var wmslayers = JSON.parse('{{ wmslayers | escapejs }}');
+
     </script>
 {% endblock %}
 {% block main %}

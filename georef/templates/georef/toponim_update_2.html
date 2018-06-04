@@ -49,6 +49,7 @@
         var csrf_token = '{{ csrf_token }}';
         var geometries_json = {% if geometries_json %} JSON.parse('{{ geometries_json | safe }}') {% else %} null {% endif %};
         var stored_centroid_radius_m = {% if toponimversio_form.instance.precisio_h %} {{ toponimversio_form.instance.precisio_h }} {% else %} null {% endif %};
+        var wmslayers = JSON.parse('{{ wmslayers | escapejs }}');
     </script>
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>

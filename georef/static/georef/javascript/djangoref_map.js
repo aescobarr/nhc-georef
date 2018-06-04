@@ -64,14 +64,14 @@
         var baseMaps = [
             {
                 groupName: 'Open Street Maps',
-                expanded: true,
+                expanded: false,
                 layers: {
                     'Open Street Map': djangoRef.Map.osm
                 }
             },
             {
                 groupName: 'Google Base Maps',
-                expanded: true,
+                expanded: false,
                 layers: {
                     'Google roads': djangoRef.Map.roads,
                     'Google satellite': djangoRef.Map.satellite,

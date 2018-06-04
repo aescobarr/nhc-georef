@@ -336,3 +336,8 @@ table.toponimsimportats tbody tr.even{
 table.toponimsimportats tbody tr.odd{
     background-color: #ffdbbc;
 }
+
+.leaflet-control-layers {
+    max-height: 400px;
+    overflow: auto;
+}
