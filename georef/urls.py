@@ -49,6 +49,8 @@ urlpatterns = [
     url(r'^prefsvisualitzaciowms/$', views.prefsvisualitzaciowms, name='prefsvisualitzaciowms'),
     url(r'^prefsvisualitzaciowms/toggle/$', views.toggle_prefs_wms, name='toggle_prefs_wms'),
     url(r'^georef_layers/$', views.georef_layers, name='georef_layers'),
+    url(r'^help/$', views.help, name='help'),
+    url(r'^help/delete/(?P<iddoc>[0-9A-Za-z_\-]+)/$', views.help_delete, name='help_delete'),
 
     url(r'^toponims$', views.toponims, name='toponims'),
     url(r'^toponims/update/(?P<id>[0-9A-Za-z_\-]+)/$', views.toponims_update, name='toponims_update'),

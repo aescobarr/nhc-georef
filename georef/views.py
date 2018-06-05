@@ -7,7 +7,8 @@ from georef.serializers import ToponimSerializer, FiltrejsonSerializer, Recursge
     QualificadorversioSerializer, PaisSerializer, TipusrecursgeorefSerializer, SuportSerializer, TipusToponimSerializer, \
     TipusunitatsSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref, Tipusunitats
-from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio
+from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio, HelpFile
+from georef_addenda.forms import HelpfileForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
@@ -1423,6 +1424,31 @@ def georef_layers(request):
     wms_url = conf.GEOSERVER_WMS_URL
     context = {'wms_url' : wms_url}
     return render(request, 'georef/georef_layers.html', context)
+
+
+@login_required
+def help(request):
+    helpfiles = HelpFile.objects.all()
+    if request.method == 'POST':
+        form = HelpfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # file is saved
+            form.save()
+            return HttpResponseRedirect(reverse('help'))
+    else:
+        form = HelpfileForm()
+    return render(request, 'georef/help.html', {'form': form, 'helpfiles':helpfiles})
+
+
+@login_required
+def help_delete(request, iddoc=None):
+    if request.method == 'POST':
+        try:
+            helpDoc = HelpFile.objects.get(pk=iddoc)
+            helpDoc.delete()
+        except HelpFile.DoesNotExist:
+            pass
+    return HttpResponseRedirect(reverse('help'))
 
 
 @api_view(['POST'])
