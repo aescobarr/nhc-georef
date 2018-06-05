@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 #from georef.models import Toponim, Recursgeoref, Toponimversio, pkgen
 from georef.tasks import pkgen
+import djangoref.settings as conf
+import os
 
 
 # Create your models here.
@@ -34,6 +36,24 @@ class Autor(models.Model):
 
     def __str__(self):
         return '%s' % (self.nom)
+
+
+class HelpFile(models.Model):
+    id = models.CharField(primary_key=True, max_length=200, default=pkgen)
+    titol = models.TextField()
+    h_file = models.FileField(upload_to=conf.LOCAL_DATAFILE_ROOT_DIRECTORY)
+    created_on = models.DateField(auto_now_add=True)
+
+
+@receiver(models.signals.post_delete, sender=HelpFile)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `MediaFile` object is deleted.
+    """
+    if instance.h_file:
+        if os.path.isfile(instance.h_file.path):
+            os.remove(instance.h_file.path)
 
 
 @receiver(post_save, sender=User)

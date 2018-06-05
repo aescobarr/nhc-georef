@@ -91,7 +91,7 @@
             </li>
             <li><a href="{% url 'graphs' %}">Gràfiques</a></li>
             <li><a href="{% url 'georef_layers' %}">Capes de georeferenciació</a></li>
-            <li><a href="#">Ajut</a></li>
+            <li><a href="{% url 'help' %}">Ajut</a></li>
             {% if user.is_authenticated %}
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Benvingut, {{ user.username }}<span class="caret"></span></a>

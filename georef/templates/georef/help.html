@@ -1,0 +1,66 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block main %}
+    <main>
+        <div class="page-header">
+        </div>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
+                <li class="breadcrumb-item">Ajut</li>
+            </ol>
+        </div>
+        {% if user.is_superuser %}
+        <form action="{% url 'help' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container separador_seccio">
+                <p><strong>Afegir documents d'ajuda:</strong></p>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="id_titol">Títol del document:</label>
+                            {{ form.titol }}
+                            {{ form.titol.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="id_h_file">Document d'ajuda:</label>
+                            {{ form.h_file }}
+                            {{ form.h_file.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <input role="button" class="btn btn-success" type="submit" value="Afegir document d'ajuda" />
+            </div>
+        </form>
+        {% endif %}
+        <div class="container separador_seccio">
+            <p><strong>Documents d'ajuda:</strong></p>
+        </div>
+        {% if helpfiles %}
+        <div class="container">
+            <ul>
+            {% for helpfile in helpfiles %}
+                <li>
+                    {{ helpfile.created_on|date:'d/m/Y' }} - <a href="/media/{{ helpfile.h_file }}">{{ helpfile.titol }}</a>
+                    {% if user.is_superuser %}
+                    <form action="{% url 'help_delete' helpfile.id %}" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger" aria-label="Left Align"><span class="fa fa-trash-o fa-lg" aria-hidden="true"></span></button></form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <div class="container">
+            <p>Encara no hi ha documents d'ajuda!</p>
+        </div>
+        {% endif %}
+    </main>
+{% endblock %}
