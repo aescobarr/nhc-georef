@@ -341,3 +341,14 @@ table.toponimsimportats tbody tr.odd{
     max-height: 400px;
     overflow: auto;
 }
+
+.iconainfo {
+    position:relative;
+}
+.iconainfo:before {
+    content: "\f05a";  /* this is your text. You can also use UTF-8 character codes as I do here */
+    font-family: FontAwesome;
+    left:-15px;
+    position:absolute;
+    top:0;
+ }

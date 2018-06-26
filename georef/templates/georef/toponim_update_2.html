@@ -32,6 +32,7 @@
     <script>
         var _versio_delete_url = "{% url 'versions-list' %}";
         var _last_version_url = "{% url 'toponims_update_2' idtoponim -1 %}";
+        var _sistref_list_url = "{% url 'sistrefassociat' %}";
     </script>
     <script>
         var node_list_full = {{ nodelist_full|safe }};
@@ -72,7 +73,7 @@
         <form action="{% url 'toponims_update_2' idtoponim idversio %}" method="post">
             {% csrf_token %}
             <div class="container">
-                <a role="button" class="btn btn-success" href="{% url 'toponims' %}">Tornar al llistat</a>
+                <a role="button" class="btn btn-success" href="{% url 'toponims' %}" data-toggle="tooltip" data-placement="right" title="Tornar al llistat de topònims">Tornar al llistat</a>
             </div>
             <div class="container separador_seccio">
                 <p><strong>Dades bàsiques:</strong></p>
@@ -163,7 +164,7 @@
                         <div class="col-sm-6">
                             <table class="toponimversio_edit">
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.numero_versio.id_for_label }}">Número versió <a class="botoinfo" title="Numeració de les versions de cada topònim, des de l’ 1 i creixement progressiu; útil només per identificar versions"><i class="fa fa-info" aria-hidden="true"></i></a> :</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Numeració de les versions de cada topònim, des de l'1 i creixent. Útil només per identificar versions" for="{{ toponimversio_form.numero_versio.id_for_label }}">Número versió:</label></th>
                                     <td>{{ toponimversio_form.numero_versio }}</td>
                                     <td>{{ toponimversio_form.numero_versio.errors }}</td>
                                 </tr>
@@ -173,9 +174,13 @@
                                     <td>{{ toponimversio_form.idqualificador.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.idrecursgeoref.id_for_label }}">Versió capturada del recurs:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Al desplegable es pot triar un recurs. Després s'omplirà el control de sistemes de referència amb els sistemes possibles per al recurs triat." for="{{ toponimversio_form.idrecursgeoref.id_for_label }}">Versió capturada del recurs:</label></th>
                                     <td>{{ toponimversio_form.idrecursgeoref }}</td>
                                     <td>{{ toponimversio_form.idrecursgeoref.errors }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Sistema referència del recurs:</th>
+                                    <td id="sistref_recurs"></td>
                                 </tr>
                                 <tr>
                                     <th><label for="{{ toponimversio_form.nom.id_for_label }}">Nom del topònim al recurs:</label></th>

@@ -20,6 +20,7 @@ router.register(r'tipusrecurs', views.TipusrecursgeorefViewSet, base_name='tipus
 router.register(r'tipussuport', views.TipusSuportViewSet, base_name='tipussuport')
 router.register(r'tipustoponim', views.TipusToponimViewSet, base_name='tipustoponim')
 router.register(r'tipusunitats', views.TipusUnitatsViewSet, base_name='tipusunitats')
+router.register(r'sistemareferenciamm', views.SistemaReferenciammViewSet, base_name='sistemareferenciamm')
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -70,6 +71,7 @@ urlpatterns = [
     url(r'^recursos/list/xls/$', views.recursos_list_xls, name='recursos_list_xls'),
     url(r'^recursos/list/csv/$', views.recursos_list_csv, name='recursos_list_csv'),
     url(r'^recursos/list/pdf/$', views.recursos_list_pdf, name='recursos_list_pdf'),
+    url(r'^recursos/sistrefassociat/$', views.sistrefassociat, name='sistrefassociat'),
 
     url(r'^thesaurus/authors/$', views.t_authors, name='t_authors'),
     url(r'^thesaurus/qualificadors/$', views.t_qualificadors, name='t_qualificadors'),

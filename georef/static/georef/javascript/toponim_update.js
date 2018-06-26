@@ -316,6 +316,26 @@ $(document).ready(function() {
         }
     });
 
+    var load_crs_label = function(id){
+        $.ajax({
+            url: _sistref_list_url,
+            data: 'id=' + encodeURI(id),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                $('#sistref_recurs').html(data.detail);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $('#sistref_recurs').html('');
+            }
+        });
+    };
+
     var importa_shapefile = function(filepath){
         $.ajax({
             url: _import_shapefile_url,
@@ -496,6 +516,11 @@ $(document).ready(function() {
         djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
     }
 
+    $( "#id_idrecursgeoref" ).change(function(){
+        var selected_id = this.value;
+        load_crs_label(selected_id);
+    });
 
-
+    var optVal= $("#id_idrecursgeoref option:selected").val();
+    load_crs_label(optVal);
 });
