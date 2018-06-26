@@ -105,7 +105,7 @@
                     <li>
                         <a class="nav-link" href="{% url 'change_my_password' %}">Canviar el meu password</a>
                     </li>
-                    {% if user.is_superuser %}
+                    {% if user.profile.is_admin %}
                     <li>
                         <a class="nav-link" href="{% url 'users_list' %}">Gestió usuaris</a>
                     </li>

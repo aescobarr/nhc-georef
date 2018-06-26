@@ -70,10 +70,12 @@ class ToponimSerializer(serializers.ModelSerializer):
 
     def get_editable(self, obj):
         user = self.context['request'].user
-        if user.profile.toponim_permission == '1':
+        if not user.is_anonymous and user.profile and user.profile.toponim_permission == '1':
             return True
-        if user.profile.toponim_permission in obj.denormalized_toponimtree:
-            return True
+        if not user.is_anonymous and user.profile:
+            if user.profile.toponim_permission:
+                if user.profile.toponim_permission in obj.denormalized_toponimtree:
+                    return True
         return False
 
 
@@ -85,17 +87,32 @@ class ToponimVersioSerializer(serializers.ModelSerializer):
 
 class FiltrejsonSerializer(serializers.ModelSerializer):
     description = serializers.ReadOnlyField()
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = Filtrejson
         #fields = '__all__'
-        fields = ('idfiltre', 'json', 'modul', 'nomfiltre', 'description')
+        fields = ('idfiltre', 'json', 'modul', 'nomfiltre', 'description', 'editable')
+
+    def get_editable(self, obj):
+        user = self.context['request'].user
+        if not user.is_anonymous and user.profile and user.profile.can_edit_filtre:
+            return True
+        return False
 
 
 class RecursgeorefSerializer(serializers.ModelSerializer):
+    editable = serializers.SerializerMethodField()
+
     class Meta:
         model = Recursgeoref
-        fields = ('id', 'nom')
+        fields = ('id', 'nom', 'editable')
+
+    def get_editable(self, obj):
+        user = self.context['request'].user
+        if not user.is_anonymous and user.profile and user.profile.can_edit_recurs:
+            return True
+        return False
 
 
 class TipusunitatsSerializer(serializers.ModelSerializer):

@@ -3,13 +3,15 @@ from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 import uuid
 import operator
-from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import GEOSGeometry, Point
 import json
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, pkgen
 from georef_addenda.models import Autor
+from georef.geom_utils import *
 import datetime
+import itertools
 
 # Create your models here.
 
@@ -109,6 +111,10 @@ class Toponim(models.Model):
     @property
     def aquatic_str(self):
         return "Sí" if self.aquatic == "S" else "No"
+
+    @property
+    def aquatic_bool(self):
+        return True if self.aquatic == "S" else False
 
     @property
     def nom_str(self):
@@ -260,6 +266,7 @@ class Toponimversio(models.Model):
     idqualificador = models.ForeignKey(Qualificadorversio, models.DO_NOTHING, db_column='idqualificador', blank=True, null=True)
     coordenada_x_centroide = models.CharField(max_length=50, blank=True, null=True)
     coordenada_y_centroide = models.CharField(max_length=50, blank=True, null=True)
+    last_version = models.BooleanField(default=False)
     #idgeometria = models.ForeignKey('Geometria', models.DO_NOTHING, db_column='idgeometria', blank=True, null=True)
 
     class Meta:
@@ -270,11 +277,12 @@ class Toponimversio(models.Model):
         geometries = self.geometries.all()
         unio_geometries = None
         for geometria in geometries:
-            this_geometria = geometria.geometria
-            if unio_geometries is None:
-                unio_geometries = this_geometria
-            else:
-                unio_geometries = unio_geometries.union(this_geometria)
+            if geometria.geometria.valid:
+                this_geometria = geometria.geometria
+                if unio_geometries is None:
+                    unio_geometries = this_geometria
+                else:
+                    unio_geometries = unio_geometries.union(this_geometria)
         return unio_geometries
 
     @property
@@ -293,17 +301,36 @@ class Toponimversio(models.Model):
 
     @property
     def get_coordenada_y_centroide(self):
-        if self.coordenada_y_centroide is None:
+        if self.coordenada_y_centroide is None or self.coordenada_y_centroide == '':
             return self.centroide_y
         else:
             return self.coordenada_y_centroide
 
     @property
     def get_coordenada_x_centroide(self):
-        if self.coordenada_x_centroide is None:
+        if self.coordenada_x_centroide is None or self.coordenada_x_centroide == '':
             return self.centroide_x
         else:
             return self.coordenada_x_centroide
+
+    @property
+    def get_incertesa_centroide(self):
+        union = self.union_geometry()
+        if union is None:
+            return self.precisio_h
+        else:
+            if union is not None:
+                centroid = union.centroid
+                if centroid is not None:
+                    dist_max = 0
+                    vertexes = extract_coords(union.coords)
+                    for vertex in vertexes:
+                        dist = vertex.distance(centroid)
+                        if dist > dist_max:
+                            dist_max = dist
+                    return dist_max
+            return 0
+
 
 class Paraulaclau(models.Model):
     id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
@@ -508,3 +535,17 @@ class Filtrejson(models.Model):
 def my_callback(sender, instance, *args, **kwargs):
     recalc_denormalized_toponim_tree = compute_denormalized_toponim_tree_val(instance)
     instance.denormalized_toponimtree = recalc_denormalized_toponim_tree
+
+
+@receiver(post_delete, sender=Toponimversio)
+def reassign_last_version(sender, instance, *args, **kwargs):
+    versions = Toponimversio.objects.filter(idtoponim=instance.idtoponim)
+    max = -1
+    darrer = None
+    for versio in versions:
+        if versio.numero_versio > max:
+            max = versio.numero_versio
+            darrer = versio
+    if darrer is not None:
+        darrer.last_version = True
+        darrer.save()

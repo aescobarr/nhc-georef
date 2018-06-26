@@ -10,14 +10,35 @@
         * {
           font-family: 'Lato', Helvetica, sans-serif;
           color: #333447;
-          line-height: 1.5;
+          line-height: 1;
         }
 
-        body{
+        body {
             font-size: 14px;
         }
-        .container{
-            width
+
+        .taulatoponim {
+            padding-top: 10px;
+            width:100%;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .taula_versio {
+            padding-top: 10px;
+            width:100%;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .taula_versio th,td {
+            padding: 5px;
+        }
+
+        .taulatoponim th,td {
+            padding: 5px;
+        }
+
+        .table_head {
+            background-color: #3bbbf7;
         }
 
     </style>
@@ -27,8 +48,8 @@
     <div class="container separador_seccio">
         <p><strong>Dades bàsiques:</strong></p>
     </div>
-    <table>
-        <tr>
+    <table class="taulatoponim">
+        <tr class="table_head">
             <th>Nom:</th>
             <td>{{ toponim.nom }}</td>
         </tr>
@@ -48,8 +69,8 @@
     <div class="container separador_seccio">
         <p><strong>Versions:</strong></p>
         {% for versio in toponim.versions.all %}
-        <table>
-            <tr>
+        <table class="taula_versio">
+            <tr class="table_head">
                 <th>Nom versió:</th>
                 <td>{{ versio.nom }}</td>
             </tr>
@@ -70,7 +91,7 @@
                 <td>{{ versio.datacaptura }}</td>
             </tr>
         </table>
-        <table>
+        <table class="taula_versio">
             <tr>
                 <th>Coordenada X original:</th>
                 <td>{{ versio.coordenada_x_origen }}</td>
