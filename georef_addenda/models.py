@@ -29,6 +29,25 @@ class Profile(models.Model):
     permission_administrative = models.BooleanField(default=False)
     permission_filter_edition = models.BooleanField(default=False)
 
+    @property
+    def is_admin(self):
+        return self.permission_administrative
+
+    @property
+    def can_edit_recurs(self):
+        return self.permission_recurs_edition
+
+    @property
+    def can_edit_toponim(self):
+        return self.permission_toponim_edition
+
+    @property
+    def can_edit_tesaure(self):
+        return self.permission_tesaure_edition
+
+    @property
+    def can_edit_filtre(self):
+        return self.permission_filter_edition
 
 class Autor(models.Model):
     id = models.CharField(primary_key=True, max_length=200, default=pkgen)

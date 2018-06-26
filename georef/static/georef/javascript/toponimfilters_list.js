@@ -24,7 +24,7 @@ $(document).ready(function() {
         "columns": [
             { "data": "nomfiltre" }
             ,{ "data": "description" }
-            ,{ "data": "button_delete" }
+            //,{ "data": "button_delete" }
         ],
         "columnDefs": [
             {
@@ -42,10 +42,16 @@ $(document).ready(function() {
                 "sortable": false
             },
             {
-                "targets": -1,
-                "data": null,
-                "defaultContent": "<button class=\"delete_button btn btn-danger\">Esborrar</button>",
-                "sortable": false
+                'targets': 2,
+                'data': 'editable',
+                'sortable': false,
+                'render': function(value){
+                    if(value==true){
+                        return "<button class=\"delete_button btn btn-danger\">Esborrar</button>";
+                    }else{
+                        return '&nbsp;';
+                    }
+                }
             }
         ]
     } );

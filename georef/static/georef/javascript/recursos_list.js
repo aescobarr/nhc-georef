@@ -50,27 +50,27 @@ $(document).ready(function() {
                 'targets': 1,
                 'data': 'editable',
                 'sortable': false,
-                'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
-                /*'render': function(value){
+                //'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
+                'render': function(value){
                     if(value==true){
                         return '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>';
                     }else{
                         return '&nbsp;';
                     }
-                }*/
+                }
             },
             {
                 'targets': 2,
                 'data': 'editable',
                 'sortable': false,
-                'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
-                /*'render': function(value){
+                //'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+                'render': function(value){
                     if(value==true){
                         return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
                     }else{
                         return '&nbsp;';
                     }
-                }*/
+                }
             },
             {
                 'targets':0,
@@ -163,7 +163,7 @@ $(document).ready(function() {
         });
     };
 
-    $('#autors_list tbody').on('click', 'td button.delete_button', function () {
+    $('#recursos_list tbody').on('click', 'td button.delete_button', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().id;

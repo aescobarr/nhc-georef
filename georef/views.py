@@ -67,6 +67,7 @@ import pyproj
 from georef.csv_import import check_file_structure, NumberOfColumnsException, EmptyFileException, process_line
 from django.db import connection
 
+from georef.permissions import HasAdministrativePermission
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -278,6 +279,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 class UsersViewSet(viewsets.ModelViewSet):
+    permission_classes = (HasAdministrativePermission,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -520,13 +522,14 @@ def toponimfilters(request):
 
 @login_required
 def users_list(request):
-    if request.user.profile and request.user.profile.permission_administrative == False:
+    if request.user.profile and request.user.profile.permission_administrative is False:
         return HttpResponse(reverse(index))
     else:
         return render(request, 'georef/user_list.html')
 
 
 def build_wms_layer_dict(user_id):
+    prefs = None
     try:
         prefs = PrefsVisibilitatCapes.objects.get(iduser=user_id)
     except PrefsVisibilitatCapes.DoesNotExist:
@@ -910,6 +913,20 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
 
                 toponimversio.geometries.clear()
                 toponimversio.save()
+
+                versions = Toponimversio.objects.filter(idtoponim=toponimversio.idtoponim)
+                darrer = None
+                max = -1
+                for versio in versions:
+                    if versio.numero_versio > max:
+                        max = versio.numero_versio
+                        darrer = versio
+                for versio in versions:
+                    versio.last_version = False
+                    versio.save()
+
+                darrer.last_version = True
+                darrer.save()
 
                 json_geometry_string = request.POST["geometria"]
                 json_geometry = json.loads(json_geometry_string)

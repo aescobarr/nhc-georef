@@ -92,7 +92,9 @@
             <div class="row container no_side_margin">
                 <label for="saveDoFilter">Carregar filtre</label>
                 <input id="autoc_filtres" type="text">
+                {% if user.profile.is_admin or user.profile.can_edit_filtre %}
                 <button id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -102,6 +104,7 @@
     <div class="container">
         <div id="fileuploader"></div>
     </div>
+    {% if user.profile.is_admin or user.profile.can_edit_toponim %}
     <div class="container">
         <div class="row">
             <div class="col-md-1 col-md-offset-11">
@@ -109,6 +112,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Ja hi ha un filtre amb aquest nom, el vols sobreescriure?</p>
     </div>
