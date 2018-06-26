@@ -5,7 +5,7 @@ from rest_framework import status, viewsets
 from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, \
     UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer, ToponimSearchSerializer, \
     QualificadorversioSerializer, PaisSerializer, TipusrecursgeorefSerializer, SuportSerializer, TipusToponimSerializer, \
-    TipusunitatsSerializer
+    TipusunitatsSerializer, SistemareferenciammSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref, Tipusunitats
 from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio, HelpFile
 from georef_addenda.forms import HelpfileForm
@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import operator
 import functools
 from georef.models import Tipustoponim, Pais, Qualificadorversio, Toponimversio, Tipusrecursgeoref, ParaulaclauRecurs, \
-    Suport, Capawms, Capesrecurs, PrefsVisibilitatCapes
+    Suport, Capawms, Capesrecurs, PrefsVisibilitatCapes, Sistemareferenciamm
 import json
 from json import dumps
 import magic
@@ -192,6 +192,23 @@ class PaisViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class SistemaReferenciammViewSet(viewsets.ModelViewSet):
+    serializer_class = SistemareferenciammSerializer
+
+    def get_queryset(self):
+        queryset = Sistemareferenciamm.objects.all()
+
+        name = self.request.query_params.get('name', None)
+        id = self.request.query_params.get('id', None)
+
+        if id is not None:
+            queryset = queryset.filter(id=id)
+
+        if name is not None:
+            queryset = queryset.filter(nom__icontains=name)
+        return queryset
+
+
 class TipusUnitatsViewSet(viewsets.ModelViewSet):
     serializer_class = TipusunitatsSerializer
 
@@ -325,6 +342,21 @@ class FiltrejsonViewSet(viewsets.ModelViewSet):
 class RecursGeoRefViewSet(viewsets.ModelViewSet):
     queryset = Recursgeoref.objects.all()
     serializer_class = RecursgeorefSerializer
+
+@api_view(['GET'])
+def sistrefassociat(request):
+    if request.method == 'GET':
+        id = request.query_params.get('id', None)
+        if id is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            r = get_object_or_404(Recursgeoref, pk=id)
+            if r.idsistemareferenciamm:
+                content = {'status': 'OK', 'detail': r.idsistemareferenciamm.nom}
+            else:
+                content = {'status': 'OK', 'detail': ''}
+            return Response(data=content, status=200)
 
 
 @api_view(['GET'])
