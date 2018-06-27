@@ -198,7 +198,7 @@ $(document).ready(function() {
                 toastr.success('Filtre desat amb èxit!');
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error esborrant filtre!');
+                toastr.error('Error desant filtre!');
             }
         });
     };
@@ -230,7 +230,18 @@ $(document).ready(function() {
     });
 
     $( '#saveDoFilter' ).click(function() {
-        check_nomfiltre();
+        var nomfiltre = $('#autoc_filtres').val();
+        if (nomfiltre === '' || nomfiltre === null){
+            toastr.error("El nom de filtre està en blanc. Cal posar un nom vàlid.");
+        }else{
+            var jsonFiltre = extreureJSONDeFiltre();
+            var json = JSON.parse(jsonFiltre);
+            if(json.filtre.length == 0){
+                toastr.error("El filtre no té condicions, està en blanc. Tria alguns criteris i torna-ho a intentar.");
+            }else{
+                check_nomfiltre();
+            }
+        }
     });
 
     $( '#doFilter' ).click(function() {
@@ -393,6 +404,8 @@ $(document).ready(function() {
     map_options.consultable = [recursos.layer];
 
     map = new djangoRef.Map.createMap(map_options);
+
+    //$('[data-toggle="tooltip"]').tooltip();
 });
 
 $(window).bind('beforeunload', function(){

@@ -523,4 +523,6 @@ $(document).ready(function() {
 
     var optVal= $("#id_idrecursgeoref option:selected").val();
     load_crs_label(optVal);
+
+    $('[data-toggle="tooltip"]').tooltip();
 });
