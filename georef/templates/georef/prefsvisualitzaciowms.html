@@ -25,6 +25,15 @@
         <div class="container separador_seccio">
             <p><strong>Preferències de visualització de capes WMS:</strong></p>
         </div>
+        <div class="container">
+            <p>
+                Aquest és un llistat de capes en format WMS que, o bé s'han carregat des d'un ràster TIF o un fitxer
+                shapefile des de la secció <a href="{% url 'recursos_capeswms' %}">Càrrega de capes WMS pròpies</a>, o
+                bé s'han donat d'alta com capes WMS relacionades amb un recurs de georeferenciació.
+                En principi aquestes capes no són visibles. Si vols tenir-les disponibles en algun mapa de l'aplicació, fes clic
+                a la casella 'Mostrar capa' i apareixeran al calaix de capes 'Capes WMS pròpies'.
+            </p>
+        <div>
         <div class="container separador_seccio">
             <table id="prefscapes" style="width:100%;"></table>
         </div>

@@ -29,6 +29,15 @@
             <p><strong>Creació de capes WMS locals:</strong></p>
         </div>
         <div class="container">
+            <p>
+                Aquesta utilitat serveix per carregar capes pròpies en un servidor de cartografia local. Aquest servidor
+                de cartografia fa disponibles les capes en un format WMS, de manera que es poden mostrar a la majoria de
+                controls Mapa de dins de l'aplicació.
+                Un cop carregada una capa, està desactivada per defecte. Si vols tenir-la disponible, vés a
+                <a href="{% url 'prefsvisualitzaciowms' %}">Preferències visualització capes WMS</a>
+            </p>
+        <div>
+        <div class="container">
             <div class="row">
                 <div class="col-xs-6">
                     <div class="form-group">
@@ -44,7 +53,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-2">
-                    <input id="btnCreaCapa" role="button" class="btn btn-success" value="Crear capa WMS" />
+                    <input data-toggle="tooltip" data-placement="right" id="btnCreaCapa" role="button" class="btn btn-success" value="Crear capa WMS" />
                 </div>
             </div>
         </div>
