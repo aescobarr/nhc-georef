@@ -21,6 +21,7 @@ router.register(r'tipussuport', views.TipusSuportViewSet, base_name='tipussuport
 router.register(r'tipustoponim', views.TipusToponimViewSet, base_name='tipustoponim')
 router.register(r'tipusunitats', views.TipusUnitatsViewSet, base_name='tipusunitats')
 router.register(r'sistemareferenciamm', views.SistemaReferenciammViewSet, base_name='sistemareferenciamm')
+router.register(r'paisos', views.PaisViewSet, base_name='paisos')
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

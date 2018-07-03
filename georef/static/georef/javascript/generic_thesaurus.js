@@ -27,6 +27,7 @@
             },
             'serverSide': true,
             'processing': true,
+            "language": opcions_llenguatge_catala,
             'pageLength': 25,
             'pagingType': 'full_numbers',
             'bLengthChange': false,
