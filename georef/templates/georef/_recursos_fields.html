@@ -32,7 +32,7 @@
         </div>
         <div class="col-xs-6">
             <div class="form-group">
-                <label for="{{ form.versio.id_for_label }}">Versió:</label>
+                <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Identificació de la versió disponible o consultada del recurs." for="{{ form.versio.id_for_label }}">Versió:</label>
                 {{ form.versio }}
                 {{ form.versio.errors }}
             </div>
@@ -40,11 +40,11 @@
     </div>
     <div class="row">
         <div class="col-xs-6">
-            <label for="paraulaclau_list">Paraules clau:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'una paraula clau (mínim 3 lletres). Llavors apareixerà un llistat amb les paraules que contenen el text escrit i l'usuari en podrà triar una. Després s'omplirà el control de paraules clau amb la paraula triada. Si es vol inserir una nova paraula clau tant al tesaurus de paraules clau com a la fitxa, cal escriure la paraula i després premer el botó 'Afegir a la fitxa i al tesaurus'" for="paraulaclau_list">Paraules clau:</label>
             <ul id="paraulaclau_list"></ul>
         </div>
         <div class="col-xs-6">
-            <label for="autor_list">Autors:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un autor (mínim 3 lletres). Llavors apareixerà un llistat amb els autors que contenen el text escrit i l'usuari en podrà triar un. Després s'omplirà el control d'autors amb l'element triat. Si es vol inserir un nou autor tant al tesaurus d'autors com a la fitxa, cal escriure el nom de l'autor i després premer el botó 'Afegir a la fitxa i al tesaurus'." for="autor_list">Autors:</label>
             <ul id="autor_list"></ul>
         </div>
     </div>
@@ -68,12 +68,12 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-6">
-            <label for="{{ form.campidtoponim.id_for_label }}">Camp identificador toponímia:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="En l’estructura d’informació del recurs identificar el camp d’informació sobre el qual es poden fer cerques toponímiques"for="{{ form.campidtoponim.id_for_label }}">Camp identificador toponímia:</label>
             {{ form.campidtoponim }}
             {{ form.campidtoponim.errors }}
         </div>
         <div class="col-xs-6">
-            <label for="{{ form.fitxergraficbase.id_for_label }}">Fitxer gràfic de base:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Fitxer gràfic que conté els límits base a partir dels quals s’obtenen les coordenades" for="{{ form.fitxergraficbase.id_for_label }}">Fitxer gràfic de base:</label>
             {{ form.fitxergraficbase }}
             {{ form.fitxergraficbase.errors }}
         </div>
@@ -85,12 +85,12 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-6">
-            <label for="{{ form.idsistemareferenciamm.id_for_label }}">Sistema de referència:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Indicació de datum i projecció" for="{{ form.idsistemareferenciamm.id_for_label }}">Sistema de referència:</label>
             {{ form.idsistemareferenciamm }}
             {{ form.idsistemareferenciamm.errors }}
         </div>
         <div class="col-xs-6">
-            <label for="{{ form.fitxergraficbase.id_for_label }}">Unitats:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Unitats en què el recurs proporciona les coordenades" for="{{ form.fitxergraficbase.id_for_label }}">Unitats:</label>
             {{ form.idtipusunitatscarto }}
             {{ form.idtipusunitatscarto.errors }}
         </div>

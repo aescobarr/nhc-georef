@@ -114,14 +114,14 @@
                 </div>
             </div>
             <div class="container">
-                <input role="button" class="btn btn-success" type="submit" name="save_toponim_from_toponimversio" value="Desar Topònim" />
+                <input data-toggle="tooltip" data-placement="left" title="Es desarà la informació que hagis modificat del topònim (els camps que queden per sobre d'aquest botó)" role="button" class="btn btn-success" type="submit" name="save_toponim_from_toponimversio" value="Desar Topònim" />
             </div>
         </form>
         {% if versions %}
         <div class="container separador_seccio">
             <p><strong>Versions:</strong></p>
             <!--<input role="button" class="btn btn-success" value="Afegir nova versió" />-->
-            <a href="{% url 'toponims_update_2' idtoponim -2 %}" class="btn btn-success">Afegir nova versió</a>
+            <a data-toggle="tooltip" data-placement="left" title="Crear la fitxa d’una nova versió del topònim" href="{% url 'toponims_update_2' idtoponim -2 %}" class="btn btn-success">Afegir nova versió</a>
             <table id="versions">
                 <tr class="table_top">
                     <td><strong>#</strong></td>
@@ -183,12 +183,12 @@
                                     <td id="sistref_recurs"></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.nom.id_for_label }}">Nom del topònim al recurs:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Transcripció literal del topònim segons el recurs emprat per georeferenciar" for="{{ toponimversio_form.nom.id_for_label }}">Nom del topònim al recurs:</label></th>
                                     <td>{{ toponimversio_form.nom }}</td>
                                     <td>{{ toponimversio_form.nom.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.datacaptura.id_for_label }}">Data:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Data de generació de la fitxa de versió" for="{{ toponimversio_form.datacaptura.id_for_label }}">Data:</label></th>
                                     <td>{{ toponimversio_form.datacaptura }}</td>
                                     <td>{{ toponimversio_form.datacaptura.errors }}</td>
                                 </tr>
@@ -231,12 +231,12 @@
                         <div class="col-sm-6">
                             <table class="toponimversio_edit">
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_x_origen.id_for_label }}">Coordenada X original:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Valor de la coordenada resultant de localitzar el topònim en el recurs i d’haver convertit el sistema de referència al del museu si era necessari" for="{{ toponimversio_form.coordenada_x_origen.id_for_label }}">Coordenada X original:</label></th>
                                     <td>{{ toponimversio_form.coordenada_x_origen }}</td>
                                     <td>{{ toponimversio_form.coordenada_x_origen.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_y_origen.id_for_label }}">Coordenada Y original:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Valor de la coordenada resultant de localitzar el topònim en el recurs i d’haver convertit el sistema de referència al del museu si era necessari" for="{{ toponimversio_form.coordenada_y_origen.id_for_label }}">Coordenada Y original:</label></th>
                                     <td>{{ toponimversio_form.coordenada_y_origen }}</td>
                                     <td>{{ toponimversio_form.coordenada_y_origen.errors }}</td>
                                 </tr>
@@ -255,12 +255,12 @@
                         <div class="col-sm-6">
                             <table class="toponimversio_edit">
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_x_centroide.id_for_label }}">Coordenada X centroide:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Valor de les coordenades del centroide obtingut a partir de l’estimació sobre el mapa a sobre d'aquests controls" for="{{ toponimversio_form.coordenada_x_centroide.id_for_label }}">Coordenada X centroide:</label></th>
                                     <td>{{ toponimversio_form.coordenada_x_centroide }}</td>
                                     <td>{{ toponimversio_form.coordenada_x_centroide.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_y_centroide.id_for_label }}">Coordenada Y centroide:</label></th>
+                                    <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Valor de les coordenades del centroide obtingut a partir de l’estimació sobre el mapa a sobre d'aquests controls" for="{{ toponimversio_form.coordenada_y_centroide.id_for_label }}">Coordenada Y centroide:</label></th>
                                     <td>{{ toponimversio_form.coordenada_y_centroide }}</td>
                                     <td>{{ toponimversio_form.coordenada_y_centroide.errors }}</td>
                                 </tr>
