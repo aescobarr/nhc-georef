@@ -221,21 +221,21 @@ table#toponim_edit tbody tr td ul li{
 #boto-digit-point{
     position: absolute;
     z-index: 800;
-    top: 124px;
-    left: 38px;
+    top: 116px;
+    left: 44px;
     box-shadow: 0 1px 5px rgba(0,0,0,0.65);
     border-radius: 4px;
     background-color: #fff;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
 }
 
 .custom-digit-point{
     display: block;
     text-align: center;
     text-decoration: none;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     background-image:url('/static/georef/css/icon/crosshair_smaller.png');
     background-repeat: no-repeat;
     background-position: 4px 4px;
@@ -351,4 +351,8 @@ table.toponimsimportats tbody tr.odd{
     left:-15px;
     position:absolute;
     top:0;
- }
+}
+
+/* Autocomplete fix */
+.ui-autocomplete { z-index: 1051; }
+
