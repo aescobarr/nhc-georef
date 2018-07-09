@@ -267,14 +267,17 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 toastr.success('Importació amb èxit!');
-                djangoRef.Map.editableLayers.clearLayers();
+                map.editableLayers.clearLayers();
                 var geoJson = JSON.parse(data.detail);
                 var geoJSONLayer = L.geoJson(geoJson);
                 geoJSONLayer.eachLayer(
                     function(l){
-                        djangoRef.Map.editableLayers.addLayer(l);
+                        map.editableLayers.addLayer(l);
                     }
                 );
+                if(map.editableLayers.getBounds().isValid()){
+                    map.map.fitBounds(map.editableLayers.getBounds());
+                }
             },
             error: function(jqXHR, textStatus, errorThrown){
                 toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
@@ -289,7 +292,8 @@ $(document).ready(function() {
         onComplete: function(id, fileName, responseJSON) {
             if(responseJSON.success) {
                 //alert("success!");
-                importa_shapefile(responseJSON.path);
+                var path = responseJSON.path.replace("media//","/");
+                importa_shapefile(path);
             } else {
                 alert('upload failed!');
             }

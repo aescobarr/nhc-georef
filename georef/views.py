@@ -587,7 +587,7 @@ def build_wms_layer_dict(user_id):
 def recursos(request):
     csrf_token = get_token(request)
     wms_dict = build_wms_layer_dict(request.user.id)
-    llista_tipus = Suport.objects.order_by('nom')
+    llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
     return render(request, 'georef/recursos_list.html',
                   context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token, 'wmslayers': json.dumps(wms_dict) })
@@ -829,7 +829,6 @@ def toponimversio_geometries_to_geojson(toponimversio):
     }
     return json.dumps(features)
 
-
 @login_required
 def toponims_update_2(request, idtoponim=None, idversio=None):
     versio = None
@@ -842,17 +841,6 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
     toponimsversio = Toponimversio.objects.filter(idtoponim=toponim).order_by('-numero_versio')
     this_user = request.user
     node_ini = '1'
-    if this_user.profile.permission_toponim_edition == False:
-        return HttpResponse('No tens permís per editar topònims. Operació no permesa.')
-    else:
-        if toponim.can_i_edit(this_user.profile.toponim_permission):
-            node_ini = this_user.profile.toponim_permission
-        else:
-            toponim_mes_alt = Toponim.objects.get(pk=this_user.profile.toponim_permission)
-            message = (
-                          'No tens permís per editar aquest topònim. El topònim més alt a l\'arbre que pots editar és %s i aquest està jeràrquicament per sobre. Operació no permesa.') % (
-                          toponim_mes_alt.nom_str)
-            return HttpResponse(message)
     if request.method == 'GET':
         if idversio == '-1':
             if (len(toponimsversio) > 0):
@@ -884,10 +872,36 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
         }
         return render(request, 'georef/toponim_update_2.html', context)
     elif request.method == 'POST':
+
+        if this_user.profile.permission_toponim_edition == False:
+            return HttpResponse('No tens permís per editar topònims. Operació no permesa.')
+        else:
+            if toponim.can_i_edit(this_user.profile.toponim_permission):
+                node_ini = this_user.profile.toponim_permission
+            else:
+                toponim_mes_alt = Toponim.objects.get(pk=this_user.profile.toponim_permission)
+                message = (
+                              'No tens permís per editar aquest topònim. El topònim més alt a l\'arbre que pots editar és %s i aquest està jeràrquicament per sobre. Operació no permesa.') % (
+                              toponim_mes_alt.nom_str)
+                return HttpResponse(message)
+
         if 'save_toponim_from_toponimversio' in request.POST:
             form = ToponimsUpdateForm(request.POST or None, instance=toponim)
             if form.is_valid():
-                form.save()
+                toponim = form.save(commit=False)
+                #check that the user is not assigning the toponim anywhere above his permission hyerarchy
+                if not toponim.idpare.can_i_edit(this_user.profile.toponim_permission):
+                    toponim_mes_alt = Toponim.objects.get(pk=this_user.profile.toponim_permission)
+                    message = (
+                                  'No tens permís per assignar %s com a pare d\'aquest topònim. El topònim més alt a l\'arbre que pots editar és %s i %s està jeràrquicament per sobre. Operació no permesa.') % (
+                                  toponim.idpare.nom_str, toponim_mes_alt.nom_str, toponim.idpare.nom_str)
+                    return HttpResponse(message)
+                #form.save()
+                #check that the toponim is not his own father
+                if toponim.idpare == toponim:
+                    message = 'No pots fer que un topònim sigui el seu propi pare. Operació no permesa.'
+                    return HttpResponse(message)
+                toponim.save()
                 url = reverse('toponims_update_2', kwargs={'idtoponim': form.instance.id, 'idversio': idversio})
                 return HttpResponseRedirect(url)
             else:
@@ -997,7 +1011,7 @@ def recursos_list_csv(request):
     records = data.data['data']
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+    response['Content-Disposition'] = 'attachment; filename="recursos.csv"'
     writer = csv.writer(response, delimiter=';')
     writer.writerow(['nom'])
     for record in records:
@@ -1167,7 +1181,7 @@ def toponims_list_csv(request):
     records = data.data['data']
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+    response['Content-Disposition'] = 'attachment; filename="toponims.csv"'
     writer = csv.writer(response, delimiter=';')
     writer.writerow(['nom_toponim', 'aquatic?', 'tipus_toponim'])
     for record in records:
@@ -1565,11 +1579,12 @@ def wmslocal_delete(request, id=None):
             # Load layer
             layer = cat.get_layer(c.name)
             # Delete layer
-            cat.delete(layer)
+            if layer:
+                cat.delete(layer)
             # Reload catalog to make it aware it no longer contains the layer
             cat.reload()
             # Remove store
-            cat.delete(st)
+            cat.delete(st, recurse=True)
         except ConnectionError as ce:
             content = {'status': 'KO', 'detail': 'Error de connexio amb la instancia de geoserver'}
             return Response(data=content, status=400)

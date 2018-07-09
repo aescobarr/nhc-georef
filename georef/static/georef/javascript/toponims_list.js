@@ -110,11 +110,12 @@ $(document).ready(function() {
                 'data': 'editable',
                 'sortable': false,
                 'render': function(value){
-                    if(value==true){
+                    /*if(value==true){
                         return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
                     }else{
                         return '&nbsp;';
-                    }
+                    }*/
+                    return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
                 }
             },
             {
@@ -420,7 +421,9 @@ $(document).ready(function() {
         onComplete: function(id, fileName, responseJSON) {
             if(responseJSON.success) {
                 //alert("success!");
-                importa_shapefile(responseJSON.path);
+                var path = responseJSON.path.replace("media//","/");
+                importa_shapefile(path);
+                //importa_shapefile(responseJSON.path);
             } else {
                 alert('upload failed!');
             }

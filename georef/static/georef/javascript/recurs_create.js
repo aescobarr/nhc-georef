@@ -53,7 +53,9 @@ $(document).ready(function() {
         onComplete: function(id, fileName, responseJSON) {
             if(responseJSON.success) {
                 //alert("success!");
-                importa_shapefile(responseJSON.path);
+                var path = responseJSON.path.replace("media//","/");
+                importa_shapefile(path);
+                //importa_shapefile(responseJSON.path);
             } else {
                 alert('upload failed!');
             }
