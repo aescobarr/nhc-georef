@@ -539,7 +539,7 @@ def my_callback(sender, instance, *args, **kwargs):
 
 @receiver(post_delete, sender=Toponimversio)
 def reassign_last_version(sender, instance, *args, **kwargs):
-    versions = Toponimversio.objects.filter(idtoponim=instance.idtoponim)
+    versions = Toponimversio.objects.filter(idtoponim__id=instance.idtoponim_id)
     max = -1
     darrer = None
     for versio in versions:

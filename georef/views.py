@@ -589,8 +589,11 @@ def recursos(request):
     wms_dict = build_wms_layer_dict(request.user.id)
     llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
+    this_user = request.user
+    if this_user.profile:
+        edit_permission = this_user.profile.can_edit_recurs
     return render(request, 'georef/recursos_list.html',
-                  context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token, 'wmslayers': json.dumps(wms_dict) })
+                  context={'llista_tipus': llista_tipus, 'wms_url': wms_url, 'csrf_token': csrf_token, 'wmslayers': json.dumps(wms_dict)})
 
 
 @login_required
@@ -729,7 +732,11 @@ def toponims_update(request, id=None):
 @login_required
 def recursos_create(request):
     if request.method == 'POST':
+        this_user = request.user
         form = RecursForm(request.POST or None)
+        if not this_user.profile.can_edit_recurs:
+            message = ('No tens permís per editar recursos. Operació no permesa.')
+            return HttpResponse(message)
         if form.is_valid():
             with transaction.atomic():
                 recurs = form.save(commit=False)
@@ -1307,10 +1314,14 @@ def recursos_update(request, id=None):
     moretoponims = len(queryset) > 20
     capeswms = recurs.capes_wms_recurs.all()
     form = RecursForm(request.POST or None, instance=recurs)
+    this_user = request.user
     context = {'form': form, 'paraulesclau': recurs.paraulesclau_str(), 'capeswms': capeswms,
                'autors': recurs.autors_str(), 'toponims_basats_recurs': toponimsversio, 'moretoponims': moretoponims,
                'wms_url': wms_url, 'geometries_json': geometries_json}
     if request.method == 'POST':
+        if not this_user.profile.can_edit_recurs and not this_user.profile.is_admin:
+            message = ('No tens permís per editar recursos. Operació no permesa.')
+            return HttpResponse(message)
         if form.is_valid():
             with transaction.atomic():
                 recurs = form.save(commit=False)
@@ -1902,13 +1913,13 @@ def wmslocal_create(request):
                            'detail': 'layer name will be {}, store name will be {}'.format(layer_name, store_name)}
                 return Response(data=content, status=200)
             except ConnectionError as ce:
-                os.remove(filepath)
+                #os.remove(filepath)
                 content = {'status': 'KO',
                            'detail': 'Error de connexió amb el servidor geoserver. L\'adreça {} ha deixat de respondre.'.format(
                                conf.GEOSERVER_REST_URL)}
                 return Response(data=content, status=400)
             except Exception as e:
-                os.remove(filepath)
+                #os.remove(filepath)
                 content = {'status': 'KO', 'detail': 'Error no esperat'}
                 return Response(data=content, status=400)
         else:
