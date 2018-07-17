@@ -12,6 +12,11 @@
             crud_url: "{{ crud_url }}",
             text_field_name: "{{ text_field_name }}",
         };
+
+        var user_can_edit = false;
+        {% if user.profile.is_admin or user.profile.can_edit_tesaure %}
+        user_can_edit = true;
+        {% endif %}
 </script>
 {% endblock %}
 {% block main %}
@@ -27,8 +32,10 @@
     </div>
     <div class="container separador_seccio">
         <div class="pull-right">
+            {% if user.profile.is_admin or user.profile.can_edit_tesaure %}
             <button id="add" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
+            {% endif %}
         </div>
     </div>
     <div class="container">

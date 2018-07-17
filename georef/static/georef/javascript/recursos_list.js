@@ -65,11 +65,11 @@ $(document).ready(function() {
                 'sortable': false,
                 //'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
                 'render': function(value){
-                    if(value==true){
+                    //if(value==true){
                         return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
-                    }else{
-                        return '&nbsp;';
-                    }
+                    //}else{
+                        //return '&nbsp;';
+                    //}
                 }
             },
             {

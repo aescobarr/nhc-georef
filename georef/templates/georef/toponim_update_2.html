@@ -114,14 +114,18 @@
                 </div>
             </div>
             <div class="container">
+                {% if user.profile.is_admin or user.profile.can_edit_toponim %}
                 <input data-toggle="tooltip" data-placement="left" title="Es desarà la informació que hagis modificat del topònim (els camps que queden per sobre d'aquest botó)" role="button" class="btn btn-success" type="submit" name="save_toponim_from_toponimversio" value="Desar Topònim" />
+                {% endif %}
             </div>
         </form>
         {% if versions %}
         <div class="container separador_seccio">
             <p><strong>Versions:</strong></p>
             <!--<input role="button" class="btn btn-success" value="Afegir nova versió" />-->
+            {% if user.profile.is_admin or user.profile.can_edit_toponim %}
             <a data-toggle="tooltip" data-placement="left" title="Crear la fitxa d’una nova versió del topònim" href="{% url 'toponims_update_2' idtoponim -2 %}" class="btn btn-success">Afegir nova versió</a>
+            {% endif %}
             <table id="versions">
                 <tr class="table_top">
                     <td><strong>#</strong></td>
@@ -144,7 +148,13 @@
                     <td>{{ versio.datacaptura | date:"d/m/Y"}}</td>
                     <td>{{ versio.iduser }}</td>
                     <td><a href="{% url 'toponims_update_2' idtoponim versio.id %}" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></a></td>
-                    <td><button id="delete_version" class="btn btn-danger" onclick="javascript:confirmDialog('Estàs a punt d\'esborrar la versió \'{{ versio.nom | safe }}\' amb numero \'{{ versio.numero_versio | safe }}\', vols continuar?','{{ versio.id }}');" type="reset"><i class="fa fa-times"></i></button></td>
+                    <td>
+                        {% if user.profile.is_admin or user.profile.can_edit_toponim %}
+                        <button id="delete_version" class="btn btn-danger" onclick="javascript:confirmDialog('Estàs a punt d\'esborrar la versió \'{{ versio.nom | safe }}\' amb numero \'{{ versio.numero_versio | safe }}\', vols continuar?','{{ versio.id }}');" type="reset"><i class="fa fa-times"></i></button>
+                        {% else %}
+                        &nbsp;
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -274,7 +284,9 @@
                     </div>
                 </div>
                 <div class="container">
+                    {% if user.profile.is_admin or user.profile.can_edit_toponim %}
                     <input role="button" class="btn btn-success" type="submit" name="save_versio_from_toponimversio" value="Desar Versió" />
+                    {% endif %}
                 </div>
                 <input id="geometria" name="geometria" type="hidden" value=""/>
             </form>

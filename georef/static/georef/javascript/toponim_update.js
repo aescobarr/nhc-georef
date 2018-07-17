@@ -150,6 +150,7 @@ $(document).ready(function() {
         if(valid){
             djangoRef_map.refreshCentroid(radius/1000);
             refreshCentroidUI(radius);
+            refreshDigitizedGeometry();
             djangoRef_map.editableLayers.bringToFront();
             if(djangoRef_map.centroid.getBounds().isValid()){
                 djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
@@ -191,6 +192,7 @@ $(document).ready(function() {
             djangoRef.Map.centroid.addData(circle);
 
             refreshCentroidUI(parseFloat(radius));
+            refreshDigitizedGeometry();
 
             //Zoom on features
             djangoRef_map.editableLayers.bringToFront();
@@ -487,8 +489,13 @@ $(document).ready(function() {
     });
 
     djangoRef_map.map.on(L.Draw.Event.EDITED, function (e) {
-        refreshCentroidUI();
-        refreshDigitizedGeometry();
+        var digitizedStuff = djangoRef_map.getDigitizedFeaturesJSON();
+        if(digitizedStuff.features.length == 1 && digitizedStuff.features[0].geometry && digitizedStuff.features[0].geometry.type == 'Point'){
+            dialog_centroid.dialog("open");
+        }else{
+            refreshCentroidUI();
+            refreshDigitizedGeometry();
+        }
     });
 
     djangoRef_map.map.on(L.Draw.Event.DELETED, function (e) {
