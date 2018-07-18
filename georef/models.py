@@ -380,6 +380,13 @@ class Capawms(models.Model):
             query = Q(id__in=ids_capes)
         return query
 
+    def get_recurs_capa(self):
+        cr = Capesrecurs.objects.filter(idcapa=self.id).first()
+        if cr is None:
+            return None
+        else:
+            return cr.idrecurs
+
     class Meta:
         managed = False
         db_table = 'capawms'

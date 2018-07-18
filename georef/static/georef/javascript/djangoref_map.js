@@ -84,7 +84,7 @@
         var overlays_control_config = options.overlays_control_config;
 
         var controlCapes_options = {
-            container_width 	: '180px',
+            container_width 	: '300px',
             container_height    : '500px',
             container_maxHeight : '500px',
             group_maxHeight     : '120px',

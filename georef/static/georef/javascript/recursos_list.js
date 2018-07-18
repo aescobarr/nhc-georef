@@ -336,10 +336,10 @@ $(document).ready(function() {
         }
     ];
 
-    if(wmslayers && wmslayers.length > 0){
+    for(var key in wmslayers){
         var added_layers = {};
-        for(var i = 0; i < wmslayers.length; i++){
-            layer_data_i = wmslayers[i];
+        for(var i = 0; i < wmslayers[key].length; i++){
+            layer_data_i = wmslayers[key][i];
             var layer_i = {
                 name: layer_data_i.name,
                 layer : L.tileLayer.wms(
@@ -358,7 +358,7 @@ $(document).ready(function() {
             added_layers[layer_data_i.label] = layer_i.layer;
         }
         overlays_control_config.push({
-            groupName: 'Capes WMS pròpies',
+            groupName: key,
             expanded: true,
             layers: added_layers
         });
