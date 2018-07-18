@@ -476,7 +476,7 @@ def autors_datatable_list(request):
 @api_view(['GET'])
 def capeswmslocals_datatable_list(request):
     if request.method == 'GET':
-        search_field_list = ('name', 'label')
+        search_field_list = ('name', 'label', 'baseurlservidor')
         response = generic_datatable_list_endpoint(request, search_field_list, Capawms, CapawmsSerializer)
         return response
 
@@ -560,6 +560,34 @@ def users_list(request):
         return render(request, 'georef/user_list.html')
 
 
+def build_wms_layer_dict_by_recurs(user_id):
+    prefs = None
+    try:
+        prefs = PrefsVisibilitatCapes.objects.get(iduser=user_id)
+    except PrefsVisibilitatCapes.DoesNotExist:
+        pass
+    retval_dict = {}
+    if prefs is not None:
+        layer_list_json = json.loads(prefs.prefscapesjson)
+        layers = []
+        for layer in layer_list_json:
+            layers.append(layer['id'])
+        wmslayers = Capawms.objects.filter(id__in=layers).all().order_by('label')
+        for layer in wmslayers:
+            recurs = layer.get_recurs_capa()
+            if recurs is not None:
+                try:
+                    retval_dict[recurs.nom]
+                except KeyError:
+                    retval_dict[recurs.nom] = []
+                retval_dict[recurs.nom].append({
+                    'id': layer.id,
+                    'baseurlservidor': layer.baseurlservidor,
+                    'name': layer.name,
+                    'label': layer.label
+                })
+    return retval_dict
+
 def build_wms_layer_dict(user_id):
     prefs = None
     try:
@@ -586,7 +614,8 @@ def build_wms_layer_dict(user_id):
 @login_required
 def recursos(request):
     csrf_token = get_token(request)
-    wms_dict = build_wms_layer_dict(request.user.id)
+    #wms_dict = build_wms_layer_dict(request.user.id)
+    wms_dict = build_wms_layer_dict_by_recurs(request.user.id)
     llista_tipus = Tipusrecursgeoref.objects.order_by('nom')
     wms_url = conf.GEOSERVER_WMS_URL
     this_user = request.user
@@ -599,7 +628,8 @@ def recursos(request):
 @login_required
 def toponims(request):
     csrf_token = get_token(request)
-    wms_dict = build_wms_layer_dict(request.user.id)
+    #wms_dict = build_wms_layer_dict(request.user.id)
+    wms_dict = build_wms_layer_dict_by_recurs(request.user.id)
     wms_url = conf.GEOSERVER_WMS_URL
     llista_tipus = Tipustoponim.objects.order_by('nom')
     llista_paisos = Pais.objects.order_by('nom')
@@ -841,7 +871,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
     versio = None
     geometries_json = None
     wms_url = conf.GEOSERVER_WMS_URL
-    wms_dict = build_wms_layer_dict(request.user.id)
+    #wms_dict = build_wms_layer_dict(request.user.id)
+    wms_dict = build_wms_layer_dict_by_recurs(request.user.id)
     id_darrera_versio = None
     toponim = get_object_or_404(Toponim, pk=idtoponim)
     nodelist_full = format_denormalized_toponimtree(compute_denormalized_toponim_tree_val(toponim))
