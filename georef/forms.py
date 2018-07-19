@@ -59,7 +59,7 @@ class ToponimversioForm(ModelForm):
     dateTimeOptions = {
         'format': 'dd/mm/yyyy'
     }
-    datacaptura = forms.DateField(initial=datetime.date.today, input_formats=['%d/%m/%Y'],widget=DateWidget(bootstrap_version=3, options=dateTimeOptions))
+    datacaptura = forms.DateField(initial=datetime.date.today, input_formats=['%d/%m/%Y'],widget=DateWidget(bootstrap_version=3, options=dateTimeOptions),required=False)
 
     class Meta:
         model = Toponimversio
