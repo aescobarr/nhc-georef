@@ -986,7 +986,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 geometries_json = toponimversio_geometries_to_geojson(versio)
             else:
                 toponimversio_form = ToponimversioForm(request.POST or None)
-            form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+            #form = ToponimsUpdateForm(request.POST or None, instance=toponim)
+            form = ToponimsUpdateForm(instance=toponim)
             if toponimversio_form.is_valid():
                 toponimversio = toponimversio_form.save(commit=False)
                 toponimversio.geometries.clear()
@@ -1820,6 +1821,7 @@ def compute_shapefile_centroid(request, file_name=None):
         os.remove(filepath)
         content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat: "{}"'.format(file_type)}
         return Response(data=content, status=400)
+
 
 @api_view(['POST'])
 def wmslocal_create(request):

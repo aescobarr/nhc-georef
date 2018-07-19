@@ -56,7 +56,7 @@ class ToponimSearchSerializer(serializers.ModelSerializer):
         if darrera_versio is None:
             return None
         else:
-            return darrera_versio.precisio_h
+            return darrera_versio.get_incertesa_centroide
 
 class ToponimSerializer(serializers.ModelSerializer):
     aquatic_str = serializers.ReadOnlyField()
