@@ -20,11 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# OVERRIDEN IN SETTINGS_LOCAL
 SECRET_KEY = 'gx%(-$i!e@y9o-xa^=962t*f-ngn-!u+zf)m-$icedw8pzb@&s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# OVERRIDEN IN SETTINGS_LOCAL
 DEBUG = True
 
+# OVERRIDEN IN SETTINGS_LOCAL
 ALLOWED_HOSTS = []
 
 
@@ -125,6 +128,7 @@ DATABASES = {
 
 STATIC_URL = '/static/'
 
+# OVERRIDEN IN SETTINGS_LOCAL
 STATIC_ROOT = '/home/webuser/dev/django/djangoref/static/'
 
 LOGIN_REDIRECT_URL = '/'
@@ -157,8 +161,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 25
 }
 
-from djangoref.settings_local import *
-
+# OVERRIDEN IN SETTINGS_LOCAL
 UPLOAD_DIR = BASE_DIR + "/uploads"
 MEDIA_ROOT = UPLOAD_DIR
 MEDIA_URL = "media/"
+
+from djangoref.settings_local import *
