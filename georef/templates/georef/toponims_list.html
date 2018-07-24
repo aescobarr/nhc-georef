@@ -5,7 +5,7 @@
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/css/styledLayerControl.css' %}" rel="stylesheet">
-    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/leaflet.draw.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/leaflet.draw.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.css' %}" rel="stylesheet">
@@ -164,35 +164,35 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>
 
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Leaflet.draw.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Leaflet.Draw.Event.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Toolbar.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Tooltip.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/GeometryUtil.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/LatLngUtil.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/LineUtil.Intersect.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/Polygon.Intersect.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/Polyline.Intersect.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/ext/TouchEvents.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/DrawToolbar.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Feature.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.SimpleShape.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Polyline.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Marker.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Circle.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.CircleMarker.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Polygon.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/draw/handler/Draw.Rectangle.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/EditToolbar.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/EditToolbar.Edit.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/EditToolbar.Delete.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/Control.Draw.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Poly.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.SimpleShape.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Rectangle.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Marker.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.CircleMarker.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.draw/src/edit/handler/Edit.Circle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/Leaflet.draw.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/Leaflet.Draw.Event.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/Toolbar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/Tooltip.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/ext/GeometryUtil.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/ext/LatLngUtil.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/ext/LineUtil.Intersect.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/ext/Polygon.Intersect.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/ext/Polyline.Intersect.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/ext/TouchEvents.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/DrawToolbar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.Feature.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.SimpleShape.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.Polyline.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.Marker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.Circle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.CircleMarker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.Polygon.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/draw/handler/Draw.Rectangle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/EditToolbar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/EditToolbar.Edit.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/EditToolbar.Delete.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/Control.Draw.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.Poly.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.SimpleShape.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.Rectangle.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.Marker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.CircleMarker.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.Circle.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.min.js' %}"></script>
     <script src="{% static 'georef/javascript/OpenLayers2.12.js' %}"></script>
     <script src="{% static 'georef/javascript/wicket.min.js' %}"></script>
