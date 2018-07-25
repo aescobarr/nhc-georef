@@ -313,7 +313,7 @@ $(document).ready(function() {
     var recursos =  {
         name: 'recursos',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:recursosgeoreferenciacio',
                 format: 'image/png',

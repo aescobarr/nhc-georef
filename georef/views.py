@@ -761,6 +761,7 @@ def toponims_update(request, id=None):
 
 @login_required
 def recursos_create(request):
+    wms_url = conf.GEOSERVER_WMS_URL
     if request.method == 'POST':
         this_user = request.user
         form = RecursForm(request.POST or None)
@@ -812,7 +813,7 @@ def recursos_create(request):
                 return HttpResponseRedirect(url)
     else:
         form = RecursForm()
-    return render(request, 'georef/recurs_create.html', {'form': form})
+    return render(request, 'georef/recurs_create.html', {'form': form, 'wms_url': wms_url})
 
 
 def toponims_search(request):
