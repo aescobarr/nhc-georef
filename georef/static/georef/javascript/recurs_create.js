@@ -76,7 +76,7 @@ $(document).ready(function() {
     var toponims_b_recurs =  {
         name: 'toponims_b_recurs',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:toponimsbasatsenrecurs',
                 format: 'image/png',

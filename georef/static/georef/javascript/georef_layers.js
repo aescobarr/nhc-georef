@@ -3,7 +3,7 @@ $(document).ready(function() {
     var centroides_calc =  {
         name: 'centroides_calc_museu',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:toponimsdarreraversio_nocalc',
                 format: 'image/png',
@@ -15,7 +15,7 @@ $(document).ready(function() {
     var centroides_digit =  {
         name: 'centroides_digit',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:toponimsdarreraversio_radi',
                 format: 'image/png',
@@ -28,7 +28,7 @@ $(document).ready(function() {
     var toponims =  {
         name: 'toponims',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:toponimsdarreraversio',
                 format: 'image/png'
@@ -41,7 +41,7 @@ $(document).ready(function() {
     var recursos_digit = {
         name: 'recursos_digit',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:recursosgeoreferenciacio',
                 format: 'image/png',
@@ -54,7 +54,7 @@ $(document).ready(function() {
     var recursos_wms = {
         name: 'recursos_wms',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:recursosgeoreferenciacio_wms_bound',
                 format: 'image/png',

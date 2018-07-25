@@ -443,7 +443,7 @@ $(document).ready(function() {
     var toponims =  {
         name: 'toponims',
         layer : L.tileLayer.wms(
-            'http://127.0.0.1:8080/geoserver/mzoologia/wms?',
+            wms_url,
             {
                 layers: 'mzoologia:toponimsdarreraversio',
                 format: 'image/png',
