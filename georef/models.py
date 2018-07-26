@@ -376,7 +376,11 @@ class Capawms(models.Model):
     def crea_query_de_filtre(json_filtre):
         query = None
         for criteri in json_filtre:
-            ids_capes = Capesrecurs.objects.filter(idrecurs=criteri['idrecurs']).values_list('idcapa', flat=True)
+            val_recurs = criteri['idrecurs']
+            if val_recurs == '*': #returns all layers associated with a recurs
+                ids_capes = Capesrecurs.objects.all().values_list('idcapa', flat=True)
+            else:
+                ids_capes = Capesrecurs.objects.filter(idrecurs=criteri['idrecurs']).values_list('idcapa', flat=True)
             query = Q(id__in=ids_capes)
         return query
 
