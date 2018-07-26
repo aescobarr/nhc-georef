@@ -4,9 +4,9 @@ $(document).ready(function() {
         "ajax": {
             "url": _capawmslocal_list_url,
             "dataType": 'json'
-            /*,"data": function(d){
-                d.filtrejson = '{"filtre":[{"idrecurs":"mz_recursgeoref_r"}]}';
-            }*/
+            ,"data": function(d){
+                d.filtrejson = '{"filtre":[{"idrecurs":"*"}]}';
+            }
         },
         "serverSide": true,
         "processing": true,
