@@ -40,6 +40,12 @@
         {% for capa in capeswms %}
         capes_wms.push({'id': '{{capa.id}}', 'name':'{{capa.name}}', 'label':'{{capa.label}}'});
         {% endfor %}
+        var save_message = null;
+        {% if messages %}
+            {% for message in messages %}
+                save_message = '{{ message }}';
+            {% endfor %}
+        {% endif %}
     </script>
 {% endblock %}
 {% block main %}

@@ -25,6 +25,10 @@ var capawms_li_element_template = '<li class="tagit-choice ui-widget-content ui-
 
 $(document).ready(function() {
 
+    if(save_message){
+        toastr.success(save_message);
+    }
+
     var buildCapesWMSUI = function(){
         $('#taulacapes').empty();
         for(var i = 0; i < capes_wms.length; i++){
