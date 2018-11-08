@@ -127,6 +127,12 @@
         var editableLayers;
         var controlCapes;
 
+        {% if messages %}
+            {% for message in messages %}
+                toastr.success("{{ message }}");
+            {% endfor %}
+        {% endif %}
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmGF2iEuPZt4fCJqxgHLZ8WMtQ7wM0Sp4" async defer></script>
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>

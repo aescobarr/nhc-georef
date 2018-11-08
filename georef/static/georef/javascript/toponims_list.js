@@ -371,8 +371,13 @@ $(document).ready(function() {
         }
     });
 
+    var scrollToTableTop = function() {
+        $('html, body').animate({scrollTop: $("#toponims_list_wrapper").offset().top - 100}, 500);
+    };
+
     $( '#doFilter' ).click(function() {
         filter();
+        scrollToTableTop();
     });
 
     $( '#doClear' ).click(function() {
