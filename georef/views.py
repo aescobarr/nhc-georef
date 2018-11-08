@@ -1,3 +1,4 @@
+from django.contrib.messages.context_processors import messages
 from django.middleware.csrf import get_token
 from ajaxuploader.views import AjaxFileUploader
 from django.shortcuts import render
@@ -9,6 +10,7 @@ from georef.serializers import ToponimSerializer, FiltrejsonSerializer, Recursge
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref, Tipusunitats
 from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio, HelpFile
 from georef_addenda.forms import HelpfileForm
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from querystring_parser import parser
@@ -1406,7 +1408,7 @@ def recursos_update(request, id=None):
                         c = Capawms.objects.get(pk=capa)
                         cr = Capesrecurs(idcapa=c, idrecurs=recurs)
                         cr.save()
-
+                messages.add_message(request, messages.INFO, 'Recurs desat amb èxit!')
                 url = reverse('recursos_update', kwargs={'id': form.instance.id})
                 return HttpResponseRedirect(url)
 
