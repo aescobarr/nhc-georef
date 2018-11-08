@@ -95,6 +95,7 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 add_filtre(json,modul,nomfiltre);
+                scrollToTableTop();
             },
             error: function(jqXHR, textStatus, errorThrown){
                 var idfiltre = jqXHR.responseJSON.detail;
@@ -246,6 +247,7 @@ $(document).ready(function() {
 
     $( '#doFilter' ).click(function() {
         filter();
+        scrollToTableTop();
     });
 
     $( '#doClear' ).click(function() {
@@ -253,6 +255,10 @@ $(document).ready(function() {
         filter();
         $('#autoc_filtres').val('');
     });
+
+    var scrollToTableTop = function() {
+        $('html, body').animate({scrollTop: $("#recursos_list_wrapper").offset().top - 100}, 500);
+    };
 
     var importa_shapefile = function(filepath){
         $.ajax({

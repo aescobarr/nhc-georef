@@ -68,6 +68,7 @@ from georef.csv_import import check_file_structure, NumberOfColumnsException, Em
 from django.db import connection
 
 from georef.permissions import HasAdministrativePermission
+from django.contrib import messages
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -810,6 +811,7 @@ def recursos_create(request):
                         cr.save()
 
                 url = reverse('recursos')
+                messages.success(request, "Recurs desat amb èxit!")
                 return HttpResponseRedirect(url)
     else:
         form = RecursForm()
