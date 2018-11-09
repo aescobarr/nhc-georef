@@ -9,6 +9,26 @@
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.css' %}" rel="stylesheet">
+    <style>
+        table#recursos_list.dataTable.no-footer tbody tr td {
+            font-size: 10px;
+        }
+        table#taulafiltre tbody tr td {
+            font-size: 10px;
+        }
+        table#taulafiltre tr td {
+            font-size: 10px;
+        }
+        html body main div.container div.wrapper.clear_blue table#taulafiltre tr td select.input-field{
+            font-size: 10px;
+        }
+        .btn.btn-primary{
+            font-size: 10px;
+        }
+        .btn.btn-danger{
+            font-size: 10px;
+        }
+    </style>
 {% endblock %}
 {% block extrahead %}
     <script>
@@ -50,52 +70,49 @@
             </div>
         </div>
         <div class="container">
-            <div class="wrapper clear_blue">
-                <button data-toggle="tooltip" data-placement="left" title="Afegeix una nova condició a la taula de filtre. Es pot modificar els paràmetres de la condició un cop apareix a la taula." id="addCondicio" type="button" class="btn btn-primary">Afegir condició <i class="fa fa-plus" aria-hidden="true"></i></button>
-                <table id="taulafiltre">
-                    <tbody>
-                        <tr>
-                            <td><strong>Operador</strong></td>
-                            <td><strong>NOT</strong></td>
-                            <td><strong>Condició</strong></td>
-                            <td><strong>Valor</strong></td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="row container no_side_margin">
-                    <button data-toggle="tooltip" data-placement="left" title="Executa una cerca, segons les condicions definides. La cerca mostrarà els resultats a la taula de recursos de georeferenciació i al mapa." id="doFilter" type="button" class="btn btn-primary">Filtrar <i class="fa fa-filter" aria-hidden="true"></i></button>
-                    <button data-toggle="tooltip" data-placement="right" title="Elimina totes les condicions de filtre. La taula i el mapa perdran qualsevol filtre aplicat." id="doClear" type="button" class="btn btn-danger">Netejar filtre <i class="fa fa-close" aria-hidden="true"></i></button>
-                </div>
-                <div class="row container no_side_margin">
-                    <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un filtre prèviament desat. Llavors apareixerà un llistat amb els filtres que conténen el text escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap filtre, a Menú->Recursos cartogràfics->Llistat de filtres de recursos hi ha la llista completa." for="saveDoFilter">Carregar filtre</label>
-                    <input id="autoc_filtres" type="text">
-                    {% if user.profile.is_admin or user.profile.can_edit_filtre %}
-                    <button data-toggle="tooltip" data-placement="right" title="Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el filtre escrivint el nom o part d'ell a la casella de text." id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div id="map"></div>
-        </div>
-        <div class="container">
-            <div id="fileuploader"></div>
-        </div>
-        {% if user.profile.is_admin or user.profile.can_edit_recurs %}
-        <div class="container">
             <div class="row">
-                <div class="col-md-1 col-md-offset-11">
+                <div class="col-md-7">
+                    <div class="wrapper clear_blue">
+                        <button data-toggle="tooltip" data-placement="left" title="Afegeix una nova condició a la taula de filtre. Es pot modificar els paràmetres de la condició un cop apareix a la taula." id="addCondicio" type="button" class="btn btn-primary">Afegir condició <i class="fa fa-plus" aria-hidden="true"></i></button>
+                        <table id="taulafiltre">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Operador</strong></td>
+                                    <td><strong>NOT</strong></td>
+                                    <td><strong>Condició</strong></td>
+                                    <td><strong>Valor</strong></td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row container no_side_margin">
+                            <button data-toggle="tooltip" data-placement="left" title="Executa una cerca, segons les condicions definides. La cerca mostrarà els resultats a la taula de recursos de georeferenciació i al mapa." id="doFilter" type="button" class="btn btn-primary">Filtrar <i class="fa fa-filter" aria-hidden="true"></i></button>
+                            <button data-toggle="tooltip" data-placement="right" title="Elimina totes les condicions de filtre. La taula i el mapa perdran qualsevol filtre aplicat." id="doClear" type="button" class="btn btn-danger">Netejar filtre <i class="fa fa-close" aria-hidden="true"></i></button>
+                        </div>
+                        <div class="row container no_side_margin">
+                            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un filtre prèviament desat. Llavors apareixerà un llistat amb els filtres que conténen el text escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap filtre, a Menú->Recursos cartogràfics->Llistat de filtres de recursos hi ha la llista completa." for="saveDoFilter">Carregar filtre</label>
+                            <input id="autoc_filtres" type="text">
+                            {% if user.profile.is_admin or user.profile.can_edit_filtre %}
+                            <button data-toggle="tooltip" data-placement="right" title="Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el filtre escrivint el nom o part d'ell a la casella de text." id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <div id="map"></div>
+                        <div id="fileuploader"></div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    {% if user.profile.is_admin or user.profile.can_edit_recurs %}
                     <button data-toggle="tooltip" data-placement="right" title="Fes clic aquí per accedir a la fitxa de creació de Recursos Cartogràfics" id="addRecurs" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+                    {% endif %}
+                    <table id="recursos_list" style="width:100%;"></table>
                 </div>
             </div>
         </div>
-        {% endif %}
+
         <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
             <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Ja hi ha un filtre amb aquest nom, el vols sobreescriure?</p>
-        </div>
-        <div class="container">
-            <table id="recursos_list" style="width:100%;"></table>
         </div>
 </main>
 {% endblock %}
