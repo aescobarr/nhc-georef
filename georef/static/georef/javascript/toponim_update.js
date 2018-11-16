@@ -408,7 +408,7 @@ $(document).ready(function() {
             groupName: 'Toponims',
             expanded: true,
             layers: {
-                'Darreres versions': toponims.layer
+                'Topònims': toponims.layer
             }
         }
     ];
