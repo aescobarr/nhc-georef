@@ -152,7 +152,7 @@
                     <td>{{ versio.numero_versio }}</td>
                     <td>{{ versio.idqualificador.qualificador }}</td>
                     <td>{{ versio.datacaptura | date:"d/m/Y"}}</td>
-                    <td>{{ versio.iduser }}</td>
+                    <td>{{ versio.iduser.first_name }} {{ versio.iduser.last_name }}</td>
                     <td><a href="{% url 'toponims_update_2' idtoponim versio.id %}" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></a></td>
                     <td>
                         {% if user.profile.is_admin or user.profile.can_edit_toponim %}
