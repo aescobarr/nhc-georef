@@ -435,7 +435,7 @@ $(document).ready(function() {
         },
         template:'<div class="qq-uploader">' +
             '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile</div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>Importar shapefile</span></div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {
@@ -465,7 +465,7 @@ $(document).ready(function() {
             groupName: 'Toponims',
             expanded: true,
             layers: {
-                'Darreres versions': toponims.layer
+                'Topònims': toponims.layer
             }
         }
     ];
