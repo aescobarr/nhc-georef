@@ -476,6 +476,7 @@ $(document).ready(function() {
 
     djangoRef_map = new djangoRef.Map.createMap(map_options);
 
+    djangoRef_map.deselectAllOverlays();
 
     djangoRef_map.map.on(L.Draw.Event.CREATED, function (e) {
         var type = e.layerType,layer = e.layer;
