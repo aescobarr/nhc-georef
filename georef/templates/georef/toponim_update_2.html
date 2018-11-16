@@ -24,7 +24,7 @@
             width: 100%;
         }
         #map{
-            height: 270px;
+            height: 350px;
         }
 
         .leaflet-control-layers {
@@ -86,7 +86,7 @@
             </div>
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <table id="toponim_edit">
                             <tr>
                                 <th><label for="{{ form.nom.id_for_label }}">Nom:</label></th>
@@ -111,7 +111,7 @@
                         </table>
                     </div>
                     {{ form.idpare.as_hidden }}
-                    <div class="col-sm-6">
+                    <div class="col-sm-8">
                         <label>Jerarquia del topònim:</label>
                         <div id="ariadna"><ul></ul></div>
                         <label>Topònim pare:</label>
@@ -177,7 +177,7 @@
                     </div>
                     {{ versio.id.as_hidden }}
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-5">
                             <table class="toponimversio_edit">
                                 <tr>
                                     <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Numeració de les versions de cada topònim, des de l'1 i creixent. Útil només per identificar versions" for="{{ toponimversio_form.numero_versio.id_for_label }}">Número versió:</label></th>
@@ -210,7 +210,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
                             <div id="map">
                                 <div id="boto-digit-point">
                                     <a id="kb_digit" class="custom-digit-point" href="#" title="Digitalitza un punt per teclat">
@@ -244,7 +244,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5">
                             <table class="toponimversio_edit">
                                 <tr>
                                     <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Valor de la coordenada resultant de localitzar el topònim en el recurs i d’haver convertit el sistema de referència al del museu si era necessari" for="{{ toponimversio_form.coordenada_x_origen.id_for_label }}">Coordenada X original:</label></th>
@@ -268,7 +271,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
                             <table class="toponimversio_edit">
                                 <tr>
                                     <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Valor de les coordenades del centroide obtingut a partir de l’estimació sobre el mapa a sobre d'aquests controls" for="{{ toponimversio_form.coordenada_x_centroide.id_for_label }}">Coordenada X centroide:</label></th>
