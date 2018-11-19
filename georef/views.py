@@ -1120,6 +1120,15 @@ def toponims_list_xls(request):
                                            field_translation_list, sort_translation_list, paginate=False)
     records = data.data['data']
 
+    id_toponims = []
+    for record in records:
+        id_toponims.append(record['id'])
+
+    versions = {}
+    darreres_versions = Toponimversio.objects.filter(last_version=True).filter(idtoponim__id__in=id_toponims)
+    for darrera_versio in darreres_versions:
+        versions[darrera_versio.idtoponim.id] = { '_x': darrera_versio.get_coordenada_x_centroide, '_y': darrera_versio.get_coordenada_y_centroide, '_inc': darrera_versio.get_incertesa_centroide}
+
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="toponims.xls"'
 
@@ -1132,7 +1141,7 @@ def toponims_list_xls(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['Nom', 'Aquàtic?', 'Tipus', ]
+    columns = ['Nom', 'Aquàtic?', 'Tipus', 'Coordenada x centroide', 'Coordenada y centroide', 'Precisio (m)']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -1145,6 +1154,19 @@ def toponims_list_xls(request):
         ws.write(row_num, 0, record['nom_str'], font_style)
         ws.write(row_num, 1, record['aquatic'], font_style)
         ws.write(row_num, 2, record['idtipustoponim']['nom'], font_style)
+        versio = None
+        try:
+            versio = versions[record['id']]
+        except KeyError:
+            pass
+        if versio:
+            ws.write(row_num, 3, versio['_x'], font_style)
+            ws.write(row_num, 4, versio['_y'], font_style)
+            ws.write(row_num, 5, versio['_inc'], font_style)
+        else:
+            ws.write(row_num, 3, '', font_style)
+            ws.write(row_num, 4, '', font_style)
+            ws.write(row_num, 5, '', font_style)
 
     wb.save(response)
     return response
@@ -1183,8 +1205,31 @@ def toponims_list_pdf(request):
                                            field_translation_list, sort_translation_list, paginate=False)
 
     records = data.data['data']
+
+    id_toponims = []
+    for record in records:
+        id_toponims.append(record['id'])
+
+    versions = {}
+    darreres_versions = Toponimversio.objects.filter(last_version=True).filter(idtoponim__id__in=id_toponims)
+    for darrera_versio in darreres_versions:
+        versions[darrera_versio.idtoponim.id] = {'_x': darrera_versio.get_coordenada_x_centroide,
+                                                 '_y': darrera_versio.get_coordenada_y_centroide,
+                                                 '_inc': darrera_versio.get_incertesa_centroide}
+    clean_data = []
+    for record in records:
+        versio = None
+        try:
+            versio = versions[record['id']]
+        except KeyError:
+            pass
+        if versio:
+            clean_data.append({'nom_str':record['nom_str'],'aquatic':record['aquatic'],'tipus':record['idtipustoponim']['nom'],'x':versio['_x'],'y':versio['_y'],'inc':versio['_inc']})
+        else:
+            clean_data.append({'nom_str':record['nom_str'],'aquatic':record['aquatic'],'tipus':record['idtipustoponim']['nom'], 'x': '', 'y': '', 'inc': ''})
+
     html_string = render_to_string('georef/reports/toponims_list_pdf.html',
-                                   {'title': 'Llistat de topònims', 'records': records})
+                                   {'title': 'Llistat de topònims', 'records': clean_data})
 
     html = HTML(string=html_string)
     html.write_pdf(target='/tmp/mypdf.pdf');
@@ -1230,12 +1275,31 @@ def toponims_list_csv(request):
 
     records = data.data['data']
 
+    id_toponims = []
+    for record in records:
+        id_toponims.append(record['id'])
+
+    versions = {}
+    darreres_versions = Toponimversio.objects.filter(last_version=True).filter(idtoponim__id__in=id_toponims)
+    for darrera_versio in darreres_versions:
+        versions[darrera_versio.idtoponim.id] = {'_x': darrera_versio.get_coordenada_x_centroide,
+                                                 '_y': darrera_versio.get_coordenada_y_centroide,
+                                                 '_inc': darrera_versio.get_incertesa_centroide}
+
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="toponims.csv"'
     writer = csv.writer(response, delimiter=';')
-    writer.writerow(['nom_toponim', 'aquatic?', 'tipus_toponim'])
+    writer.writerow(['nom_toponim', 'aquatic?', 'tipus_toponim', 'centroide_x', 'centroide_y','incertesa_m'])
     for record in records:
-        writer.writerow([record['nom_str'], record['aquatic'], record['idtipustoponim']['nom']])
+        versio = None
+        try:
+            versio = versions[record['id']]
+        except KeyError:
+            pass
+        if versio:
+            writer.writerow([record['nom_str'], record['aquatic'], record['idtipustoponim']['nom'], versio['_x'], versio['_y'], versio['_inc']])
+        else:
+            writer.writerow([record['nom_str'], record['aquatic'], record['idtipustoponim']['nom'], '', '', ''])
 
     return response
 
