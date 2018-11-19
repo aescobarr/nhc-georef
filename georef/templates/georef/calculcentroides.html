@@ -5,6 +5,11 @@
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
+    <style>
+        #val_x, #val_y, #val_inc{
+            height: 25px;
+        }
+    </style>
 {% endblock %}
 {% block extrahead %}
     <script>
@@ -41,19 +46,19 @@
                 <div class="col-xs-10">
                     <div class="row">
                         <div class="col-xs-3">
-                            <span class="label label-primary">Coordenada x centroide (long): </span>
+                            <span id="label_x" class="label label-primary">Coordenada x centroide (long): </span>
                         </div>
                         <div id="val_x" class="col-xs-6"></div>
                     </div>
                     <div class="row">
                         <div class="col-xs-3">
-                            <span class="label label-primary">Coordenada y centroide (lat): </span>
+                            <span id="label_y" class="label label-primary">Coordenada y centroide (lat): </span>
                         </div>
                         <div id="val_y" class="col-xs-6"></div>
                     </div>
                     <div class="row">
                         <div class="col-xs-3">
-                            <span class="label label-primary">Radi incertesa (m): </span>
+                            <span id="label_inc" class="label label-primary">Radi incertesa (m): </span>
                         </div>
                         <div id="val_inc" class="col-xs-6"></div>
                     </div>

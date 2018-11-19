@@ -9,6 +9,18 @@ $(document).ready(function() {
         $('#val_inc').toggle( "highlight" );
     }
 
+    var show_thinking = function(really){
+        if(really && really == true){
+            $('#label_x').addClass('asyncload');
+            $('#label_y').addClass('asyncload');
+            $('#label_inc').addClass('asyncload');
+        }else{
+            $('#label_x').removeClass('asyncload');
+            $('#label_y').removeClass('asyncload');
+            $('#label_inc').removeClass('asyncload');
+        }
+    }
+
     $( '#clipboard' ).click(function() {
         var text = '';
         text = 'lat:' + $('#val_y').text() + ' long:' + $('#val_x').text() + ' prec:' + $('#val_inc').text();
@@ -18,6 +30,7 @@ $(document).ready(function() {
 
     var computeCentroid = function(filename){
         show_data('','','');
+        show_thinking(true);
         $.ajax({
             url: _compute_centroid_url + encodeURI(filename),
             method: "POST",
@@ -30,10 +43,16 @@ $(document).ready(function() {
             success: function( data, textStatus, jqXHR ) {
                  console.log(data);
                  show_data(data.detail.centroid_x, data.detail.centroid_y, data.detail.inc);
+                 show_thinking(false);
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error calculant centroide - " + jqXHR.responseJSON.detail);
-                console.log(jqXHR);
+                if(jqXHR.responseJSON){
+                    toastr.error("Error calculant centroide - " + jqXHR.responseJSON.detail);
+                    console.log(jqXHR);
+                }else{
+                    toastr.error("Error inesperat. Si us plau comprova que l'estructura del fitxer zip és correcta.");
+                }
+                show_thinking(false);
             }
         });
     }
