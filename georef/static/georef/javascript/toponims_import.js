@@ -29,6 +29,11 @@ $(document).ready(function() {
         multiple: false,
         onSubmit: function(id, fileName){
             $('#filename').val('');
+            var regex = /^[\w.]{0,256}$/;
+            if( regex.exec(fileName) == null){
+                toastr.error('Error a nom de fitxer! Només s\'admeten lletres (majúscules i minúscules), números i el caràcter "_"');
+                return false;
+            }
             resetInterface();
             this.params.deletePrevious = true;
         },

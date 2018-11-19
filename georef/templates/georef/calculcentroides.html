@@ -31,6 +31,17 @@
         <div class="container separador_seccio">
             <p><strong>Càlcul de centroides:</strong></p>
         </div>
+        <div class="container">
+            <p>Aquesta eina pren com a entrada un fitxer shapefile i en calcula el centroide i la incertesa de coordenades.</p>
+            <p>Cal que el fitxer d'entrada sigui un shapefile comprimit en un zip. Altres consideracions que cal tenir en compte:</p>
+            <ul>
+                <li>El fitxer zip ha de contenir tots els fitxers del shapefile al primer nivell. No es suporten subcarpetes.</li>
+                <li>Cal que el shapefile estigui en el sistema de referència EPSG:4326.</li>
+                <li>Els atributs que tingui el fitxer shapefile són ignorats. La única cosa que intervé en el càlcul és la geometria.</li>
+                <li>La incertesa de coordenades es calcula com el punt més allunyat de la corba del polígon, contant des del centroide. Si la geometria conté múltiples polígons, aquests es fusionen i es considera la geometria resultant com un sol polígon.</li>
+                <li>Depenent de la mida i complexitat del fitxer, el procés pot trigar una mica.</li>
+            </ul>
+        </div>
         <div class="container separador_seccio">
             <div class="row">
                 <div class="col-xs-2 col-xs-offset-2">
