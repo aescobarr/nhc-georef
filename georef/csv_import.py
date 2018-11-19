@@ -17,7 +17,7 @@ def check_file_structure(file_array):
         raise EmptyFileException()
     numlinia = 1
     for rows in file_array:
-        if len(rows) != 17:
+        if len(rows) != 18:
             raise NumberOfColumnsException({"numrow": str(numlinia), "numcols": str(len(rows))})
         numlinia = numlinia + 1
 

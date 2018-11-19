@@ -1760,7 +1760,7 @@ def import_toponims(request, file_name=None):
                 check_file_structure(file_array)
             except NumberOfColumnsException as n:
                 details = n.args[0]
-                msg = "Problema amb l'estructura del fitxer. S'esperaven 17 columnes i se n'han trobat " + details["numcols"] + " a la fila " + details["numrow"]
+                msg = "Problema amb l'estructura del fitxer. S'esperaven 18 columnes i se n'han trobat " + details["numcols"] + " a la fila " + details["numrow"]
                 errors.append(msg)
             except EmptyFileException as e:
                 msg = "Sembla que el fitxer té menys de 2 línies"
