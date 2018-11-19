@@ -52,7 +52,7 @@ class ToponimsUpdateForm(ModelForm):
 class ToponimversioForm(ModelForm):
     numero_versio = forms.IntegerField(required=True)
     idqualificador = forms.ModelChoiceField(queryset=Qualificadorversio.objects.all().order_by('qualificador'), widget=forms.Select, required=False)
-    idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select, required=False)
+    #idrecursgeoref  = forms.ModelChoiceField(queryset=Recursgeoref.objects.all().order_by('nom'), widget=forms.Select, required=False)
     coordenada_x_centroide = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
     coordenada_y_centroide = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
     precisio_h = forms.FloatField(widget=forms.NumberInput(attrs={'readonly':'readonly'}), required=False)
@@ -64,6 +64,9 @@ class ToponimversioForm(ModelForm):
     class Meta:
         model = Toponimversio
         fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen','coordenada_x_centroide','coordenada_y_centroide','precisio_h']
+        widgets = {
+            'idrecursgeoref': forms.HiddenInput(),
+        }
 
 
 class UserForm(forms.ModelForm):

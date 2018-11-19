@@ -321,6 +321,7 @@ $(document).ready(function() {
     });
 
     var load_crs_label = function(id){
+        $('#sistref_recurs').html("");
         $.ajax({
             url: _sistref_list_url,
             data: 'id=' + encodeURI(id),
@@ -332,7 +333,11 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                $('#sistref_recurs').html(data.detail);
+                if(data.detail == ''){
+                    $('#sistref_recurs').html('Sistema de referència no especificat');
+                }else{
+                    $('#sistref_recurs').html(data.detail);
+                }
             },
             error: function(jqXHR, textStatus, errorThrown){
                 $('#sistref_recurs').html('');
@@ -526,13 +531,27 @@ $(document).ready(function() {
         djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
     }
 
-    $( "#id_idrecursgeoref" ).change(function(){
-        var selected_id = this.value;
-        load_crs_label(selected_id);
-    });
-
-    var optVal= $("#id_idrecursgeoref option:selected").val();
-    load_crs_label(optVal);
-
     $('[data-toggle="tooltip"]').tooltip();
+
+    $( '#autoc_vcr' ).autocomplete({
+        source: function(request,response){
+            $.getJSON( _versio_capturada_url + '?term=' + request.term, function(data){
+                response($.map(data.results, function(item){
+                    return {
+                        label: item.nom,
+                        value: item.id,
+                        json: item.json
+                    };
+                }));
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var listname = ui.item.label;
+            load_crs_label(ui.item.value);
+            $('#autoc_vcr').val(listname);
+            $('#id_idrecursgeoref').val(ui.item.value);
+            return false;
+        }
+    });
 });

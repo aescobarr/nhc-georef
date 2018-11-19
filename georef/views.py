@@ -343,8 +343,14 @@ class FiltrejsonViewSet(viewsets.ModelViewSet):
 
 
 class RecursGeoRefViewSet(viewsets.ModelViewSet):
-    queryset = Recursgeoref.objects.all()
     serializer_class = RecursgeorefSerializer
+
+    def get_queryset(self):
+        queryset = Recursgeoref.objects.all().order_by('nom')
+        term = self.request.query_params.get('term', None)
+        if term is not None:
+            queryset = queryset.filter(nom__icontains=term)
+        return queryset
 
 @api_view(['GET'])
 def sistrefassociat(request):

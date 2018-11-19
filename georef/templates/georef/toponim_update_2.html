@@ -39,6 +39,7 @@
         var _versio_delete_url = "{% url 'versions-list' %}";
         var _last_version_url = "{% url 'toponims_update_2' idtoponim -1 %}";
         var _sistref_list_url = "{% url 'sistrefassociat' %}";
+        var _versio_capturada_url = "{% url 'recursgeoref-list' %}";
     </script>
     <script>
         var node_list_full = {{ nodelist_full|safe }};
@@ -191,12 +192,12 @@
                                 </tr>
                                 <tr>
                                     <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Al desplegable es pot triar un recurs. Després s'omplirà el control de sistemes de referència amb els sistemes possibles per al recurs triat." for="{{ toponimversio_form.idrecursgeoref.id_for_label }}">Versió capturada del recurs:</label></th>
+                                    <td><input id="autoc_vcr" type="text" value="{{ toponimversio_form.instance.idrecursgeoref.nom }}"></td>
                                     <td>{{ toponimversio_form.idrecursgeoref }}</td>
-                                    <td>{{ toponimversio_form.idrecursgeoref.errors }}</td>
                                 </tr>
                                 <tr>
                                     <th>Sistema referència del recurs:</th>
-                                    <td id="sistref_recurs"></td>
+                                    <td id="sistref_recurs">{{ toponimversio_form.instance.idrecursgeoref.idsistemareferenciamm.nom }}</td>
                                 </tr>
                                 <tr>
                                     <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Transcripció literal del topònim segons el recurs emprat per georeferenciar" for="{{ toponimversio_form.nom.id_for_label }}">Nom del topònim al recurs:</label></th>
