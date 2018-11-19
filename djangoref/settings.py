@@ -164,6 +164,6 @@ REST_FRAMEWORK = {
 # OVERRIDEN IN SETTINGS_LOCAL
 UPLOAD_DIR = BASE_DIR + "/uploads"
 MEDIA_ROOT = UPLOAD_DIR
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 
 from djangoref.settings_local import *

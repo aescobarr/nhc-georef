@@ -1804,7 +1804,7 @@ def create_result_csv(toponims_to_create, toponims_exist, request):
             toponim_url = request.build_absolute_uri( reverse('toponims_update_2', args=[toponim.id, '-1']) )
             csvwriter.writerow([toponim.nom, toponim_url, 'existent'])
     csvfile.close()
-    return "/" + settings.MEDIA_URL + file_name
+    return settings.MEDIA_URL + file_name
 
 
 def create_success_report(toponims_to_create, toponims_exist):
