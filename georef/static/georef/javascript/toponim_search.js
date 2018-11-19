@@ -29,7 +29,8 @@ $(document).ready(function() {
 
     $( '#clipboard' ).click(function() {
         var text = '';
-        text = $('#val_nom').text() + ' lat:' + $('#val_y').text() + ' long:' + $('#val_x').text() + ' prec:' + $('#val_prec').text();
+        var TAB = "\t";
+        text = $('#val_nom').text() + TAB + ' lat:' + $('#val_y').text() + TAB + ' long:' + $('#val_x').text() + TAB + ' prec:' + $('#val_prec').text();
         copyToClipboard(text);
         toastr.success("Resultats copiats al portapapers!");
     });
