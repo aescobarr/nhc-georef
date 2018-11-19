@@ -8,7 +8,7 @@
 
             body{
                 font-family: 'Helvetica Neue', Helvetica, Arial;
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 20px;
                 font-weight: 400;
                 /*color: #3b3b3b;*/
@@ -19,7 +19,7 @@
 
             .wrapper{
                 margin: 0 auto;
-                padding: 40px;
+                padding: 20px;
                 max-width: 800px;
             }
 
@@ -125,6 +125,15 @@
                     <div class="cell">
                         Tipus
                     </div>
+                    <div class="cell">
+                        X centroide
+                    </div>
+                    <div class="cell">
+                        Y centroide
+                    </div>
+                    <div class="cell">
+                        Incertesa centroide(m)
+                    </div>
                 </div>
                 {% for record in records %}
                 <div class="row">
@@ -135,7 +144,16 @@
                         {{ record.aquatic }}
                     </div>
                     <div class="cell" data-title="Tipus">
-                        {{ record.idtipustoponim.nom }}
+                        {{ record.tipus }}
+                    </div>
+                    <div class="cell" data-title="X centroide">
+                        {{ record.x }}
+                    </div>
+                    <div class="cell" data-title="Y centroide">
+                        {{ record.y }}
+                    </div>
+                    <div class="cell" data-title="Incertesa centroide(m)">
+                        {{ record.inc }}
                     </div>
                 </div>
                 {% endfor %}
