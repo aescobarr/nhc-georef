@@ -1846,9 +1846,13 @@ def compute_shapefile_centroid(request, file_name=None):
                 infile = ogr.Open(UPLOAD_DIR + '/' + filename + '/' + file)
                 layer = infile.GetLayer()
                 spatialRef = layer.GetSpatialRef()
-                authority = spatialRef.GetAttrValue('authority', 0)
-                srs_code = spatialRef.GetAttrValue('authority', 1)
-                if authority == 'EPSG' and srs_code == '4326':
+                authority = None
+                srs_code = None
+                if spatialRef:
+                    authority = spatialRef.GetAttrValue('authority', 0)
+                    srs_code = spatialRef.GetAttrValue('authority', 1)
+                hasSpatialRef = authority is not None and srs_code is not None
+                if hasSpatialRef and authority == 'EPSG' and srs_code == '4326':
                     sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
                     fields = sf.fields[1:]
                     field_names = [field[0] for field in fields]
@@ -1891,7 +1895,8 @@ def compute_shapefile_centroid(request, file_name=None):
                                'detail': 'Projecció {}:{} no suportada. Cal que el shapefile estigui en EPSG:4326'.format(
                                    authority, srs_code)}
                     return Response(data=content, status=400)
-
+        content = {'status': 'KO','detail': 'Sembla que el fitxer zip és buit. Si us plau, comprova que en descomprimir, el zip contingui directament els fitxers del shapefile, sense subdirectoris.'}
+        return Response(data=content, status=400)
     else:
         os.remove(filepath)
         content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat: "{}"'.format(file_type)}
