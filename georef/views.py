@@ -1435,8 +1435,8 @@ def recursos_update(request, id=None):
                 capeswms_string = request.POST.get("capeswms", "")
                 paraules_clau_string = request.POST.get("paraulesclau", "")
                 autors_string = request.POST.get("autors", "")
-                paraules_clau = paraules_clau_string.split(',')
-                autors = autors_string.split(',')
+                paraules_clau = paraules_clau_string.split('#')
+                autors = autors_string.split('#')
                 capeswms_tokens = capeswms_string.split(',')
 
                 recurs.paraulesclau.clear()

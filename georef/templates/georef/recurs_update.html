@@ -19,8 +19,8 @@
 {% endblock %}
 {% block extrahead %}
     <script>
-        var paraulesclau = '{{ paraulesclau }}';
-        var autors = '{{ autors }}';
+        var paraulesclau = '{{ paraulesclau | safe }}';
+        var autors = "{{ autors | safe }}";
         var toponims_basats_recurs = [];
         {% for toponim in toponims_basats_recurs|slice:":20" %}
         toponims_basats_recurs.push({ 'id':'{{ toponim.idtoponim.id }}', 'nom':'{{ toponim.idtoponim.nom }}',  });
