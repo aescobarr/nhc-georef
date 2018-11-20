@@ -16,6 +16,8 @@
         },
         options);
 
+        //The instance label acts as a unique identifier for the local storage which holds the
+        //table state. This identifier must be unique, and it's of the form  'DataTables_' + instance_label
         if (options.instance_label == null) throw 'Missing mandatory parameter instance_label';
 
         if (options.data_url == null) throw 'Missing mandatory parameter data_url';
