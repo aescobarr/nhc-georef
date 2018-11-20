@@ -446,13 +446,13 @@ class Recursgeoref(models.Model):
         p_str = []
         for paraula in self.paraulesclau.all():
             p_str.append(paraula.paraula)
-        return (',').join(p_str)
+        return ('#').join(p_str)
 
     def autors_str(self):
         a_str = []
         for autor in self.autors.all():
             a_str.append(autor.nom)
-        return (',').join(a_str)
+        return ('#').join(a_str)
 
     def crea_query_de_filtre(json_filtre):
         accum_query = None

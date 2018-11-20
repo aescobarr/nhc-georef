@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $("#paraulaclau_list").tagit({
         singleField: true,
+        singleFieldDelimiter: '#',
         autocomplete: {
             source: function( request, response ) {
                 $.ajax({
@@ -36,6 +37,7 @@ $(document).ready(function() {
 
     $("#autor_list").tagit({
         singleField: true,
+        singleFieldDelimiter: '#',
         autocomplete: {
             source: function( request, response ) {
                 $.ajax({
