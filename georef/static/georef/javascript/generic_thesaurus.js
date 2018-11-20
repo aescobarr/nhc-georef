@@ -16,6 +16,8 @@
         },
         options);
 
+        if (options.instance_label == null) throw 'Missing mandatory parameter instance_label';
+
         if (options.data_url == null) throw 'Missing mandatory parameter data_url';
 
         if (options.crud_url == null) throw 'Missing mandatory parameter crud_url';
@@ -34,10 +36,10 @@
             stateSave: true,
             'dom': '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
             stateSaveCallback: function(settings,data) {
-                localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) );
+                localStorage.setItem( 'DataTables_' + options.instance_label, JSON.stringify(data) );
             },
             stateLoadCallback: function(settings) {
-                return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) );
+                return JSON.parse( localStorage.getItem( 'DataTables_' + options.instance_label ) );
             },
             'columns': [
                 { 'data': options.text_field_name }

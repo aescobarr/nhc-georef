@@ -168,7 +168,10 @@ def generic_datatable_list_endpoint(request, search_field_list, queryClass, clas
 
         recordsTotal = queryset.count()
         recordsFiltered = recordsTotal
-        page = int(start) / int(length) + 1
+        if int(start) >= recordsTotal:
+            page = recordsTotal / int(length) + 1
+        else:
+            page = int(start) / int(length) + 1
 
         serializer = classSerializer(paginator.page(page), many=True, context={'request': request})
     else:
@@ -2055,6 +2058,7 @@ def t_authors(request):
         'class_name_sing': 'Autor',
         'crud_url': reverse('autors-list'),
         'list_url': reverse('autors_datatable_list'),
+        'instance_label': 't_autors',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2067,6 +2071,7 @@ def t_qualificadors(request):
         'class_name_sing': 'Qualificador versió',
         'crud_url': reverse('qualificadorsversio-list'),
         'list_url': reverse('qualificadors_datatable_list'),
+        'instance_label': 't_qualificadors',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2079,6 +2084,7 @@ def t_paisos(request):
         'class_name_sing': 'País',
         'crud_url': reverse('paisos-list'),
         'list_url': reverse('paisos_datatable_list'),
+        'instance_label': 't_paisos',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2091,6 +2097,7 @@ def t_paraulesclau(request):
         'class_name_sing': 'Paraula clau',
         'crud_url': reverse('paraulesclau-list'),
         'list_url': reverse('paraulaclau_datatable_list'),
+        'instance_label': 't_paraulesclau',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2103,6 +2110,7 @@ def t_tipuscontingut(request):
         'class_name_sing': 'Tipus de contingut',
         'crud_url': reverse('tipusrecurs-list'),
         'list_url': reverse('tipusrecurs_datatable_list'),
+        'instance_label': 't_tipuscontingut',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2115,6 +2123,7 @@ def t_tipussuport(request):
         'class_name_sing': 'Tipus de suport',
         'crud_url': reverse('tipussuport-list'),
         'list_url': reverse('suport_datatable_list'),
+        'instance_label': 't_tipussuport',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2127,6 +2136,7 @@ def t_tipustoponim(request):
         'class_name_sing': 'Tipus de topònim',
         'crud_url': reverse('tipustoponim-list'),
         'list_url': reverse('tipustoponim_datatable_list'),
+        'instance_label': 't_tipustoponim',
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2138,5 +2148,6 @@ def t_tipusunitats(request):
         'class_name_sing': "Tipus d'unitats",
         'crud_url': reverse('tipusunitats-list'),
         'list_url': reverse('tipusunitats_datatable_list'),
+        'instance_label': 't_tipusunitats',
     }
     return render(request, 'georef/t_generic.html', context)
