@@ -95,7 +95,7 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 add_filtre(json,modul,nomfiltre);
-                scrollToTableTop();
+                //scrollToTableTop();
             },
             error: function(jqXHR, textStatus, errorThrown){
                 var idfiltre = jqXHR.responseJSON.detail;
@@ -123,6 +123,32 @@ $(document).ready(function() {
         window.location.href = url;
     });
 
+    var update_filtre = function(json, nomfiltre, idfiltre, modul){
+        var data = {
+            'json': json,
+            'modul': modul,
+            'nomfiltre': nomfiltre
+        };
+        $.ajax({
+            url: _filtres_update_url + idfiltre + '/',
+            data: data,
+            method: 'PUT',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Filtre actualitzat amb èxit!');
+                filter();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error actualitzant filtre');
+            }
+        });
+    };
+
     var delete_recurs = function(id){
         $.ajax({
             url: _recurs_delete_url + id,
@@ -139,6 +165,25 @@ $(document).ready(function() {
             },
             error: function(jqXHR, textStatus, errorThrown){
                 toastr.error('Error esborrant recurs');
+            }
+        });
+    };
+
+    var delete_filtre = function(id){
+        $.ajax({
+            url: _filtres_delete_url + id,
+            method: 'DELETE',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                toastr.success('Filtre esborrat amb èxit!');
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error esborrant');
             }
         });
     };
@@ -247,7 +292,7 @@ $(document).ready(function() {
 
     $( '#doFilter' ).click(function() {
         filter();
-        scrollToTableTop();
+        //scrollToTableTop();
     });
 
     $( '#doClear' ).click(function() {
