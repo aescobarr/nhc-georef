@@ -377,7 +377,7 @@ $(document).ready(function() {
 
     $( '#doFilter' ).click(function() {
         filter();
-        scrollToTableTop();
+        //scrollToTableTop();
     });
 
     $( '#doClear' ).click(function() {
