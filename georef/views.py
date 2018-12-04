@@ -72,6 +72,8 @@ from django.db import connection
 from georef.permissions import HasAdministrativePermission
 from django.contrib import messages
 
+from slugify import slugify
+
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
     try:
