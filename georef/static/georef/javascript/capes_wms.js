@@ -1,6 +1,9 @@
 $(document).ready(function() {
 
-        table = $('#capeswmslocal').DataTable( {
+    $('#filename').val('');
+    $('#id_nomcapa').val('');
+
+    table = $('#capeswmslocal').DataTable( {
         "ajax": {
             "url": _capawmslocal_list_url,
             "dataType": 'json'
@@ -79,7 +82,13 @@ $(document).ready(function() {
         element: $('#fileuploader')[0],
         multiple: false,
         onSubmit: function(id, fileName){
+            $('.qq-upload-list').empty();
             $('#filename').val('');
+            var regex = /^[\w.]{0,256}$/;
+            if( regex.exec(fileName) == null){
+                toastr.error('Error a nom de fitxer! Només s\'admeten lletres (majúscules i minúscules), números i el caràcter "_"');
+                return false;
+            }
             this.params.deletePrevious = true;
         },
         onComplete: function(id, fileName, responseJSON) {
