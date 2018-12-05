@@ -1,5 +1,6 @@
 {% extends "georef/base.html" %}
 {% load staticfiles %}
+{% load l10n %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/leaflet/leaflet.css' %}" rel="stylesheet">
@@ -56,7 +57,8 @@
         var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var csrf_token = '{{ csrf_token }}';
         var geometries_json = {% if geometries_json %} JSON.parse('{{ geometries_json | safe }}') {% else %} null {% endif %};
-        var stored_centroid_radius_m = {% if toponimversio_form.instance.precisio_h %} {{ toponimversio_form.instance.precisio_h }} {% else %} null {% endif %};
+
+        var stored_centroid_radius_m{% if toponimversio_form.instance.precisio_h %}={{ toponimversio_form.instance.precisio_h | unlocalize }};{% endif %};
         var wmslayers = JSON.parse('{{ wmslayers | escapejs }}');
     </script>
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
