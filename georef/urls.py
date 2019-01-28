@@ -25,6 +25,7 @@ router.register(r'paisos', views.PaisViewSet, base_name='paisos')
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^Zoologia/', views.index, name='index'),
 
     url(r'^api_internal/',include(router.urls)),
 

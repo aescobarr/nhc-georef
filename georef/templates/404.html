@@ -1,0 +1,19 @@
+{% extends "georef/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
+{% endblock %}
+{% block main %}
+    <main>
+        <div class="page-header"></div>
+        <div class="container separador_seccio">
+            <p><strong>No trobo la pàgina:</strong></p>
+        </div>
+        <div class="container">
+            <p>
+                No trobo la pàgina que em demanes! Si us plau, comprova que la url de la barra d'adreces sigui correcta.
+            </p>
+        <div>
+    </main>
+{% endblock %}
