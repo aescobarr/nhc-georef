@@ -315,21 +315,24 @@ class Toponimversio(models.Model):
 
     @property
     def get_incertesa_centroide(self):
-        union = self.union_geometry()
-        if union is None:
+        if self.precisio_h is not None:
             return self.precisio_h
         else:
-            if union is not None:
-                centroid = union.centroid
-                if centroid is not None:
-                    dist_max = 0
-                    vertexes = extract_coords(union.coords)
-                    for vertex in vertexes:
-                        dist = vertex.distance(centroid)
-                        if dist > dist_max:
-                            dist_max = dist
-                    return dist_max
-            return 0
+            union = self.union_geometry()
+            if union is None:
+                return self.precisio_h
+            else:
+                if union is not None:
+                    centroid = union.centroid
+                    if centroid is not None:
+                        dist_max = 0
+                        vertexes = extract_coords(union.coords)
+                        for vertex in vertexes:
+                            dist = vertex.distance(centroid)
+                            if dist > dist_max:
+                                dist_max = dist
+                        return dist_max
+                return 0
 
 
 class Paraulaclau(models.Model):

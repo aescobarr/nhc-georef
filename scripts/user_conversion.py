@@ -34,7 +34,7 @@ with connection.cursor() as cursor:
 
 for old_user in old_user_list:
     u = User(username = old_user[5],first_name=old_user[1],last_name=old_user[2],email=old_user[4])
-    u.set_password('123456')
+    u.set_password('RzQ2C5uHjV9pkzLa')
     u.save()
     user_correspondence[old_user[0]]=u.id
     print(old_user)
