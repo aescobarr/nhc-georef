@@ -7,6 +7,14 @@
 <div class="container separador_seccio">
     <p><strong>Dades bàsiques:</strong></p>
 </div>
+{% if form.instance.iduser %}
+<div class="container">
+    <div class="form-group">
+        <label for="autor_name">Autor del recurs:</label>
+        <label id="autor_name">{{ form.instance.iduser.first_name }} {{ form.instance.iduser.last_name }}</label>
+    </div>
+</div>
+{% endif %}
 <div class="container">
     <div class="row">
         <div class="col-xs-6">

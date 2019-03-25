@@ -57,7 +57,7 @@ function transformarCondicioAquaticACQL(idaquatic){
 function transformarCondicioGeograficACQL(geometria){
     var filtre = new OpenLayers.Filter.Spatial({
         type: OpenLayers.Filter.Spatial.INTERSECTS,
-        property: 'carto_epsg23031',
+        property: 'carto_epsg23031_cql',
         value: geometria
     });
     return filtre;

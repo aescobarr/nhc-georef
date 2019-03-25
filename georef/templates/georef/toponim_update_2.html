@@ -295,6 +295,13 @@
                             </table>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group">
+                        <label for="{{ form.observacions.id_for_label }}">Observacions:</label>
+                        {{ toponimversio_form.observacions }}
+                        {{ toponimversio_form.observacions.errors }}
+                        </div>
+                    </div>
                 </div>
                 <div class="container">
                     {% if user.profile.is_admin or user.profile.can_edit_toponim %}

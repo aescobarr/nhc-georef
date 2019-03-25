@@ -42,6 +42,8 @@
 
     djangoRef.Map.featureInfoFormatters = null;
 
+    djangoRef.Map.currentlyEditing = false;
+
     djangoRef.Map.createMap = function(options) {
         options = options || {};
         options = $.extend({},
@@ -185,12 +187,20 @@
                         }
                     }
                 }
-                if(param_layers.length > 0){
+                if(param_layers.length > 0 && djangoRef.Map.currentlyEditing == false){
                     var querylayers = param_layers.join(',');
                     getFeatureInfo(evt,querylayers);
                 }
             });
         }
+
+        map.on(L.Draw.Event.DRAWSTART, function (e) {
+            djangoRef.Map.currentlyEditing = true;
+        });
+
+        map.on(L.Draw.Event.DRAWSTOP, function (e) {
+            djangoRef.Map.currentlyEditing = false;
+        });
 
         map.on(L.Draw.Event.CREATED, function (e) {
             var type = e.layerType,layer = e.layer;
