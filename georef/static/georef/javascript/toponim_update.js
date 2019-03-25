@@ -227,6 +227,9 @@ $(document).ready(function() {
     $('#kb_digit').click( function(e) {
         e.preventDefault();
         /*your_code_here;*/
+        $('#coord_x_kb').val($('#id_coordenada_x_centroide').val());
+        $('#coord_y_kb').val($('#id_coordenada_y_centroide').val());
+        $('#inc_radius_kb').val($('#id_precisio_h').val());
         dialog_kb.dialog( "open" );
         return false;
     });

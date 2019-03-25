@@ -776,6 +776,7 @@ def toponims_update(request, id=None):
 @login_required
 def recursos_create(request):
     wms_url = conf.GEOSERVER_WMS_URL
+    this_user = request.user
     if request.method == 'POST':
         this_user = request.user
         form = RecursForm(request.POST or None)
@@ -795,7 +796,16 @@ def recursos_create(request):
                 recurs.paraulesclau.clear()
                 recurs.autors.clear()
                 recurs.capes_wms_recurs.clear()
+                recurs.iduser = this_user
                 recurs.save()
+
+                json_geometry_string = request.POST["geometria"]
+                if json_geometry_string != '':
+                    json_geometry = json.loads(json_geometry_string)
+                    for feature in json_geometry['features']:
+                        feature_geometry = GEOSGeometry(json.dumps(feature['geometry']))
+                        g = GeometriaRecurs(idrecurs=recurs, geometria=feature_geometry)
+                        g.save()
 
                 for paraula in paraules_clau:
                     if paraula != '':
@@ -1009,7 +1019,8 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 toponimversio.geometries.clear()
                 idversio = toponimversio.id
                 toponimversio.idtoponim = toponim
-                toponimversio.iduser = this_user
+                if toponimversio.iduser is None:
+                    toponimversio.iduser = this_user
                 toponimversio.save()
 
                 toponimversio.geometries.clear()

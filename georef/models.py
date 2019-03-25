@@ -437,6 +437,7 @@ class Recursgeoref(models.Model):
     paraulesclau = models.ManyToManyField(Paraulaclau,through=ParaulaclauRecurs)
     autors = models.ManyToManyField(Autor,through=Autorrecursgeoref)
     capes_wms_recurs = models.ManyToManyField(Capawms,through=Capesrecurs)
+    iduser = models.ForeignKey(User, models.SET_NULL, blank=True, null=True, db_column='iduser')
 
     class Meta:
         managed = False
