@@ -647,8 +647,9 @@ def toponims(request):
     wms_url = conf.GEOSERVER_WMS_URL
     llista_tipus = Tipustoponim.objects.order_by('nom')
     llista_paisos = Pais.objects.order_by('nom')
+    llista_autors = User.objects.exclude(first_name='').exclude(username='apibioexplora').order_by('first_name')
     return render(request, 'georef/toponims_list.html',
-                  context={'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'csrf_token': csrf_token,
+                  context={'llista_tipus': llista_tipus, 'llista_paisos': llista_paisos, 'llista_autors':llista_autors,'csrf_token': csrf_token,
                            'wms_url': wms_url, 'wmslayers': json.dumps(wms_dict)})
 
 @login_required
@@ -1626,6 +1627,9 @@ def georef_layers(request):
 @login_required
 def help(request):
     helpfiles = HelpFile.objects.all()
+    this_user = request.user
+    profile = Profile.objects.get(user=this_user)
+    profile_admin = profile.is_admin
     if request.method == 'POST':
         form = HelpfileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -1634,7 +1638,7 @@ def help(request):
             return HttpResponseRedirect(reverse('help'))
     else:
         form = HelpfileForm()
-    return render(request, 'georef/help.html', {'form': form, 'helpfiles':helpfiles})
+    return render(request, 'georef/help.html', {'form': form, 'helpfiles':helpfiles, 'profile_admin': profile_admin})
 
 
 @login_required
@@ -1888,6 +1892,11 @@ def compute_shapefile_centroid(request, file_name=None):
                             for linestring in geometry.coords:
                                 for coord in linestring:
                                     coords.append(coord)
+                        elif geometry.geom_type == 'MultiPolygon':
+                            for polygon in geometry.coords:
+                                for linestring in polygon:
+                                    for coord in linestring:
+                                        coords.append(coord)
                         else:
                             content = {'status': 'KO', 'detail': 'Tipus de geometria desconegut: ' + geometry.geom_type}
                             return Response(data=content, status=400)

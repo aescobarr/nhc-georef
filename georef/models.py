@@ -154,6 +154,12 @@ class Toponim(models.Model):
                     accum_query = append_chain_query(accum_query, ~Q(idtipustoponim__id=condicio['valor']), condicio)
                 else:
                     accum_query = append_chain_query(accum_query, Q(idtipustoponim__id=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'nomautor':
+                versions_autor = Toponimversio.objects.filter(iduser__id=condicio['valor']).distinct().values('idtoponim')
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(id__in=versions_autor), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(id__in=versions_autor), condicio)
             elif condicio['condicio'] == 'pais':
                 if condicio['not'] == 'S':
                     accum_query = append_chain_query(accum_query, ~Q(idpais__id=condicio['valor']), condicio)
