@@ -1,0 +1,10 @@
+Passos desplegament -
+
+1 - Executar consulta
+
+alter table public.recursgeoref add column iduser integer;
+
+2 - Executar script 
+
+workon djangoref
+regenerate_empty_geometry.py
