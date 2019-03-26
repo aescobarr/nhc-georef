@@ -157,14 +157,20 @@
 
         var valorsCondicions = new Array();
         valorsCondicions[0] = {id : "nom",value : "Nom"};
-        valorsCondicions[1] = {id : "tipus",value : "Tipus"};
-        valorsCondicions[2] = {id : "pais",value : "País"};
-        valorsCondicions[3] = {id : "aquatic",value : "Aquàtic?"};
-        valorsCondicions[4] = {id : "geografic",value : "Filtre geogràfic"};
+        valorsCondicions[1] = {id : "nomautor",value : "Autor"};
+        valorsCondicions[2] = {id : "tipus",value : "Tipus"};
+        valorsCondicions[3] = {id : "pais",value : "País"};
+        valorsCondicions[4] = {id : "aquatic",value : "Aquàtic?"};
+        valorsCondicions[5] = {id : "geografic",value : "Filtre geogràfic"};
 
         var valorsAquatic = new Array();
         valorsAquatic[0] = {id : "S",value : "Sí"};
         valorsAquatic[1] = {id : "N",value : "No"};
+
+        var valorsAutors = new Array();
+        {% for autor in llista_autors %}
+            valorsAutors.push({id:"{{ autor.id }}",value:"{{ autor.first_name }} {{ autor.last_name }}"});
+        {% endfor %}
 
         var valorsTipus = new Array();
         {% for tipus in llista_tipus %}

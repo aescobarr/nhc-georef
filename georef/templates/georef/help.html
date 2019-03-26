@@ -50,8 +50,8 @@
             {% for helpfile in helpfiles %}
                 <li>
                     {{ helpfile.created_on|date:'d/m/Y' }} - <a href="/media/{{ helpfile.h_file }}">{{ helpfile.titol }}</a>
-                    {% if user.is_admin %}
-                    <form action="{% url 'help_delete' helpfile.id %}" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger" aria-label="Left Align"><span class="fa fa-trash-o fa-lg" aria-hidden="true"></span></button></form>
+                    {% if profile_admin %}
+                    <form onsubmit="return confirm('Segur que vols esborrar el document?');" action="{% url 'help_delete' helpfile.id %}" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger" aria-label="Left Align"><span class="fa fa-trash-o fa-lg" aria-hidden="true"></span></button></form>
                     {% endif %}
                 </li>
             {% endfor %}
