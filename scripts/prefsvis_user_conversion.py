@@ -10,7 +10,7 @@ from slugify import slugify
 
 ########################################################################################################################
 
-proj_path = "/home/webuser/dev/django/djangoref/"
+proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoref.settings")
 sys.path.append(proj_path)
 
