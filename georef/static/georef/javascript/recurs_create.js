@@ -46,6 +46,39 @@ $(document).ready(function() {
         });
     }
 
+    var importa_shapefile = function(filepath){
+        $.ajax({
+            url: _import_shapefile_url,
+            data: 'path=' + encodeURI(filepath),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                djangoRef_map.editableLayers.clearLayers();
+                var geoJson = JSON.parse(data.detail);
+                var geoJSONLayer = L.geoJson(geoJson);
+                geoJSONLayer.eachLayer(
+                    function(l){
+                        djangoRef_map.editableLayers.addLayer(l);
+                    }
+                );
+                refreshDigitizedGeometry();
+                djangoRef_map.editableLayers.bringToFront();
+                if(djangoRef_map.editableLayers.getBounds().isValid()){
+                    djangoRef_map.map.fitBounds(djangoRef_map.editableLayers.getBounds());
+                }
+                toastr.success('Importació amb èxit!');
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+            }
+        });
+    };
+
     var uploader = new qq.FileUploader({
         action: _ajax_upload_url,
         element: $('#fileuploader')[0],

@@ -19,6 +19,7 @@
 {% endblock %}
 {% block extrahead %}
     <script>
+        var _import_shapefile_url = "{% url 'process_shapefile' %}";
         var _ajax_upload_url = "{% url 'ajax_upload' %}";
         var csrf_token = '{{ csrf_token }}';
         var wms_url = "{{ wms_url }}";
