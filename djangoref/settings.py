@@ -167,3 +167,6 @@ MEDIA_ROOT = UPLOAD_DIR
 MEDIA_URL = "/media/"
 
 from djangoref.settings_local import *
+
+#5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
