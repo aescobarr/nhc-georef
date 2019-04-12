@@ -12,6 +12,7 @@ from georef_addenda.models import Autor
 from georef.geom_utils import *
 import datetime
 import itertools
+from haversine import haversine
 
 # Create your models here.
 
@@ -331,10 +332,13 @@ class Toponimversio(models.Model):
                 if union is not None:
                     centroid = union.centroid
                     if centroid is not None:
+                        centroid_haversine = ( centroid.y, centroid.x )
                         dist_max = 0
                         vertexes = extract_coords(union.coords)
                         for vertex in vertexes:
-                            dist = vertex.distance(centroid)
+                            vertex_haversine = ( vertex.y, vertex.x )
+                            #dist = vertex.distance(centroid)
+                            dist = haversine( centroid_haversine, vertex_haversine, unit = 'm' )
                             if dist > dist_max:
                                 dist_max = dist
                         return dist_max

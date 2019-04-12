@@ -16,6 +16,7 @@ djangorestframework==3.7.3
 GDAL==2.2.3
 gsconfig-py3==1.0.7
 gunicorn==19.9.0
+haversine==2.0.0
 html5lib==1.0.1
 idna==2.6
 numpy==1.14.0
