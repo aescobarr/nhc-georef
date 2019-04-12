@@ -394,7 +394,8 @@ $(document).ready(function() {
     var importa_shapefile = function(filepath){
         $.ajax({
             url: _import_shapefile_url,
-            data: 'path=' + encodeURI(filepath),
+            data: 'path=' + encodeURI(filepath) + '&smp=t',
+            //data: 'path=' + encodeURI(filepath),
             method: 'GET',
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type)) {
