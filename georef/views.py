@@ -71,6 +71,7 @@ from django.db import connection
 
 from georef.permissions import HasAdministrativePermission
 from django.contrib import messages
+from django.contrib.gis.gdal import DataSource
 
 from slugify import slugify
 
@@ -515,6 +516,7 @@ def filters_datatable_list(request):
 def process_shapefile(request):
     if request.method == 'GET':
         path = request.query_params.get('path', None)
+        simplify_geom = request.query_params.get('smp', None)
         if path is None:
             content = {'success': False, 'detail': 'Ruta de fitxer incorrecta o fitxer no trobat!'}
             return Response(data=content, status=400)
@@ -535,15 +537,24 @@ def process_shapefile(request):
                 for file in glob.glob("*.shp"):
                     presumed_shapefile = magic.from_file(BASE_DIR + "/uploads/" + filename + "/" + file)
                     if presumed_shapefile.lower().startswith('esri shapefile'):
-                        sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
-                        fields = sf.fields[1:]
-                        field_names = [field[0] for field in fields]
-                        buffer = []
-                        for sr in sf.shapeRecords():
-                            atr = dict(zip(field_names, sr.record))
-                            geom = sr.shape.__geo_interface__
-                            buffer.append(dict(type="Feature", geometry=geom, properties=atr))
-                        geojson = dumps({"type": "FeatureCollection", "features": buffer})
+                        if simplify_geom is not None and simplify_geom == 't':
+                            geoms = []
+                            simplify_reader = DataSource(BASE_DIR + "/uploads/" + filename + "/" + file)
+                            for feat in simplify_reader[0]:
+                                g = GEOSGeometry(feat.geom.wkt, srid=4326)
+                                #geoms.append(dict(type="Feature", geometry= json.loads(g.simplify(0.001).geojson) ))
+                                geoms.append(dict(type="Feature", geometry=json.loads(g.simplify(0.1).geojson)))
+                            geojson = dumps({"type": "FeatureCollection", "features": geoms})
+                        else:
+                            sf = shapefile.Reader(BASE_DIR + "/uploads/" + filename + "/" + file)
+                            fields = sf.fields[1:]
+                            field_names = [field[0] for field in fields]
+                            buffer = []
+                            for sr in sf.shapeRecords():
+                                atr = dict(zip(field_names, sr.record))
+                                geom = sr.shape.__geo_interface__
+                                buffer.append(dict(type="Feature", geometry=geom, properties=atr))
+                            geojson = dumps({"type": "FeatureCollection", "features": buffer})
                         content = {'success': True, 'detail': geojson}
                         return Response(data=content, status=200)
                     else:
