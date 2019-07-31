@@ -14,6 +14,9 @@ class GeometriaToponimVersio(models.Model):
     idversio = models.ForeignKey('georef.Toponimversio', on_delete=models.CASCADE, db_column='idversio', blank=True, null=True, related_name='geometries')
     geometria = models.GeometryField(srid=4326)
 
+    def __str__(self):
+        return 'Geometria %s %s' % (self.idversio.nom, self.geometria.geom_type)
+
 
 class GeometriaRecurs(models.Model):
     idrecurs = models.ForeignKey('georef.Recursgeoref', on_delete=models.CASCADE, db_column='idrecurs', blank=True, null=True, related_name='geometries')
@@ -48,6 +51,9 @@ class Profile(models.Model):
     @property
     def can_edit_filtre(self):
         return self.permission_filter_edition
+
+    def __str__(self):
+        return 'Permisos usuari %s' % (self.user.username)
 
 class Autor(models.Model):
     id = models.CharField(primary_key=True, max_length=200, default=pkgen)

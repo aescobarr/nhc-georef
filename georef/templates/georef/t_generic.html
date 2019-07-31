@@ -12,7 +12,10 @@
             crud_url: "{{ crud_url }}",
             text_field_name: "{{ text_field_name }}",
             instance_label: "{{ instance_label }}",
+            class_full_qualified_name: "{{ class_full_qualified_name }}"
         };
+
+        var check_delete_url = "{% url 't_checkdelete' %}";
 
         var user_can_edit = false;
         {% if user.profile.is_admin or user.profile.can_edit_tesaure %}
