@@ -194,9 +194,30 @@
             });
         };
 
-        var confirmDialog = function(message,id){
+        var perform_delete_check = function(id){
+            var def = $.Deferred();
+            $.ajax({
+                url: check_delete_url + '?' + 'mfqn=' + encodeURI(options.class_full_qualified_name) + '&id=' + encodeURI(id),
+                method: 'GET',
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        var csrftoken = getCookie('csrftoken');
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    }
+                },
+                success: function( data, textStatus, jqXHR ) {
+                    def.resolve({ 'message': data.detail, 'n': data.to_delete_len});
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    def.reject({ 'message': textStatus, 'n': -1});
+                }
+            });
+            return def.promise();
+        }
+
+        var show_delete_dialog = function(message,id){
             $('<div></div>').appendTo('body')
-                .html('<div><h6>'+message+'</h6></div>')
+                .html(message)
                 .dialog({
                     modal: true, title: 'Esborrant...', zIndex: 10000, autoOpen: true,
                     width: 'auto', resizable: false,
@@ -212,7 +233,21 @@
                     close: function (event, ui) {
                         $(this).remove();
                     }
-            });
+                });
+        }
+
+        var confirmDialog = function(message,id){
+            if(options.class_full_qualified_name){
+                perform_delete_check(id).then( function(info){
+                    if(info.n < 2){
+                        show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade_noc">' + info.message + '</div>', id);
+                    }else{
+                        show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade">Es produïran els esborrats en cascada següents:</br>' + info.message + '</div>', id);
+                    }
+                } );
+            }else{
+                show_delete_dialog('<div>' + message + '</div>', id);
+            }
         };
 
         $( "#add" ).button().on( "click", function() {

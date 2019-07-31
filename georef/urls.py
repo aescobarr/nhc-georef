@@ -83,6 +83,7 @@ urlpatterns = [
     url(r'^thesaurus/tipussuport/$', views.t_tipussuport, name='t_tipussuport'),
     url(r'^thesaurus/tipustoponim/$', views.t_tipustoponim, name='t_tipustoponim'),
     url(r'^thesaurus/tipusunitats/$', views.t_tipusunitats, name='t_tipusunitats'),
+    url(r'^thesaurus/checkdelete/$', views.t_checkdelete, name='t_checkdelete'),
 
     url(r'^users/list/$', views.users_list, name='users_list'),
 
@@ -91,6 +92,7 @@ urlpatterns = [
     url(r'^calculcentroides', views.calculcentroides, name='calculcentroides'),
     url(r'^computecentroid/(?P<file_name>[\w.]{0,256})$', views.compute_shapefile_centroid, name='compute_shapefile_centroid'),
     url(r'^computecentroid/$', views.compute_shapefile_centroid, name='compute_shapefile_centroid_noparams'),
+    url(r'^compute_centroid', views.compute_centroid, name='compute_centroid'),
     url(r'^importtoponims/(?P<file_name>[\w.]{0,256})$', views.import_toponims, name='import_toponims'),
     url(r'^importtoponims/$', views.import_toponims, name='import_toponims'),
     #url(r'^toponimstree/(?P<node_id>[\w\-]+)/$', views.toponimstreenode, name='toponimstreenode'),

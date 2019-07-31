@@ -73,6 +73,11 @@ from georef.permissions import HasAdministrativePermission
 from django.contrib import messages
 from django.contrib.gis.gdal import DataSource
 
+from django.apps import apps
+from django.contrib.admin.utils import NestedObjects
+from georef.geom_utils import *
+from haversine import haversine
+
 from slugify import slugify
 
 def get_order_clause(params_dict, translation_dict=None):
@@ -371,6 +376,43 @@ def sistrefassociat(request):
                 content = {'status': 'OK', 'detail': r.idsistemareferenciamm.nom}
             else:
                 content = {'status': 'OK', 'detail': ''}
+            return Response(data=content, status=200)
+
+
+@api_view(['POST'])
+def compute_centroid(request):
+    if request.method == 'POST':
+        try:
+            geom = request.data['geom']
+        except KeyError:
+            geom = None
+        if geom is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        features = json.loads(geom)
+        union_geometry = None
+        for feature in features:
+            if union_geometry is None:
+                union_geometry = GEOSGeometry( json.dumps(feature['geometry']) )
+            else:
+                union_geometry = union_geometry.union( GEOSGeometry( json.dumps(feature['geometry']) ) )
+        centroid = union_geometry.centroid
+        if centroid is not None:
+            centroid_haversine = (centroid.y, centroid.x)
+            dist_max = 0
+            vertexes = extract_coords(union_geometry.coords)
+            for vertex in vertexes:
+                vertex_haversine = (vertex.y, vertex.x)
+                dist = haversine(centroid_haversine, vertex_haversine, unit='m')
+                if dist > dist_max:
+                    dist_max = dist
+            #return dist_max
+            geom_struct = {
+                "type": "Feature",
+                "properties": {},
+                "geometry": json.loads(centroid.json)
+            }
+            content = {'status': 'OK', 'detail': {'centroid': geom_struct, 'radius': dist_max}}
             return Response(data=content, status=200)
 
 
@@ -2092,6 +2134,7 @@ def t_authors(request):
         'crud_url': reverse('autors-list'),
         'list_url': reverse('autors_datatable_list'),
         'instance_label': 't_autors',
+        #'class_full_qualified_name': 'georef_addenda.Autor'
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2105,6 +2148,7 @@ def t_qualificadors(request):
         'crud_url': reverse('qualificadorsversio-list'),
         'list_url': reverse('qualificadors_datatable_list'),
         'instance_label': 't_qualificadors',
+        'class_full_qualified_name': 'georef.Qualificadorversio'
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2118,6 +2162,7 @@ def t_paisos(request):
         'crud_url': reverse('paisos-list'),
         'list_url': reverse('paisos_datatable_list'),
         'instance_label': 't_paisos',
+        'class_full_qualified_name': 'georef.Pais'
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2131,6 +2176,7 @@ def t_paraulesclau(request):
         'crud_url': reverse('paraulesclau-list'),
         'list_url': reverse('paraulaclau_datatable_list'),
         'instance_label': 't_paraulesclau',
+        #'class_full_qualified_name': 'georef.Paraulaclau'
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2144,6 +2190,7 @@ def t_tipuscontingut(request):
         'crud_url': reverse('tipusrecurs-list'),
         'list_url': reverse('tipusrecurs_datatable_list'),
         'instance_label': 't_tipuscontingut',
+        'class_full_qualified_name': 'georef.Tipusrecursgeoref'
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2157,6 +2204,7 @@ def t_tipussuport(request):
         'crud_url': reverse('tipussuport-list'),
         'list_url': reverse('suport_datatable_list'),
         'instance_label': 't_tipussuport',
+        'class_full_qualified_name': 'georef.Suport'
     }
     return render(request, 'georef/t_generic.html', context)
 
@@ -2170,8 +2218,56 @@ def t_tipustoponim(request):
         'crud_url': reverse('tipustoponim-list'),
         'list_url': reverse('tipustoponim_datatable_list'),
         'instance_label': 't_tipustoponim',
+        'class_full_qualified_name': 'georef.Tipustoponim'
     }
     return render(request, 'georef/t_generic.html', context)
+
+
+def get_tabs(depth):
+    retVal = ''
+    for i in range(0,depth):
+        retVal = retVal + "\t"
+    return retVal
+
+
+def create_dependencies_report(accumulated_data, to_delete, depth):
+    for elem in to_delete:
+        if type(elem) is list:
+            accumulated_data.append('<ul>')
+            create_dependencies_report(accumulated_data, elem, depth + 1)
+            accumulated_data.append('</ul>')
+        else:
+            accumulated_data.append('<li>')
+            accumulated_data.append( '<strong>' + elem.__class__.__name__ + '</strong> ' + str(elem) )
+            accumulated_data.append('</li>')
+
+
+@api_view(['GET'])
+def t_checkdelete(request):
+    if request.method == 'GET':
+        model_full_qualified_name = request.query_params.get('mfqn', None)
+        id = request.query_params.get('id', None)
+        if model_full_qualified_name is None or id is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        try:
+            package = model_full_qualified_name.split('.')[0]
+            name = model_full_qualified_name.split('.')[1]
+            model = apps.get_model(app_label=package, model_name=name)
+            obj = get_object_or_404(model, pk=id)
+            collector = NestedObjects(using='default')
+            collector.collect([obj])
+            to_delete = collector.nested()
+            if len(to_delete) < 2:
+                return Response(data={'status': 'OK', 'detail': 'No es produiran esborrats en cascada', 'to_delete_len' : len(to_delete)}, status=200)
+            else:
+                retval = []
+                create_dependencies_report(retval,to_delete,0)
+                return Response(data={'status': 'OK', 'detail': "".join(retval), 'to_delete_len' : len(to_delete)}, status=200)
+        except LookupError:
+            content = {'status': 'KO', 'detail': 'model not found'}
+            return Response(data=content, status=400)
+
 
 @login_required
 def t_tipusunitats(request):
@@ -2182,5 +2278,6 @@ def t_tipusunitats(request):
         'crud_url': reverse('tipusunitats-list'),
         'list_url': reverse('tipusunitats_datatable_list'),
         'instance_label': 't_tipusunitats',
+        'class_full_qualified_name': 'georef.Tipusunitats'
     }
     return render(request, 'georef/t_generic.html', context)
