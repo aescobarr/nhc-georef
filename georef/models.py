@@ -85,8 +85,8 @@ class Toponim(models.Model):
     codi = models.CharField(max_length=50, blank=True, null=True)
     nom = models.CharField(max_length=250)
     aquatic = models.CharField(max_length=1, blank=True, null=True, default='N')
-    idtipustoponim = models.ForeignKey(Tipustoponim, models.DO_NOTHING, db_column='idtipustoponim')
-    idpais = models.ForeignKey(Pais, models.DO_NOTHING, db_column='idpais', blank=True, null=True)
+    idtipustoponim = models.ForeignKey(Tipustoponim, models.CASCADE, db_column='idtipustoponim')
+    idpais = models.ForeignKey(Pais, models.CASCADE, db_column='idpais', blank=True, null=True)
     idpare = models.ForeignKey('self', models.DO_NOTHING, db_column='idpare', blank=True, null=True)
     nom_fitxer_importacio = models.CharField(max_length=255, blank=True, null=True)
     linia_fitxer_importacio = models.TextField(blank=True, null=True)
@@ -264,13 +264,13 @@ class Toponimversio(models.Model):
     precisio_z_origen = models.CharField(max_length=50, blank=True, null=True)
     #idpersona is a legacy field - NEVER EVER EVER USE IT
     idpersona = models.CharField(max_length=100, blank=True, null=True)
-    iduser = models.ForeignKey(User, models.SET_NULL, blank=True, null=True, db_column='iduser')
+    iduser = models.ForeignKey(User, models.CASCADE, blank=True, null=True, db_column='iduser')
     observacions = models.TextField(blank=True, null=True)
     #idlimitcartooriginal = models.ForeignKey('Documents', models.DO_NOTHING, db_column='idlimitcartooriginal', blank=True, null=True)
     idrecursgeoref = models.ForeignKey('Recursgeoref', models.DO_NOTHING, db_column='idrecursgeoref', blank=True, null=True)
     idtoponim = models.ForeignKey(Toponim, models.CASCADE, db_column='idtoponim', blank=True, null=True, related_name='versions')
     numero_versio = models.IntegerField(blank=True, null=True)
-    idqualificador = models.ForeignKey(Qualificadorversio, models.DO_NOTHING, db_column='idqualificador', blank=True, null=True)
+    idqualificador = models.ForeignKey(Qualificadorversio, models.CASCADE, db_column='idqualificador', blank=True, null=True)
     coordenada_x_centroide = models.CharField(max_length=50, blank=True, null=True)
     coordenada_y_centroide = models.CharField(max_length=50, blank=True, null=True)
     last_version = models.BooleanField(default=False)
@@ -279,6 +279,9 @@ class Toponimversio(models.Model):
     class Meta:
         managed = False
         db_table = 'toponimversio'
+
+    def __str__(self):
+        return '%s' % (self.nom)
 
     def union_geometry(self):
         geometries = self.geometries.all()
@@ -353,6 +356,9 @@ class Paraulaclau(models.Model):
         managed = False
         db_table = 'paraulaclau'
 
+    def __str__(self):
+        return '%s' % (self.paraula)
+
 
 class ParaulaclauRecurs(models.Model):
     id = models.CharField(primary_key=True, max_length=100, default=uuid.uuid4)
@@ -362,6 +368,9 @@ class ParaulaclauRecurs(models.Model):
     class Meta:
         managed = False
         db_table = 'paraulaclaurecursgeoref'
+
+    def __str__(self):
+        return 'Paraula clau - %s / Recurs - %s' % (self.idparaula.paraula, str(self.idrecursgeoref))
 
 
 class Autorrecursgeoref(models.Model):
@@ -373,6 +382,9 @@ class Autorrecursgeoref(models.Model):
         managed = False
         db_table = 'autorrecursgeoref'
         unique_together = (('autor', 'recurs'),)
+
+    def __str__(self):
+        return 'Recurs - %s / Autor - %s' % (self.recurs.nom, self.autor.nom)
 
 
 class Capawms(models.Model):
@@ -422,12 +434,12 @@ class Capesrecurs(models.Model):
 class Recursgeoref(models.Model):
     id = models.CharField(primary_key=True, max_length=100,default=uuid.uuid4)
     nom = models.CharField(max_length=500)
-    idtipusrecursgeoref = models.ForeignKey(Tipusrecursgeoref, models.DO_NOTHING, db_column='idtipusrecursgeoref', blank=True, null=True)
+    idtipusrecursgeoref = models.ForeignKey(Tipusrecursgeoref, models.CASCADE, db_column='idtipusrecursgeoref', blank=True, null=True)
     comentarisnoambit = models.CharField(max_length=500, blank=True, null=True)
     campidtoponim = models.CharField(max_length=500, blank=True, null=True)
     versio = models.CharField(max_length=100, blank=True, null=True)
     fitxergraficbase = models.CharField(max_length=100, blank=True, null=True)
-    idsuport = models.ForeignKey(Suport, models.DO_NOTHING, db_column='idsuport', blank=True, null=True)
+    idsuport = models.ForeignKey(Suport, models.CASCADE, db_column='idsuport', blank=True, null=True)
     urlsuport = models.CharField(max_length=250, blank=True, null=True)
     ubicaciorecurs = models.CharField(max_length=200, blank=True, null=True)
     actualitzaciosuport = models.CharField(max_length=250, blank=True, null=True)
@@ -440,14 +452,14 @@ class Recursgeoref(models.Model):
     idambit = models.ForeignKey(Toponimversio, models.DO_NOTHING, db_column='idambit', blank=True, null=True)
     acronim = models.CharField(max_length=100, blank=True, null=True)
     idsistemareferenciamm = models.ForeignKey(Sistemareferenciamm, models.DO_NOTHING, db_column='idsistemareferenciamm', blank=True, null=True)
-    idtipusunitatscarto = models.ForeignKey(Tipusunitats, models.DO_NOTHING, db_column='idtipusunitatscarto', blank=True, null=True)
+    idtipusunitatscarto = models.ForeignKey(Tipusunitats, models.CASCADE, db_column='idtipusunitatscarto', blank=True, null=True)
     #idgeometria = models.ForeignKey('Geometria', models.DO_NOTHING, db_column='idgeometria', blank=True, null=True)
     base_url_wms = models.CharField(max_length=255, blank=True, null=True)
     capes_wms_json = models.TextField(blank=True, null=True)
     paraulesclau = models.ManyToManyField(Paraulaclau,through=ParaulaclauRecurs)
     autors = models.ManyToManyField(Autor,through=Autorrecursgeoref)
     capes_wms_recurs = models.ManyToManyField(Capawms,through=Capesrecurs)
-    iduser = models.ForeignKey(User, models.SET_NULL, blank=True, null=True, db_column='iduser')
+    iduser = models.ForeignKey(User, models.CASCADE, blank=True, null=True, db_column='iduser')
 
     class Meta:
         managed = False

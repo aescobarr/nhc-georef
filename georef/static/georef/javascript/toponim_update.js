@@ -53,6 +53,74 @@ var confirmDialog = function(message,id){
         });
     };
 
+
+var getCurrentCentroid = function(){
+    var def = $.Deferred();
+    if( djangoRef_map.getDigitizedFeaturesJSON().features.length == 0 ){
+        def.resolve(null);
+    }else{
+        $.ajax({
+            url: '/compute_centroid',
+            method: "POST",
+            data: { "geom": JSON.stringify(djangoRef_map.getDigitizedFeaturesJSON().features) },
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                //console.log(data);
+                def.resolve(data.detail);
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                //console.log(textStatus);
+                def.reject(textStatus);
+            }
+        });
+    }
+    return def.promise();
+}
+
+var refreshCentroid = function(radius_km){
+    djangoRef_map.centroid.clearLayers();
+    /*$$*/
+    /*var centroid_data = djangoRef.Map.getCurrentCentroid();*/
+    /*var centroid_data = getCurrentCentroid();*/
+    getCurrentCentroid().then( function(centroid_data) {
+        if(centroid_data != null){
+            var centroid = centroid_data.centroid;
+            var dist_km;
+            if(radius_km){
+                dist_km = radius_km
+            }else{
+                dist_km = centroid_data.radius/1000;
+            }
+            if(dist_km > 0){
+                var circle = turf.circle(centroid,dist_km);
+                djangoRef_map.centroid.addData(circle);
+            }
+            $('#id_coordenada_x_centroide').val( centroid_data.centroid.geometry.coordinates[0] );
+            $('#id_coordenada_y_centroide').val( centroid_data.centroid.geometry.coordinates[1] );
+            if(radius_km){
+                $('#id_precisio_h').val(dist_km*1000);
+            }else{
+                $('#id_precisio_h').val(centroid_data.radius);
+            }
+
+            djangoRef_map.editableLayers.bringToFront();
+            if(djangoRef_map.centroid.getBounds().isValid()){
+                djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+            }
+        }else{
+            $('#id_coordenada_x_centroide').val( '' );
+            $('#id_coordenada_y_centroide').val( '' );
+            $('#id_precisio_h').val( '' );
+        }
+    });
+}
+
+
 var delete_versio = function(id){
     $.ajax({
         url: _versio_delete_url + id,
@@ -82,20 +150,25 @@ var refreshDigitizedGeometry = function(){
 
 
 var refreshCentroidUI = function(radius_m){
-    var centroid_data = djangoRef.Map.getCurrentCentroid();
-    if(centroid_data != null){
-        $('#id_coordenada_x_centroide').val( centroid_data.centroid.geometry.coordinates[0] );
-        $('#id_coordenada_y_centroide').val( centroid_data.centroid.geometry.coordinates[1] );
-        if(radius_m){
-            $('#id_precisio_h').val(radius_m);
+    /*$$*/
+    //var centroid_data = djangoRef.Map.getCurrentCentroid();
+    /*var centroid_data = getCurrentCentroid();*/
+
+    getCurrentCentroid().then( function(centroid_data) {
+        if(centroid_data != null){
+            $('#id_coordenada_x_centroide').val( centroid_data.centroid.geometry.coordinates[0] );
+            $('#id_coordenada_y_centroide').val( centroid_data.centroid.geometry.coordinates[1] );
+            if(radius_m){
+                $('#id_precisio_h').val(radius_m);
+            }else{
+                $('#id_precisio_h').val(centroid_data.radius);
+            }
         }else{
-            $('#id_precisio_h').val(centroid_data.radius * 1000);
+            $('#id_coordenada_x_centroide').val( '' );
+            $('#id_coordenada_y_centroide').val( '' );
+            $('#id_precisio_h').val( '' );
         }
-    }else{
-        $('#id_coordenada_x_centroide').val( '' );
-        $('#id_coordenada_y_centroide').val( '' );
-        $('#id_precisio_h').val( '' );
-    }
+    });
 };
 
 $(document).ready(function() {
@@ -148,8 +221,10 @@ $(document).ready(function() {
         var radius_ctrl = $('#radi');
         valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTips");
         if(valid){
-            djangoRef_map.refreshCentroid(radius/1000);
-            refreshCentroidUI(radius);
+            /*$$*/
+            /*djangoRef_map.refreshCentroid(radius/1000);*/
+            refreshCentroid(radius/1000);
+            /*refreshCentroidUI(radius);*/
             refreshDigitizedGeometry();
             djangoRef_map.editableLayers.bringToFront();
             if(djangoRef_map.centroid.getBounds().isValid()){
@@ -187,21 +262,28 @@ $(document).ready(function() {
             );
             //Draw centroid
             djangoRef.Map.centroid.clearLayers();
-            var centroid_data = djangoRef.Map.getCurrentCentroid();
-            var circle = turf.circle(centroid_data.centroid,parseFloat(radius)/1000);
-            djangoRef.Map.centroid.addData(circle);
+            /*$$*/
+            /*var centroid_data = djangoRef.Map.getCurrentCentroid();*/
+            /*var centroid_data = getCurrentCentroid();*/
+            getCurrentCentroid().then( function(centroid_data){
+                var circle = turf.circle(centroid_data.centroid,parseFloat(radius)/1000);
+                djangoRef.Map.centroid.addData(circle);
 
-            refreshCentroidUI(parseFloat(radius));
-            refreshDigitizedGeometry();
+                /*refreshCentroidUI(parseFloat(radius));*/
+                $('#id_coordenada_x_centroide').val( centroid_data.centroid.geometry.coordinates[0] );
+                $('#id_coordenada_y_centroide').val( centroid_data.centroid.geometry.coordinates[1] );
+                $('#id_precisio_h').val(radius);
+                refreshDigitizedGeometry();
 
-            //Zoom on features
-            djangoRef_map.editableLayers.bringToFront();
-            if(djangoRef_map.centroid.getBounds().isValid()){
-                djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
-            }
+                //Zoom on features
+                djangoRef_map.editableLayers.bringToFront();
+                if(djangoRef_map.centroid.getBounds().isValid()){
+                    djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
+                }
 
-            //...and close dialog
-            dialog_kb.dialog( "close" );
+                //...and close dialog
+                dialog_kb.dialog( "close" );
+            } );
         }
         return valid;
     }
@@ -371,8 +453,10 @@ $(document).ready(function() {
                 if(geoJSONIsSinglePoint(geoJson)){
                     dialog_centroid.dialog("open");
                 }else{
-                    djangoRef_map.refreshCentroid();
-                    refreshCentroidUI();
+                    /*$$*/
+                    /*djangoRef_map.refreshCentroid();*/
+                    refreshCentroid();
+                    /*refreshCentroidUI();*/
                     refreshDigitizedGeometry();
                     djangoRef_map.editableLayers.bringToFront();
                     if(djangoRef_map.centroid.getBounds().isValid()){
@@ -519,20 +603,28 @@ $(document).ready(function() {
         }
     );
     if(stored_centroid_radius_m){
-        djangoRef_map.refreshCentroid(stored_centroid_radius_m/1000);
+        /*$$*/
+        /*djangoRef_map.refreshCentroid(stored_centroid_radius_m/1000);*/
+        refreshCentroid(stored_centroid_radius_m/1000);
     }else{
-        djangoRef_map.refreshCentroid();
+        /*$$*/
+        /*djangoRef_map.refreshCentroid();*/
+        refreshCentroid();
     }
+    /*
     if(stored_centroid_radius_m){
         refreshCentroidUI(stored_centroid_radius_m);
     }else{
         refreshCentroidUI();
     }
+    */
+    /*
     refreshDigitizedGeometry();
     djangoRef_map.editableLayers.bringToFront();
     if(djangoRef_map.centroid.getBounds().isValid()){
         djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
     }
+    */
 
     $('[data-toggle="tooltip"]').tooltip();
 
