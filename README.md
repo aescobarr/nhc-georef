@@ -1,8 +1,8 @@
 # Georef
 
-Georef is a georeferencing data tool originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows the storage, indexing and querying of georeferencing data, including geometry, and supports multiple versions of the data. Georef is built using [Django](https://www.djangoproject.com/).
+Georef is a georeferencing data tool originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows storage, indexing and querying of georeferencing data, including geometry, and supports multiple versions of the data. Georef is built using [Django](https://www.djangoproject.com/).
 
-The application exposes an API which allows mainly querying the underlying data. The API is a separate project and can be found here: https://github.com/aescobarr/djangoref_api
+The application exposes an API which allows mainly querying the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/djangoref_api)
 
 ## Getting Started
 
@@ -10,9 +10,8 @@ These instructions will help you set up a basic working development environment 
 
 ### Prerequisites
 
-- Create a user which will own the project folder. Traditionally, the user is named djangoref but you can name it anything you want.
-
-- Log on the machine as the djangoref user and clone this repo
+* Create a user which will own the project folder. Traditionally, the user is named djangoref but you can name it anything you want.
+* Log on the machine as the djangoref user and clone this repo
 
 ```
 git clone https://github.com/aescobarr/djangoref.git
@@ -311,7 +310,167 @@ This should start a development server at http://127.0.0.1:8000
 
 ## Deployment
 
-TODO!!
+### Apache
+
+Our particular deployment setup uses [Apache](http://httpd.apache.org/) with mod_proxy to proxy a local [gunicorn](https://gunicorn.org/) instance. The static resources will also be served by Apache. So we need to install a few additional pieces; Gunicorn should already be installed in your system as it is contained in the project requirements.txt file.
+
+The Apache installation goes something like this:
+```
+# install apache2 package
+apt install apache2
+# enable proxy related mods
+a2enmod proxy
+a2enmod proxy_http
+a2enmod headers
+# restart service to wake up apache mods
+systemctl restart apache2
+```
+
+### Static resources
+
+Go to the app folder and activate the python virtual environment. In the present example we assume that the virtual environment is called georef:
+```
+workon georef
+```
+
+Build static resources folder using django manage command:
+```
+./manage.py collectstatic
+```
+
+This creates a folder named 'static' in the directory indicated in the config variable STATIC_ROOT (see settings.py and settings_local.py files). This folder will be served as a static folder by apache. As a previous step, we will create links to some folders in /var/www:
+```
+# create directory if doesn't exist
+sudo mkdir /var/www/georef
+# create symbolic link to static dir
+sudo ln -s [path_to_app_folder]/static /var/www/georef/
+# create symbolic link to uploads folder. In this case, the symbolic link will be called media (not uploads)
+sudo ln -s [path_to_app_folder]/uploads /var/www/georef/media
+```
+
+### Apache virtual host
+
+We create an apache virtual host file in /etc/apache2/sites-available/:
+```
+# we call the file georef.conf; other names are ok too
+sudo touch /etc/apache2/sites-available/georef.conf
+```
+We edit the file, which will end up looking something like this:
+```
+<VirtualHost IP_ADDRESS:80>
+            # The root where static resource folders are located
+            DocumentRoot /var/www/djangoref
+
+            # Server base address/name
+            ServerName www.example.com
+
+            ProxyPreserveHost On
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            # static served by apache
+            ProxyPass /favicon.ico !
+            ProxyPass /static/ !
+            ProxyPass /media/ !
+            
+            # Transparent proxy to geoserver. Redirect all /geoserver* petitions
+            # to http://localhost:8080/geoserver (this assumes that geoserver is running inside
+            # a tomcat instance running in port 8080)
+            ProxyPass /geoserver http://localhost:8080/geoserver
+            ProxyPassReverse /geoserver http://localhost:8080/geoserver
+
+            # Redirect to gunicorn processes the other. More on this later all /* petitions
+            # will go to a gunicorn instance running in localhost:49155
+            ProxyPass / http://localhost:49155/
+            ProxyPassReverse / http://localhost:49155/
+
+            <Directory "/var/www/djangoref">
+                # Commented to avoid directory listing
+                # Options Indexes FollowSymLinks MultiViews
+                Header set Access-Control-Allow-Origin "*"
+                Options FollowSymLinks MultiViews
+                Allow from all
+            </Directory>
+
+            ErrorLog /var/log/apache2/georef.com.error.log
+            LogLevel info
+
+            CustomLog /var/log/apache2/georef.com.access.log combined
+            ServerSignature On
+</VirtualHost>
+
+```
+We save and exit. Now we must activate the virtual host:
+```
+# enable site
+sudo a2ensite georef.conf
+# reload apache service to apply changes
+systemctl reload apache2
+```
+
+In the current state we should be able to access static resources, but the app is not running yet. Let's do that.
+
+### Gunicorn
+
+We need to setup the Gunicorn instance which will run the django app. To control Gunicorn we will use [supervisor](http://supervisord.org/index.html). We install it like this:
+```
+sudo apt install supervisor
+```
+We create a supervisor log file and give permissions to georef user (since the gunicorn process will be run as this user):
+```
+# create dir
+sudo mkdir /var/log/gunicorn
+# now it belongs to georef user
+sudo chown georef /var/log/gunicorn
+```
+Next, we need to create a supervisor configuration file. This file will reside in /etc/supervisor/conf.d:
+```
+# we name the file gunicorn-georef.conf, but feel free to use any name you like
+sudo touch /etc/supervisor/conf.d/gunicorn-georef.conf
+```
+Edit the file and put something like this inside:
+```
+# this is the program handle (gunicorn-georef). We will use to adress it from supervisor
+[program:gunicorn-georef]
+# this is the command that will launch the actual gunicorn instance. It uses the gunicorn binary inside the virtual env, the -c parameter
+# points to a gunicorn_conf.py file which resides inside the app folder. Some parameters (number of workers, listening port, etc) are specified
+# inside this file; feel free to change them at your convenience.
+command=/home/georef/.virtualenvs/djangoref/bin/gunicorn -c /home/georef/djangoref/djangoref/gunicorn_conf.py djangoref.wsgi:application
+# the root folder of the app
+directory=/home/georef/djangoref
+# the user which will own the gunicorn instance
+user=georef
+autostart=true
+autorestart=true
+priority=991
+stopasgroup=true
+stopsignal=KILL
+# log stuff
+stdout_logfile=/var/log/gunicorn/georef.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=2
+stderr_logfile=/var/log/gunicorn/georef.error.log
+stderr_logfile_maxbytes=1MB
+stderr_logfile_backups=2
+
+```
+We need to tell supervisor that we have created a new supervised process, we do it like this:
+```
+sudo supervisorctl reread
+sudo supervisorctl update
+```
+The gunicorn process is registered. We can issue several commands to supervisor:
+```
+# list all registered processes
+sudo supervisorctl status
+# stop running process by handle (the name behind [program:] in the first line in /etc/supervisor/conf.d/gunicorn-georef.conf)
+sudo supervisorctl stop gunicorn-georef
+# start running process by handle
+sudo supervisorctl start gunicorn-georef
+```
+We should now use the start command to start the gunicorn instance. If everything is okay, the app should be running!
 
 ## Built With
 
