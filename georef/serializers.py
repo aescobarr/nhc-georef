@@ -70,6 +70,8 @@ class ToponimSerializer(serializers.ModelSerializer):
 
     def get_editable(self, obj):
         user = self.context['request'].user
+        if user.is_superuser:
+            return True
         if not user.is_anonymous and user.profile and user.profile.toponim_permission == '1':
             return True
         if not user.is_anonymous and user.profile:
@@ -96,6 +98,8 @@ class FiltrejsonSerializer(serializers.ModelSerializer):
 
     def get_editable(self, obj):
         user = self.context['request'].user
+        if user.is_superuser:
+            return True
         if not user.is_anonymous and user.profile and user.profile.can_edit_filtre:
             return True
         return False
@@ -110,6 +114,8 @@ class RecursgeorefSerializer(serializers.ModelSerializer):
 
     def get_editable(self, obj):
         user = self.context['request'].user
+        if user.is_superuser:
+            return True
         if not user.is_anonymous and user.profile and user.profile.can_edit_recurs:
             return True
         return False
