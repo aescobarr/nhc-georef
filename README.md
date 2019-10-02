@@ -1,6 +1,6 @@
 # Georef
 
-Georef is a georeferencing data tool originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows the storage, indexing and querying of georeferencing data, including geometry, and supports multiple versions of the data. Georef is built using [Django](https://www.djangoproject.com/)
+Georef is a georeferencing data tool originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows the storage, indexing and querying of georeferencing data, including geometry, and supports multiple versions of the data. Georef is built using [Django](https://www.djangoproject.com/).
 
 The application exposes an API which allows mainly querying the underlying data. The API is a separate project and can be found here: https://github.com/aescobarr/djangoref_api
 
@@ -125,16 +125,19 @@ This will install all the packages listed in requirements.txt in the virtual env
 The cloned repository has a settings.py typical django config file. However, this file is not enough to run the app, as it points to a second settings_local.py file which must be created. This file is not Most parameters in settings.py are overwritten by this file. So it must be created and exist at the same level in the folder structure as settings.py.
 
 The file settings_local.py contains the following (the comments give a brief description of each config key value):
-```
+```python
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' # Long, complicated string that django uses internally for things like identifying sessions
+# Long, complicated string that django uses internally for things like identifying sessions
+SECRET_KEY = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' 
 
-DEBUG = False # In development, this can be set to True to visualize additional debug info. In production, always set to False
+# In development, this can be set to True to visualize additional debug info. In production, always set to False
+DEBUG = False 
 
-ALLOWED_HOSTS = []  # If DEBUG = False, put here a comma separated list of the host name/s. For a single name -> ['www.example.com']/ for multiple names, ['www.example1.com','www.example2.com']. If DEBUG = True, leave as it is.
+# If DEBUG = False, put here a comma separated list of the host name/s. For a single name -> ['www.example.com']/ for multiple names, ['www.example1.com','www.example2.com']. If DEBUG = True, leave as it is.
+ALLOWED_HOSTS = []  
 
 # Postgresql connection parameters
 DATABASES = {
@@ -148,22 +151,32 @@ DATABASES = {
     }
 }
 
-#STATIC_ROOT = '/home/djangoref/djangoref/static/'
 #Absolute path to static resources folder. In development, comment out this line
+#STATIC_ROOT = '/home/djangoref/djangoref/static/'
 
-MEDIA_URL = "/media/" # Media URL, relative to the app root address. For example if our app is running in www.example.com, media files should be accessible at www.example.com/media/
-UPLOAD_DIR = BASE_DIR + "/uploads" # Absolute Upload directory path, appended to BASE_DIR which points to the application root folder
-MEDIA_ROOT = UPLOAD_DIR # The media path is the same as UPLOAD_DIR
+# Media URL, relative to the app root address. For example if our app is running in www.example.com, media files should be accessible at www.example.com/media/
+MEDIA_URL = "/media/" 
+# Absolute Upload directory path, appended to BASE_DIR which points to the application root folder
+UPLOAD_DIR = BASE_DIR + "/uploads" 
+# The media path is the same as UPLOAD_DIR
+MEDIA_ROOT = UPLOAD_DIR 
 LOCAL_DATAFILE_ROOT_DIRECTORY = 'helpfile_uploads'
 
 # Geoserver params
-GEOSERVER_WORKSPACE = 'SOME_WORKSPACE' # Workspace in which the layers will be stored
-GEOSERVER_USER = 'GEOSERVER_USER' # Geoserver user
-GEOSERVER_PASSWORD = 'GEOSERVER_USER_PASSWORD' # The password of the above user
-GEOSERVER_BASE_URL = 'https://www.example.com/' # Root url of the geoserver install address. The trailing slash is important
-GEOSERVER_WMS_URL_CLEAN = GEOSERVER_BASE_URL + 'geoserver/wms/' # Root url of the geoserver WMS services endpoint
-GEOSERVER_REST_URL = GEOSERVER_BASE_URL + 'geoserver/rest/' # Root url of the geoserver restful api endpoint
-GEOSERVER_WMS_URL = GEOSERVER_BASE_URL + 'geoserver/' + GEOSERVER_WORKSPACE + "/wms/?" # URL to wms services of the previously defined GEOSERVER_WORKSPACE
+# Workspace in which the layers will be stored
+GEOSERVER_WORKSPACE = 'SOME_WORKSPACE' 
+# Geoserver user
+GEOSERVER_USER = 'GEOSERVER_USER' 
+# The password of the above user
+GEOSERVER_PASSWORD = 'GEOSERVER_USER_PASSWORD' 
+# Root url of the geoserver install address. The trailing slash is important
+GEOSERVER_BASE_URL = 'https://www.example.com/' 
+# Root url of the geoserver WMS services endpoint
+GEOSERVER_WMS_URL_CLEAN = GEOSERVER_BASE_URL + 'geoserver/wms/' 
+# Root url of the geoserver restful api endpoint
+GEOSERVER_REST_URL = GEOSERVER_BASE_URL + 'geoserver/rest/' 
+# URL to wms services endpoint of the previously defined GEOSERVER_WORKSPACE
+GEOSERVER_WMS_URL = GEOSERVER_BASE_URL + 'geoserver/' + GEOSERVER_WORKSPACE + "/wms/?" 
 ```
 
 #### Starting the app in dev mode
