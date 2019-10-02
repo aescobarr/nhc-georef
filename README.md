@@ -97,6 +97,20 @@ For additional info on virtualenvwrapper, go to the virtualenvwrapper [docs](htt
 
 #### Geoserver
 
+Georef uses a GeoServer instance to serve some layers via WMS services. This step could be considered optional in a development environment although it is mandatory in production deployment.
+
+##### Geoserver dependencies
+
+###### Java
+
+TODO!
+
+###### Tomcat
+
+TODO!
+
+##### Geoserver install and basic setup
+
 TODO!
 
 ### Installing
