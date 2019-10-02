@@ -173,6 +173,14 @@ And change the key with a param-name that contains the string GEOSERVER_DATA_DIR
 ```
 This instructs GeoServer to use the /opt/data_dir_gs_2.14.2 instead of the default directory. It should take effect when restarting GeoServer from the tomcat manager.
 
+Next, we should perform some administrative tasks in the GeoServer instance. This includes:
+
+* Create a user which will perform the interactions between Georef and GeoServer
+* Create a workspace to store the created layers
+* Publish a few layers from the PostgreSQL database
+
+Right now this must be done manually, but we are working on scripts to automate all this via scripts that interact with the GeoServer RESTFul API. Stay tuned!
+
 ### Installing
 
 
@@ -237,6 +245,7 @@ MEDIA_ROOT = UPLOAD_DIR
 LOCAL_DATAFILE_ROOT_DIRECTORY = 'helpfile_uploads'
 
 # Geoserver params
+# The workspace and user should have been created in the previous step "Geoserver install and basic setup"
 # Workspace in which the layers will be stored
 GEOSERVER_WORKSPACE = 'SOME_WORKSPACE' 
 # Geoserver user
