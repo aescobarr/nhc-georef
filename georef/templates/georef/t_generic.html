@@ -18,7 +18,7 @@
         var check_delete_url = "{% url 't_checkdelete' %}";
 
         var user_can_edit = false;
-        {% if user.profile.is_admin or user.profile.can_edit_tesaure %}
+        {% if user.profile.is_admin or user.profile.can_edit_tesaure or user.is_superuser %}
         user_can_edit = true;
         {% endif %}
 </script>
@@ -36,7 +36,7 @@
     </div>
     <div class="container separador_seccio">
         <div class="pull-right">
-            {% if user.profile.is_admin or user.profile.can_edit_tesaure %}
+            {% if user.profile.is_admin or user.profile.can_edit_tesaure or user.is_superuser %}
             <button id="add" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
             {% endif %}
