@@ -2,7 +2,7 @@
 
 Georef is a georeferencing data tool originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows storage, indexing and querying of georeferencing data, including geometry, and supports multiple versions of the data. Georef is built using [Django](https://www.djangoproject.com/).
 
-The application exposes an API which allows mainly querying the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/djangoref_api)
+The application exposes an API which allows mainly querying the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/djangoref_api).
 
 ## Getting Started
 
@@ -203,7 +203,7 @@ This will install all the packages listed in requirements.txt in the virtual env
 
 #### Adjusting config files
 
-The cloned repository has a settings.py typical django config file. However, this file is not enough to run the app, as it points to a second settings_local.py file which must be created. This file is not Most parameters in settings.py are overwritten by this file. So it must be created and exist at the same level in the folder structure as settings.py.
+The cloned repository has a [settings.py](https://github.com/aescobarr/djangoref/blob/master/djangoref/settings.py) typical django config file. However, this file is not enough to run the app, as it points to a second settings_local.py file which must be created. This file is not Most parameters in settings.py are overwritten by this file. So it must be created and exist at the same level in the folder structure as settings.py.
 
 The file settings_local.py contains the following (the comments give a brief description of each config key value):
 ```python
@@ -338,7 +338,7 @@ Build static resources folder using django manage command:
 ./manage.py collectstatic
 ```
 
-This creates a folder named 'static' in the directory indicated in the config variable STATIC_ROOT (see settings.py and settings_local.py files). This folder will be served as a static folder by apache. As a previous step, we will create links to some folders in /var/www:
+This creates a folder named 'static' in the directory indicated in the config variable STATIC_ROOT (see [settings.py](https://github.com/aescobarr/djangoref/blob/master/djangoref/settings.py) and settings_local.py files). This folder will be served as a static folder by apache. As a previous step, we will create links to some folders in /var/www:
 ```
 # create directory if doesn't exist
 sudo mkdir /var/www/georef
