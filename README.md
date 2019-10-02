@@ -6,7 +6,7 @@ The application exposes an API which allows mainly querying the underlying data.
 
 ## Getting Started
 
-These instructions will help you set up a basic working development environment on a Ubuntu 18.04 LTS system. It assumes Git is installed and running in the host machine.
+These instructions will help you set up a basic working development environment on a Ubuntu 18.04 LTS system. It assumes [Git](https://git-scm.com/) is installed and running in the host machine.
 
 ### Prerequisites
 
@@ -30,7 +30,7 @@ sudo apt install g++
 
 #### Database
 
-Georef uses a Postgresql + Postgis database. You can install it like this:
+Georef uses a Postgresql 9+ with Postgis database. You can install it like this:
 
 ```
 sudo apt install postgresql-10
@@ -70,7 +70,7 @@ sudo apt install python-pip
 sudo apt install python3.6-dev
 ```
 
-Georef relies heavily on GDAL/OGR libraries for certain spatial calculations. These are installed like this:
+Georef relies heavily on [GDAL/OGR](https://live.osgeo.org/en/overview/gdal_overview.html) libraries for certain spatial calculations. These are installed like this:
 
 ```
 sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
@@ -79,7 +79,7 @@ sudo apt install gdal-bin python-gdal python3-gdal
 sudo apt-get install libgdal-dev
 ```
 
-It is strongly recommended to install Virtualenvwrapper to manage the app virtual environment:
+It is strongly recommended to install [Virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) to manage the app virtual environment:
 
 ```
 pip install virtualenv
@@ -95,6 +95,9 @@ source ~/.bashrc
 
 For additional info on virtualenvwrapper, go to the virtualenvwrapper [docs](https://virtualenvwrapper.readthedocs.io/en/latest/)
 
+#### Geoserver
+
+TODO!
 
 ### Installing
 
@@ -106,7 +109,7 @@ We will need a python virtual environment to run the app. Execute these commands
 mkvirtualenv --python=/usr/bin/python3.6 georef
 ```
 
-The --python parameter ensures that the python interpreter used will be 3.6. Once the environment is active, its name in parentheses will appear before the command line in shell. To activate, simply type
+The --python parameter ensures that the python interpreter used will be 3.6. Once the environment is active, its name in parentheses will appear before the command line in shell. To activate, simply type:
 ```
 #Activate the virtual env
 workon georef
@@ -212,35 +215,34 @@ This should start a development server at http://127.0.0.1:8000
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+TODO!!
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Django](https://www.djangoproject.com/) 
+* [django-bower](https://django-bower.readthedocs.io/en/latest/) - Javascript package manager
+* [Leaflet](https://leafletjs.com/) - Maps 
+* [Leaflet-draw](http://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html) - Vector editing maps
+* [Bootstrap](https://getbootstrap.com/) - HTML, CSS and JS Toolkit
+* [Data Tables](https://datatables.net/) - JQuery plugin for HTML tables
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+TODO! 
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+TODO!
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+TODO!
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+TODO!
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* Thanks to [PurpleBooth](https://gist.github.com/PurpleBooth) for the awesome README.md [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
 
