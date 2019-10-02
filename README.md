@@ -97,21 +97,81 @@ For additional info on virtualenvwrapper, go to the virtualenvwrapper [docs](htt
 
 #### Geoserver
 
-Georef uses a GeoServer instance to serve some layers via WMS services. This step could be considered optional in a development environment although it is mandatory in production deployment.
+Georef uses a [GeoServer](http://geoserver.org/) instance to serve some layers via WMS services. This step could be considered optional in a development environment although it is mandatory in production deployment.
 
 ##### Geoserver dependencies
 
 ###### Java
 
-TODO!
+We need a working [jdk](https://openjdk.java.net/). The basic install in Ubuntu 18.04 is as follows (for a Java 8 install):
+```
+sudo apt install openjdk-8-jdk
+```
 
 ###### Tomcat
 
-TODO!
+We recommend installing [Tomcat 8](https://tomcat.apache.org/download-80.cgi) and the manager add-on, which should be quite painless in Ubuntu 18.04:
+```
+sudo apt install tomcat8
+sudo apt install tomcat8-admin
+```
 
 ##### Geoserver install and basic setup
 
-TODO!
+The following example is done using GeoServer 2.14.2; this project moves fast so probably this version will be outdated by the time anyone reads this... we recommend using always the latest stable version of GeoServer: the install process should be about the same.
+
+From the shell, do something like this:
+
+```
+# Go to temporary directory
+cd /tmp
+# Download 2.14.2 zip file
+wget https://sourceforge.net/projects/geoserver/files/GeoServer/2.14.2/geoserver-2.14.2-bin.zip/download
+# Rename the file
+mv download geoserver-2.14.2-bin.zip
+# Unzip package
+unzip geoserver-2.14.2-bin.zip
+# Move package folder outside of /tmp to its definitive location - in this example we put it in /opt/
+mv geoserver-2.14.2 /opt/.
+# Make tomcat8 user owner of the full folder
+chown -R tomcat8:tomcat8 /opt/geoserver-2.14.2
+
+```
+
+Then we need to edit some config files. First, we create a tomcat8 context for the geoserver instance:
+```
+touch /var/lib/tomcat8/conf/Catalina/localhost/geoserver.xml
+```
+
+Then edit this file and add the following lines:
+```
+<Context        
+        docBase="/opt/geoserver-2.14.2/webapps/geoserver"
+        path="/geoserver"
+        reloadable="true">
+</Context>
+```
+
+Save the file and exit. This should have created an app wich should be visible in the tomcat manager. Stop the app for now and let's create a GeoServer Data Directory. This will create a working directory for GeoServer in which all the configuration data will be written, outside of the geoserver folder. This is a recommended practice, because it creates a separate folder for data which can be managed separately and makes easier the maintenance (backup and GeoServer upgrades)
+```
+# Create a folder for the data. In this example, we put it in /opt/
+mkdir /opt/data_dir_gs_2.14.2
+# Assign ownership to tomcat8 user
+chown -R tomcat8:tomcat8 data_dir_gs_2.14.2/
+```
+
+Now we need to edit some files. Open the file
+```
+/opt/geoserver-2.14.2/webapps/geoserver/WEB-INF/web.xml
+```
+And change the key with a param-name that contains the string GEOSERVER_DATA_DIR so that it looks like so:
+```
+<context-param>
+   <param-name>GEOSERVER_DATA_DIR</param-name>
+    <param-value>/opt/data_dir_gs_2.14.2</param-value>
+</context-param> 
+```
+This instructs GeoServer to use the /opt/data_dir_gs_2.14.2 instead of the default directory. It should take effect when restarting GeoServer from the tomcat manager.
 
 ### Installing
 
