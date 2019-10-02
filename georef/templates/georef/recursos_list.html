@@ -104,7 +104,7 @@
                         <div class="row container no_side_margin">
                             <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un filtre prèviament desat. Llavors apareixerà un llistat amb els filtres que conténen el text escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap filtre, a Menú->Recursos cartogràfics->Llistat de filtres de recursos hi ha la llista completa." for="saveDoFilter">Carregar filtre</label>
                             <input id="autoc_filtres" type="text">
-                            {% if user.profile.is_admin or user.profile.can_edit_filtre %}
+                            {% if user.profile.is_admin or user.profile.can_edit_filtre or user.is_superuser %}
                             <button data-toggle="tooltip" data-placement="right" title="Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el filtre escrivint el nom o part d'ell a la casella de text." id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
                             {% endif %}
                         </div>
@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <div class="col-md-5">
-                    {% if user.profile.is_admin or user.profile.can_edit_recurs %}
+                    {% if user.profile.is_admin or user.profile.can_edit_recurs or user.is_superuser %}
                     <button data-toggle="tooltip" data-placement="right" title="Fes clic aquí per accedir a la fitxa de creació de Recursos Cartogràfics" id="addRecurs" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
                     {% endif %}
                     <table id="recursos_list" style="width:100%;"></table>

@@ -1,6 +1,6 @@
 <div class="container">
     <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Tornar al llistat</a>
-    {% if user.profile.is_admin or user.profile.can_edit_recurs %}
+    {% if user.profile.is_admin or user.profile.can_edit_recurs or user.is_superuser %}
     <input role="button" class="btn btn-success" type="submit" value="Desar" />
     {% endif %}
 </div>
@@ -199,7 +199,7 @@
 </div>
 <div class="container">
     <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Tornar al llistat</a>
-    {% if user.profile.is_admin or user.profile.can_edit_recurs %}
+    {% if user.profile.is_admin or user.profile.can_edit_recurs or user.is_superuser %}
     <input role="button" class="btn btn-success" type="submit" value="Desar" />
     {% endif %}
 </div>

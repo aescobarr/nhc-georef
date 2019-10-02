@@ -622,7 +622,10 @@ def toponimfilters(request):
 @login_required
 def users_list(request):
     if request.user.profile and request.user.profile.permission_administrative is False:
-        return HttpResponse(reverse(index))
+        if request.user.is_superuser:
+            return render(request, 'georef/user_list.html')
+        else:
+            return HttpResponse(reverse('index'))
     else:
         return render(request, 'georef/user_list.html')
 
