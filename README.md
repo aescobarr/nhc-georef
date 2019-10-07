@@ -493,7 +493,3 @@ This software is licensed under [GNU General Public License v3.0](https://www.gn
 
 Many thanks to Miguel Garcia( [Auupa](https://www.auupa.com/) ) for its help in integrating the software in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
 
-## Acknowledgments
-
-* Thanks to Miguel Martinez at [AUUPA](https://www.auupa.com/) for the help integrating Georef in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
-
