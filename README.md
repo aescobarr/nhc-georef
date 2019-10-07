@@ -13,7 +13,7 @@ These instructions will help you set up a basic working development environment 
 * Create a user which will own the project folder. Traditionally, the user is named djangoref but you can name it anything you want.
 * Log on the machine as the djangoref user and clone this repo
 
-```
+```bash
 git clone https://github.com/aescobarr/djangoref.git
 ```
 
@@ -21,7 +21,7 @@ git clone https://github.com/aescobarr/djangoref.git
 
 First some basic general purpose packages:
 
-```
+```bash
 sudo apt install libpq-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev
 sudo apt install gcc
 sudo apt install g++
@@ -31,7 +31,7 @@ sudo apt install g++
 
 Georef uses a Postgresql 9+ with Postgis database. You can install it like this:
 
-```
+```bash
 sudo apt install postgresql-10
 sudo apt install postgresql-10-postgis-2.4
 sudo apt install postgresql-10-postgis-scripts
@@ -40,14 +40,14 @@ sudo apt install postgresql-10-postgis-scripts
 We recommend to create a separate Postgresql user which will own the Georef database and not use the postgres super user. To create the user and the application database we would follow these steps (we will create a user called georef_app):
 
 Log to Postgresql console using the postgres (admin) user. Then:
-```
+```bash
 -- Create the georef_app user
 CREATE ROLE georef_app LOGIN PASSWORD 'mypassword' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
 ```
 
 With the user created, we now proceed to create the database which will host the application data. As the postgresql system user, from the shell we can create the database and make it belong to the application user which we named georef_app in the last step (in this example we call the database georef):
 
-```
+```bash
 # As postgresql user
 createdb georef -O georef_app
 ```
@@ -64,14 +64,14 @@ Remember the name of the database, owner user and its password because we will h
 
 Python 3.6 should be installed in Ubuntu 18.04 by default. We also need pip for installing python packages:
 
-```
+```bash
 sudo apt install python-pip
 sudo apt install python3.6-dev
 ```
 
 Georef relies heavily on [GDAL/OGR](https://live.osgeo.org/en/overview/gdal_overview.html) libraries for certain spatial calculations. These are installed like this:
 
-```
+```bash
 sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
 sudo apt install gdal-bin python-gdal python3-gdal
@@ -80,7 +80,7 @@ sudo apt-get install libgdal-dev
 
 It is strongly recommended to install [Virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) to manage the app virtual environment:
 
-```
+```bash
 pip install virtualenv
 pip install virtualenvwrapper
 
@@ -103,14 +103,14 @@ Georef uses a [GeoServer](http://geoserver.org/) instance to serve some layers v
 ###### Java
 
 We need a working [jdk](https://openjdk.java.net/). The basic install in Ubuntu 18.04 is as follows (for a Java 8 install):
-```
+```bash
 sudo apt install openjdk-8-jdk
 ```
 
 ###### Tomcat
 
 We recommend installing [Tomcat 8](https://tomcat.apache.org/download-80.cgi) and the manager add-on, which should be quite painless in Ubuntu 18.04:
-```
+```bash
 sudo apt install tomcat8
 sudo apt install tomcat8-admin
 ```
@@ -121,7 +121,7 @@ The following example is done using GeoServer 2.14.2; this project moves fast so
 
 From the shell, do something like this:
 
-```
+```bash
 # Go to temporary directory
 cd /tmp
 # Download 2.14.2 zip file
@@ -138,7 +138,7 @@ chown -R tomcat8:tomcat8 /opt/geoserver-2.14.2
 ```
 
 Then we need to edit some config files. First, we create a tomcat8 context for the geoserver instance:
-```
+```bash
 touch /var/lib/tomcat8/conf/Catalina/localhost/geoserver.xml
 ```
 
@@ -152,7 +152,7 @@ Then edit this file and add the following lines:
 ```
 
 Save the file and exit. This should have created an app wich should be visible in the tomcat manager. Stop the app for now and let's create a GeoServer Data Directory. This will create a working directory for GeoServer in which all the configuration data will be written, outside of the geoserver folder. This is a recommended practice, because it creates a separate folder for data which can be managed separately and makes easier the maintenance (backup and GeoServer upgrades)
-```
+```bash
 # Create a folder for the data. In this example, we put it in /opt/
 mkdir /opt/data_dir_gs_2.14.2
 # Assign ownership to tomcat8 user
@@ -185,18 +185,18 @@ Right now this must be done manually, but we are working on scripts to automate 
 
 #### Virtual environment
 We will need a python virtual environment to run the app. Execute these commands as the user that owns the project folder. We assume that the environment name is 'georef' but you can name it however you want:
-```
+```bash
 #Create a virtual env named 'georef'
 mkvirtualenv --python=/usr/bin/python3.6 georef
 ```
 
 The --python parameter ensures that the python interpreter used will be 3.6. Once the environment is active, its name in parentheses will appear before the command line in shell. To activate, simply type:
-```
+```bash
 #Activate the virtual env
 workon georef
 ```
 With the virtual environment active, let's load all the needed python packages into it. From the application folder, launch this command:
-```
+```bash
 pip install -r requirements.txt
 ```
 This will install all the packages listed in requirements.txt in the virtual environment. If all goes well, we proceed with the next step.
@@ -265,7 +265,7 @@ GEOSERVER_WMS_URL = GEOSERVER_BASE_URL + 'geoserver/' + GEOSERVER_WORKSPACE + "/
 
 Before starting up the app, we need to perform a couple of additional setup steps to prepare the database. First, we create the base tables for the app. To do this, we execute a script in the "scripts" subfolder in the app folder:
 
-```
+```bash
 # We connect as the app user and create some tables in the app database
 # A brief breakdown of the parameters:
 # -h is the address of the machine that hosts the database. We assume here that is running in localhost
@@ -277,7 +277,7 @@ psql -h localhost -d georef -U georef_app -W -f [path_to_app_folder]/scripts/dja
 
 This should create a few tables, which we need for the next step. From the command shell, we activate the virtual environment (this is important) and we run the migrations which will create the basic django management tables and a few model tables.
 
-```
+```bash
 # We assume that we have named the virtual env georef. To activate, we do:
 workon georef
 # From the application folder, we run the command
@@ -285,7 +285,7 @@ workon georef
 ```
 
 At this point, we need to run a second sql script which contains some foreign key definitions. This is very similar to the first step in this section:
-```
+```bash
 # We connect as the app user and create some foreign keys in the app database
 # A brief breakdown of the parameters:
 # -h is the address of the machine that hosts the database. We assume here that is running in localhost
@@ -296,13 +296,13 @@ psql -h localhost -d georef -U georef_app -W -f [path_to_app_folder]/scripts/dja
 ```
 
 This leaves us with a fully prepared empty database. Now we can create a superuser:
-```
+```bash
 ./manage.py createsuperuser
 ```
 
 With the virtual environment active, from inside the app folder we run the script
 
-```
+```bash
 ./manage.py runserver
 ```
 
@@ -315,7 +315,7 @@ This should start a development server at http://127.0.0.1:8000
 Our particular deployment setup uses [Apache](http://httpd.apache.org/) with mod_proxy to proxy a local [gunicorn](https://gunicorn.org/) instance. The static resources will also be served by Apache. So we need to install a few additional pieces; Gunicorn should already be installed in your system as it is contained in the project requirements.txt file.
 
 The Apache installation goes something like this:
-```
+```bash
 # install apache2 package
 apt install apache2
 # enable proxy related mods
@@ -329,17 +329,17 @@ systemctl restart apache2
 ### Static resources
 
 Go to the app folder and activate the python virtual environment. In the present example we assume that the virtual environment is called georef:
-```
+```bash
 workon georef
 ```
 
 Build static resources folder using django manage command:
-```
+```bash
 ./manage.py collectstatic
 ```
 
 This creates a folder named 'static' in the directory indicated in the config variable STATIC_ROOT (see [settings.py](https://github.com/aescobarr/djangoref/blob/master/djangoref/settings.py) and settings_local.py files). This folder will be served as a static folder by apache. As a previous step, we will create links to some folders in /var/www:
-```
+```bash
 # create directory if doesn't exist
 sudo mkdir /var/www/georef
 # create symbolic link to static dir
@@ -403,7 +403,7 @@ We edit the file, which will end up looking something like this:
 
 ```
 We save and exit. Now we must activate the virtual host:
-```
+```bash
 # enable site
 sudo a2ensite georef.conf
 # reload apache service to apply changes
@@ -415,18 +415,18 @@ In the current state we should be able to access static resources, but the app i
 ### Gunicorn
 
 We need to setup the Gunicorn instance which will run the django app. To control Gunicorn we will use [supervisor](http://supervisord.org/index.html). We install it like this:
-```
+```bash
 sudo apt install supervisor
 ```
 We create a supervisor log file and give permissions to georef user (since the gunicorn process will be run as this user):
-```
+```bash
 # create dir
 sudo mkdir /var/log/gunicorn
 # now it belongs to georef user
 sudo chown georef /var/log/gunicorn
 ```
 Next, we need to create a supervisor configuration file. This file will reside in /etc/supervisor/conf.d:
-```
+```bash
 # we name the file gunicorn-georef.conf, but feel free to use any name you like
 sudo touch /etc/supervisor/conf.d/gunicorn-georef.conf
 ```
@@ -457,12 +457,12 @@ stderr_logfile_backups=2
 
 ```
 We need to tell supervisor that we have created a new supervised process, we do it like this:
-```
+```bash
 sudo supervisorctl reread
 sudo supervisorctl update
 ```
 The gunicorn process is registered. We can issue several commands to supervisor:
-```
+```bash
 # list all registered processes
 sudo supervisorctl status
 # stop running process by handle (the name behind [program:] in the first line in /etc/supervisor/conf.d/gunicorn-georef.conf)
@@ -481,23 +481,15 @@ We should now use the start command to start the gunicorn instance. If everythin
 * [Bootstrap](https://getbootstrap.com/) - HTML, CSS and JS Toolkit
 * [Data Tables](https://datatables.net/) - JQuery plugin for HTML tables
 
-## Contributing
-
-TODO! 
-
-## Versioning
-
-TODO!
-
 ## Authors
 
-TODO!
+Conceptual design by Arnald Marcer and Francesc Uribe.
+Coding by [Agustí Escobar](https://github.com/aescobarr)(django version) and [Victor Garcia](https://github.com/vg-coder)(original Georef version).
 
 ## License
 
-TODO!
+This software is licensed under [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Acknowledgments
 
-* Thanks to [PurpleBooth](https://gist.github.com/PurpleBooth) for the awesome README.md [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-
+Many thanks to Miguel Garcia( [Auupa](https://www.auupa.com/) ) for its help in integrating the software in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
