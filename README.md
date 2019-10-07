@@ -40,13 +40,12 @@ sudo apt install postgresql-10-postgis-scripts
 We recommend to create a separate Postgresql user which will own the Georef database and not use the postgres super user. To create the user and the application database we would follow these steps (we will create a user called georef_app):
 
 Log to Postgresql console using the postgres (admin) user. Then:
-```bash
+```
 -- Create the georef_app user
 CREATE ROLE georef_app LOGIN PASSWORD 'mypassword' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
 ```
 
 With the user created, we now proceed to create the database which will host the application data. As the postgresql system user, from the shell we can create the database and make it belong to the application user which we named georef_app in the last step (in this example we call the database georef):
-
 ```bash
 # As postgresql user
 createdb georef -O georef_app
@@ -63,14 +62,12 @@ Remember the name of the database, owner user and its password because we will h
 #### Python stuff
 
 Python 3.6 should be installed in Ubuntu 18.04 by default. We also need pip for installing python packages:
-
 ```bash
 sudo apt install python-pip
 sudo apt install python3.6-dev
 ```
 
 Georef relies heavily on [GDAL/OGR](https://live.osgeo.org/en/overview/gdal_overview.html) libraries for certain spatial calculations. These are installed like this:
-
 ```bash
 sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
@@ -79,7 +76,6 @@ sudo apt-get install libgdal-dev
 ```
 
 It is strongly recommended to install [Virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) to manage the app virtual environment:
-
 ```bash
 pip install virtualenv
 pip install virtualenvwrapper
@@ -120,7 +116,6 @@ sudo apt install tomcat8-admin
 The following example is done using GeoServer 2.14.2; this project moves fast so probably this version will be outdated by the time anyone reads this... we recommend using always the latest stable version of GeoServer: the install process should be about the same.
 
 From the shell, do something like this:
-
 ```bash
 # Go to temporary directory
 cd /tmp
@@ -151,7 +146,7 @@ Then edit this file and add the following lines:
 </Context>
 ```
 
-Save the file and exit. This should have created an app wich should be visible in the tomcat manager. Stop the app for now and let's create a GeoServer Data Directory. This will create a working directory for GeoServer in which all the configuration data will be written, outside of the geoserver folder. This is a recommended practice, because it creates a separate folder for data which can be managed separately and makes easier the maintenance (backup and GeoServer upgrades)
+Save the file and exit. This should have created an app wich should be visible in the tomcat manager. Stop the app for now and let's create a GeoServer Data Directory. This will create a working directory for GeoServer in which all the configuration data will be written, outside of the geoserver folder. This is a recommended practice, because it creates a separate folder for data which can be managed separately and makes easier the maintenance (backup and GeoServer upgrades).
 ```bash
 # Create a folder for the data. In this example, we put it in /opt/
 mkdir /opt/data_dir_gs_2.14.2
@@ -185,6 +180,7 @@ Right now this must be done manually, but we are working on scripts to automate 
 
 #### Virtual environment
 We will need a python virtual environment to run the app. Execute these commands as the user that owns the project folder. We assume that the environment name is 'georef' but you can name it however you want:
+
 ```bash
 #Create a virtual env named 'georef'
 mkvirtualenv --python=/usr/bin/python3.6 georef
@@ -264,7 +260,6 @@ GEOSERVER_WMS_URL = GEOSERVER_BASE_URL + 'geoserver/' + GEOSERVER_WORKSPACE + "/
 #### Starting the app in dev mode
 
 Before starting up the app, we need to perform a couple of additional setup steps to prepare the database. First, we create the base tables for the app. To do this, we execute a script in the "scripts" subfolder in the app folder:
-
 ```bash
 # We connect as the app user and create some tables in the app database
 # A brief breakdown of the parameters:
@@ -276,7 +271,6 @@ psql -h localhost -d georef -U georef_app -W -f [path_to_app_folder]/scripts/dja
 ```
 
 This should create a few tables, which we need for the next step. From the command shell, we activate the virtual environment (this is important) and we run the migrations which will create the basic django management tables and a few model tables.
-
 ```bash
 # We assume that we have named the virtual env georef. To activate, we do:
 workon georef
@@ -301,7 +295,6 @@ This leaves us with a fully prepared empty database. Now we can create a superus
 ```
 
 With the virtual environment active, from inside the app folder we run the script
-
 ```bash
 ./manage.py runserver
 ```
@@ -329,6 +322,7 @@ systemctl restart apache2
 ### Static resources
 
 Go to the app folder and activate the python virtual environment. In the present example we assume that the virtual environment is called georef:
+<<<<<<< HEAD
 ```bash
 workon georef
 ```
@@ -420,6 +414,10 @@ sudo apt install supervisor
 ```
 We create a supervisor log file and give permissions to georef user (since the gunicorn process will be run as this user):
 ```bash
+sudo apt install supervisor
+```
+We create a supervisor log file and give permissions to georef user (since the gunicorn process will be run as this user):
+```bash
 # create dir
 sudo mkdir /var/log/gunicorn
 # now it belongs to georef user
@@ -457,6 +455,7 @@ stderr_logfile_backups=2
 
 ```
 We need to tell supervisor that we have created a new supervised process, we do it like this:
+<<<<<<< HEAD
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
@@ -493,3 +492,8 @@ This software is licensed under [GNU General Public License v3.0](https://www.gn
 ## Acknowledgments
 
 Many thanks to Miguel Garcia( [Auupa](https://www.auupa.com/) ) for its help in integrating the software in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
+
+## Acknowledgments
+
+* Thanks to Miguel Martinez at [AUUPA](https://www.auupa.com/) for the help integrating Georef in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
+
