@@ -255,6 +255,10 @@ GEOSERVER_WMS_URL_CLEAN = GEOSERVER_BASE_URL + 'geoserver/wms/'
 GEOSERVER_REST_URL = GEOSERVER_BASE_URL + 'geoserver/rest/' 
 # URL to wms services endpoint of the previously defined GEOSERVER_WORKSPACE
 GEOSERVER_WMS_URL = GEOSERVER_BASE_URL + 'geoserver/' + GEOSERVER_WORKSPACE + "/wms/?" 
+
+# URL to google maps API key. Put your own key here
+GOOGLE_MAPS_API_KEY='AIza..and something else'
+GOOGLE_MAPS_KEY_URL='https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY
 ```
 
 #### Starting the app in dev mode
@@ -455,7 +459,6 @@ stderr_logfile_backups=2
 
 ```
 We need to tell supervisor that we have created a new supervised process, we do it like this:
-<<<<<<< HEAD
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
@@ -491,5 +494,5 @@ This software is licensed under [GNU General Public License v3.0](https://www.gn
 
 ## Acknowledgments
 
-Many thanks to Miguel Garcia( [Auupa](https://www.auupa.com/) ) for its help in integrating the software in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
+Many thanks to Miguel Martínez( [Auupa](https://www.auupa.com/) ) for its help in integrating the software in the [MCNB](https://museuciencies.cat/espais/mcnb/) infrastructure.
 
