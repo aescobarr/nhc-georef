@@ -326,7 +326,6 @@ systemctl restart apache2
 ### Static resources
 
 Go to the app folder and activate the python virtual environment. In the present example we assume that the virtual environment is called georef:
-<<<<<<< HEAD
 ```bash
 workon georef
 ```
