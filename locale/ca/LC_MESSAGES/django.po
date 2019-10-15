@@ -1,0 +1,551 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-15 12:37+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: djangoref/settings.py:25
+msgid "Catalan"
+msgstr "Català"
+
+#: djangoref/settings.py:26
+msgid "English"
+msgstr "Anglès"
+
+#: georef/templates/georef/_recursos_fields.html:3
+#: georef/templates/georef/_recursos_fields.html:209
+msgid "Tornar al llistat"
+msgstr "Tornar al llistat"
+
+#: georef/templates/georef/_recursos_fields.html:5
+#: georef/templates/georef/_recursos_fields.html:211
+msgid "Desar"
+msgstr "Desar"
+
+#: georef/templates/georef/_recursos_fields.html:9
+msgid "Dades bàsiques"
+msgstr "Dades bàsiques"
+
+#: georef/templates/georef/_recursos_fields.html:23
+#: georef/templates/georef/recursos_list.html:149
+msgid "Nom"
+msgstr "Nom"
+
+#: georef/templates/georef/_recursos_fields.html:30
+#: georef/templates/georef/recursos_list.html:150
+msgid "Acrònim"
+msgstr "Acrònim"
+
+#: georef/templates/georef/_recursos_fields.html:39
+#: georef/templates/georef/base.html:94
+msgid "Tipus de contingut"
+msgstr "Tipus de contingut"
+
+#: georef/templates/georef/_recursos_fields.html:46
+msgid "resource_version_tooltip"
+msgstr "Identificació de la versió disponible o consultada del recurs."
+
+#: georef/templates/georef/_recursos_fields.html:46
+msgid "Versió"
+msgstr "Versió"
+
+#: georef/templates/georef/_recursos_fields.html:55
+msgid "resource_keywords_tooltip"
+msgstr ""
+"A la caixa de text es pot escriure part del nom d'una paraula clau (mínim 3 "
+"lletres). Llavors apareixerà un llistat amb les paraules que contenen el "
+"text escrit i l'usuari en podrà triar una. Després s'omplirà el control de "
+"paraules clau amb la paraula triada. Si una paraula clau no existia, "
+"s'afegirà al tesaure de paraules clau automàticament."
+
+#: georef/templates/georef/_recursos_fields.html:55
+#: georef/templates/georef/base.html:93
+msgid "Paraules clau"
+msgstr "Paraules clau"
+
+#: georef/templates/georef/_recursos_fields.html:60
+msgid "resource_authors_tooltip"
+msgstr ""
+"A la caixa de text es pot escriure part del nom d'un autor (mínim 3 "
+"lletres). Llavors apareixerà un llistat amb els autors que contenen el text "
+"escrit i l'usuari en podrà triar un. Després s'omplirà el control d'autors "
+"amb l'element triat. Si un autor no existia, es crearà i s'afegirà al "
+"tesaure d'autors automàticament."
+
+#: georef/templates/georef/_recursos_fields.html:60
+#: georef/templates/georef/base.html:90
+msgid "Autors"
+msgstr "Autors"
+
+#: georef/templates/georef/_recursos_fields.html:68
+msgid "Versions de topònims basats en el recurs"
+msgstr "Versions de topònims basats en el recurs"
+
+#: georef/templates/georef/_recursos_fields.html:80
+msgid "Toponímia"
+msgstr "Toponímia"
+
+#: georef/templates/georef/_recursos_fields.html:85
+msgid "resource_toponymy_id_field_tooltip"
+msgstr "En l’estructura d’informació del recurs identificar el camp d’informació sobre el qual es poden fer cerques toponímiques"
+
+#: georef/templates/georef/_recursos_fields.html:85
+msgid "Camp identificador toponímia"
+msgstr "Camp identificador toponímia"
+
+#: georef/templates/georef/_recursos_fields.html:91
+msgid "resource_base_graphic_file_tooltip"
+msgstr "Fitxer gràfic que conté els límits base a partir dels quals s’obtenen les coordenades"
+
+#: georef/templates/georef/_recursos_fields.html:91
+msgid "Fitxer gràfic de base"
+msgstr "Fitxer gràfic de base"
+
+#: georef/templates/georef/_recursos_fields.html:99
+#: georef/templates/georef/_recursos_fields.html:104
+msgid "Sistema de referència"
+msgstr "Sistema de referència"
+
+#: georef/templates/georef/_recursos_fields.html:104
+msgid "resource_refsys_tooltip"
+msgstr "Indicació de datum i projecció"
+
+#: georef/templates/georef/_recursos_fields.html:110
+msgid "resource_units_tooltip"
+msgstr "Unitats en què el recurs proporciona les coordenades"
+
+#: georef/templates/georef/_recursos_fields.html:110
+msgid "Unitats"
+msgstr "Unitats"
+
+#: georef/templates/georef/_recursos_fields.html:118
+msgid "Recursos WMS"
+msgstr "Recursos WMS"
+
+#: georef/templates/georef/_recursos_fields.html:121
+msgid "Servidor WMS"
+msgstr "Servidor WMS"
+
+#: georef/templates/georef/_recursos_fields.html:124
+msgid "Connectar"
+msgstr "Connectar"
+
+#: georef/templates/georef/_recursos_fields.html:129
+msgid "Capes"
+msgstr "Capes"
+
+#: georef/templates/georef/_recursos_fields.html:131
+#: georef/templates/georef/recursos_list.html:125
+msgid "Afegir"
+msgstr "Afegir"
+
+#: georef/templates/georef/_recursos_fields.html:141
+msgid "Fonts"
+msgstr "Fonts"
+
+#: georef/templates/georef/_recursos_fields.html:144
+#: georef/templates/georef/base.html:95
+msgid "Tipus de suport"
+msgstr "Tipus de suport"
+
+#: georef/templates/georef/_recursos_fields.html:151
+msgid "URL o directori"
+msgstr "URL o directori"
+
+#: georef/templates/georef/_recursos_fields.html:155
+#: georef/templates/georef/_recursos_fields.html:165
+msgid "Anar-hi"
+msgstr "Anar-hi"
+
+#: georef/templates/georef/_recursos_fields.html:161
+msgid "Altres webs"
+msgstr "Altres webs"
+
+#: georef/templates/georef/_recursos_fields.html:171
+msgid "Ubicació del recurs"
+msgstr "Ubicació del recurs"
+
+#: georef/templates/georef/_recursos_fields.html:178
+msgid "Comentaris"
+msgstr ""
+
+#: georef/templates/georef/_recursos_fields.html:181
+msgid "Informació"
+msgstr "Informació"
+
+#: georef/templates/georef/_recursos_fields.html:188
+msgid "Consulta"
+msgstr "Consulta"
+
+#: georef/templates/georef/_recursos_fields.html:195
+msgid "Qualitat"
+msgstr "Qualitat"
+
+#: georef/templates/georef/_recursos_fields.html:202
+msgid "Divisió política administrativa"
+msgstr "Divisió política administrativa"
+
+#: georef/templates/georef/base.html:52 georef/templates/georef/index.html:12
+#: georef/templates/georef/recurs_create.html:36
+#: georef/templates/georef/recursos_list.html:73
+msgid "Inici"
+msgstr "Inici"
+
+#: georef/templates/georef/base.html:54
+msgid "Recursos cartogràfics"
+msgstr "Recursos cartogràfics"
+
+#: georef/templates/georef/base.html:56 georef/templates/georef/base.html:65
+#: georef/templates/georef/recursos_list.html:75
+msgid "Llistat"
+msgstr "Llistat"
+
+#: georef/templates/georef/base.html:57
+msgid "Llistat de filtres de recursos"
+msgstr "Llistat de filtres de recursos"
+
+#: georef/templates/georef/base.html:58
+msgid "Càrrega de capes WMS pròpies"
+msgstr "Càrrega de capes WMS pròpies"
+
+#: georef/templates/georef/base.html:59
+msgid "Preferències visualització capes WMS"
+msgstr "Preferències visualització capes WMS"
+
+#: georef/templates/georef/base.html:63
+msgid "Topònims"
+msgstr "Topònims"
+
+#: georef/templates/georef/base.html:66
+msgid "Arbre"
+msgstr "Arbre"
+
+#: georef/templates/georef/base.html:67
+msgid "Llistat de filtres de topònims"
+msgstr "Llistat de filtres de topònims"
+
+#: georef/templates/georef/base.html:71
+msgid "Utilitats"
+msgstr "Utilities"
+
+#: georef/templates/georef/base.html:73
+msgid "Cerca topònim"
+msgstr "Cerca topònim"
+
+#: georef/templates/georef/base.html:74
+msgid "Calcula centroides"
+msgstr "Calcula centroides"
+
+#: georef/templates/georef/base.html:75
+msgid "Importació de topònims"
+msgstr "Importació de topònims"
+
+#: georef/templates/georef/base.html:76
+msgid "Anar a google"
+msgstr "Anar a google"
+
+#: georef/templates/georef/base.html:77
+msgid "Anar a ICC"
+msgstr "Anar a ICC"
+
+#: georef/templates/georef/base.html:79
+msgid "Conversió de coordenades - Convertbox"
+msgstr "Conversió de coordenades - Convertbox"
+
+#: georef/templates/georef/base.html:80
+msgid "Conversió de coordenades - Earth Point: Convert coordinates"
+msgstr "Conversió de coordenades - Earth Point: Convert coordinates"
+
+#: georef/templates/georef/base.html:82
+msgid "Georeferenciació - Geolocate"
+msgstr "Georeferenciació - Geolocate"
+
+#: georef/templates/georef/base.html:83
+msgid "Georeferenciació - Georeferencing calculator"
+msgstr "Georeferenciació - Georeferencing calculator"
+
+#: georef/templates/georef/base.html:84
+msgid "Georeferenciació - Berkeley Mapper"
+msgstr "Georeferenciació - Berkeley Mapper"
+
+#: georef/templates/georef/base.html:88
+msgid "Tesaures"
+msgstr "Tesaures"
+
+#: georef/templates/georef/base.html:91
+msgid "Qualificadors de versió"
+msgstr "Qualificadors de versió"
+
+#: georef/templates/georef/base.html:92
+msgid "Països"
+msgstr "Països"
+
+#: georef/templates/georef/base.html:96
+msgid "Tipus topònim"
+msgstr "Tipus topònim"
+
+#: georef/templates/georef/base.html:97
+msgid "Tipus unitats"
+msgstr "Tipus unitats"
+
+#: georef/templates/georef/base.html:100
+msgid "Gràfiques"
+msgstr "Gràfiques"
+
+#: georef/templates/georef/base.html:101
+msgid "Capes de georeferenciació"
+msgstr "Capes de georeferenciació"
+
+#: georef/templates/georef/base.html:102
+msgid "Ajut"
+msgstr "Ajut"
+
+#: georef/templates/georef/base.html:105
+msgid "Benvingut"
+msgstr "Benvingut"
+
+#: georef/templates/georef/base.html:108
+msgid "Tancar sessió"
+msgstr "Tancar sessió"
+
+#: georef/templates/georef/base.html:111
+msgid "El meu perfil"
+msgstr "El meu perfil"
+
+#: georef/templates/georef/base.html:114
+msgid "Canviar el meu password"
+msgstr "Canviar el meu password"
+
+#: georef/templates/georef/base.html:118
+msgid "Gestió usuaris"
+msgstr "Gestió usuaris"
+
+#: georef/templates/georef/base.html:125
+#: georef/templates/registration/login.html:12
+msgid "Iniciar sessió"
+msgstr "Iniciar sessió"
+
+#: georef/templates/georef/base.html:150
+msgid "sLengthMenu"
+msgstr "Mostra _MENU_ registres"
+
+#: georef/templates/georef/base.html:151
+msgid "sZeroRecords"
+msgstr "No s'han trobat registres."
+
+#: georef/templates/georef/base.html:152
+msgid "sInfo"
+msgstr "Mostrant de _START_ a _END_ de _TOTAL_ registres"
+
+#: georef/templates/georef/base.html:153
+msgid "sInfoEmpty"
+msgstr "Mostrant 0 a 0 de 0 registres"
+
+#: georef/templates/georef/base.html:154
+msgid "sInfoFiltered"
+msgstr "(filtrat de _MAX_ total registres)"
+
+#: georef/templates/georef/base.html:155
+msgid "loadingRecords"
+msgstr "Carregant..."
+
+#: georef/templates/georef/base.html:157
+#: georef/templates/georef/recursos_list.html:103
+msgid "Filtrar"
+msgstr "Filtrar"
+
+#: georef/templates/georef/base.html:160
+msgid "Primer"
+msgstr "Primer"
+
+#: georef/templates/georef/base.html:161
+msgid "Anterior"
+msgstr "Anterior"
+
+#: georef/templates/georef/base.html:162
+msgid "Següent"
+msgstr "Següent"
+
+#: georef/templates/georef/base.html:163
+msgid "Últim"
+msgstr "Últim"
+
+#: georef/templates/georef/index.html:16
+msgid "home_text_1"
+msgstr "La plataforma per a treballs en cartografia i georeferenciació"
+
+#: georef/templates/georef/index.html:20
+msgid "home_text_2"
+msgstr ""
+"La cartografia està present en gairebé tots els àmbits d’activitat del "
+"museu: col·leccions, recerca, publicacions, exposicions, etc. Georef és el "
+"recurs desenvolupat per donar suport a les necessitats d’indexar i "
+"reconèixer recursos cartogràfics útils inicialment pels projectes del Museu "
+"de Ciències Naturals de Barcelona. Avui dia ja és una eina compartida per "
+"altres institucions."
+
+#: georef/templates/georef/index.html:24
+msgid "home_text_3"
+msgstr ""
+"Un projecte especialment actiu en museus d'història natural és la "
+"georeferenciació retrospectiva de les mostres de col·leccions. La immensa "
+"majoria de mostres són anteriors a la generalització del posicionament per "
+"satèl·lit i tenen assignada una referència del lloc de recol·lecció basada "
+"en les dades textuals de les etiquetes. Convertir topònims i descripcions de "
+"posicionament respecte topònims en un punt de coordenades sobre un mapa és "
+"l’acció de qualitat que definim com a georeferenciació."
+
+#: georef/templates/georef/index.html:28
+msgid "home_text_4"
+msgstr "Desar la traça d’aquestes estimacions de georeferenciació permet:"
+
+#: georef/templates/georef/index.html:31
+msgid "home_text_4_1"
+msgstr ""
+"la reutilització posterior de les dades per augmentar l’eficiència de la "
+"georeferenciació."
+
+#: georef/templates/georef/index.html:33
+msgid "home_text_4_2"
+msgstr ""
+"garanteix la coherència entre si de les dades de localització de les mostres "
+"de col·leccions."
+
+#: georef/templates/georef/index.html:35
+msgid "home_text_4_3"
+msgstr "eventualment permet revisar la qualitat de la pròpia georeferenciació."
+
+#: georef/templates/georef/index.html:38
+msgid "home_text_5"
+msgstr "La georeferenciació de col·leccions és un projecte capital a Georef."
+
+#: georef/templates/georef/recurs_create.html:28
+#: georef/templates/georef/recursos_list.html:163
+msgid "Importar shapefile"
+msgstr "Importar shapefile"
+
+#: georef/templates/georef/recurs_create.html:37
+#: georef/templates/georef/recursos_list.html:74
+msgid "Recursos"
+msgstr "Recursos"
+
+#: georef/templates/georef/recurs_create.html:38
+msgid "Creació de recursos"
+msgstr "Creació de recursos"
+
+#: georef/templates/georef/recursos_list.html:89
+msgid "help_btn_add_condicio"
+msgstr ""
+"Afegeix una nova condició a la taula de filtre. Es pot modificar els "
+"paràmetres de la condició un cop apareix a la taula."
+
+#: georef/templates/georef/recursos_list.html:89
+msgid "Afegir condició"
+msgstr "Afegir condició"
+
+#: georef/templates/georef/recursos_list.html:94
+msgid "Operador"
+msgstr "Operador"
+
+#: georef/templates/georef/recursos_list.html:95
+msgid "NOT"
+msgstr "NOT"
+
+#: georef/templates/georef/recursos_list.html:96
+msgid "Condició"
+msgstr "Condició"
+
+#: georef/templates/georef/recursos_list.html:97
+msgid "Valor"
+msgstr "Valor"
+
+#: georef/templates/georef/recursos_list.html:103
+msgid "help_btn_filter"
+msgstr ""
+"Executa una cerca, segons les condicions definides. La cerca mostrarà els "
+"resultats a la taula de recursos de georeferenciació i al mapa."
+
+#: georef/templates/georef/recursos_list.html:105
+msgid "help_btn_clear_filter"
+msgstr ""
+"Elimina totes les condicions de filtre. La taula i el mapa perdran qualsevol "
+"filtre aplicat."
+
+#: georef/templates/georef/recursos_list.html:105
+msgid "Netejar filtre"
+msgstr "Netejar filtre"
+
+#: georef/templates/georef/recursos_list.html:109
+msgid "help_btn_filter_load"
+msgstr ""
+"A la caixa de text es pot escriure part del nom d'un filtre prèviament "
+"desat. Llavors apareixerà un llistat amb els filtres que conténen el text "
+"escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap "
+"filtre, a Menú->Recursos cartogràfics->Llistat de filtres de recursos hi ha "
+"la llista completa."
+
+#: georef/templates/georef/recursos_list.html:109
+msgid "Carregar filtre"
+msgstr "Carregar filtre"
+
+#: georef/templates/georef/recursos_list.html:113
+msgid "help_btn_filter_save"
+msgstr ""
+"Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a "
+"la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el "
+"filtre escrivint el nom o part d'ell a la casella de text."
+
+#: georef/templates/georef/recursos_list.html:113
+msgid "Desar i filtrar"
+msgstr "Desar i filtrar"
+
+#: georef/templates/georef/recursos_list.html:125
+msgid "help_btn_add_resource"
+msgstr ""
+"Fes clic aquí per accedir a la fitxa de creació de Recursos Cartogràfics"
+
+#: georef/templates/georef/recursos_list.html:134
+msgid "msg_warn_overwrite_filter"
+msgstr "Ja hi ha un filtre amb aquest nom, el vols sobreescriure?"
+
+#: georef/templates/georef/recursos_list.html:151
+msgid "Paraula clau"
+msgstr "Paraula clau"
+
+#: georef/templates/georef/recursos_list.html:152
+msgid "Tipus"
+msgstr "Tipus"
+
+#: georef/templates/georef/recursos_list.html:153
+msgid "Geogràfic (límits capes WMS associades)"
+msgstr "Geogràfic (límits capes WMS associades)"
+
+#: georef/templates/georef/recursos_list.html:154
+msgid "Geogràfic (elements digitalitzats)"
+msgstr "Geogràfic (elements digitalitzats)"
+
+#: georef/templates/georef/recursos_list.html:161
+msgid "Esborrar"
+msgstr "Esborrar"
+
+#: georef/templates/georef/recursos_list.html:162
+msgid "Cal digitalitzar una geometria sobre el mapa"
+msgstr "Cal digitalitzar una geometria sobre el mapa"
+
+#: georef/templates/georef/recursos_list.html:167
+msgid "Recurs de georeferenciació"
+msgstr "Recurs de georeferenciació"

@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
@@ -24,6 +25,7 @@
         var csrf_token = '{{ csrf_token }}';
         var wms_url = "{{ wms_url }}";
         var _wms_metadata_url = '{% url 'wmsmetadata' %}';
+        var txtImportarShapefile = "{% trans 'Importar shapefile' %}";
     </script>
 {% endblock %}
 {% block main %}
@@ -31,9 +33,9 @@
         <div class="page-header"></div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Recursos</li>
-                <li class="breadcrumb-item active">Creació de recursos</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Recursos' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Creació de recursos' %}</li>
             </ol>
         </div>
         <div class="container">

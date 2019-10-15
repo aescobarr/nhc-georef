@@ -11,10 +11,26 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from django.utils.translation import gettext_lazy as _
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+LOCALE_PATHS = (
+   os.path.join(BASE_DIR, 'locale'),
+)
+
+LANGUAGES = (
+    ('ca', _('Catalan')),
+    ('en', _('English')),
+)
+
+# create language
+# django-admin.py makemessages -l en
+# django-admin.py makemessages -l ca
+# compile languages
+# django-admin.py compilemessages
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/

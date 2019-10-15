@@ -94,8 +94,8 @@ $(document).ready(function() {
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile</div>' +
+            '<div class="qq-upload-drop-area"><span>' + txtImportarShapefile + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">' + txtImportarShapefile + '</div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {

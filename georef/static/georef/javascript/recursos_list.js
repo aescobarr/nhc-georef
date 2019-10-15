@@ -29,7 +29,7 @@ $(document).ready(function() {
         },
         'serverSide': true,
         'processing': true,
-        "language": opcions_llenguatge_catala,
+        "language": opcions_llenguatge,
         'pageLength': 25,
         'pagingType': 'full_numbers',
         'bLengthChange': false,
@@ -74,7 +74,7 @@ $(document).ready(function() {
             },
             {
                 'targets':0,
-                'title': 'Recurs de georeferenciació'
+                'title': txtTableTitle
             }
         ]
     } );
@@ -351,8 +351,8 @@ $(document).ready(function() {
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>Importar shapefile</span></div>' +
+            '<div class="qq-upload-drop-area"><span>' + txtImportarShapefile + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>' + txtImportarShapefile + '</span></div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {

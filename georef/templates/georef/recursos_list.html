@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
@@ -69,9 +70,9 @@
         </div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Recursos</li>
-                <li class="breadcrumb-item active">Llistat</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Inici" %}</a></li>
+                <li class="breadcrumb-item">{% trans "Recursos" %}</li>
+                <li class="breadcrumb-item active">{% trans "Llistat" %}</li>
             </ol>
         </div>
         <div class="container">
@@ -85,27 +86,32 @@
             <div class="row">
                 <div class="col-md-7">
                     <div class="wrapper clear_blue">
-                        <button data-toggle="tooltip" data-placement="left" title="Afegeix una nova condició a la taula de filtre. Es pot modificar els paràmetres de la condició un cop apareix a la taula." id="addCondicio" type="button" class="btn btn-primary">Afegir condició <i class="fa fa-plus" aria-hidden="true"></i></button>
+                        <button data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_add_condicio' %}" id="addCondicio" type="button" class="btn btn-primary">{% trans "Afegir condició" %} <i class="fa fa-plus" aria-hidden="true"></i></button>
+                        <!-- "Afegeix una nova condició a la taula de filtre. Es pot modificar els paràmetres de la condició un cop apareix a la taula." -->
                         <table id="taulafiltre">
                             <tbody>
                                 <tr>
-                                    <td><strong>Operador</strong></td>
-                                    <td><strong>NOT</strong></td>
-                                    <td><strong>Condició</strong></td>
-                                    <td><strong>Valor</strong></td>
+                                    <td><strong>{% trans "Operador" %}</strong></td>
+                                    <td><strong>{% trans "NOT" %}</strong></td>
+                                    <td><strong>{% trans "Condició" %}</strong></td>
+                                    <td><strong>{% trans "Valor" %}</strong></td>
                                     <td>&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="row container no_side_margin">
-                            <button data-toggle="tooltip" data-placement="left" title="Executa una cerca, segons les condicions definides. La cerca mostrarà els resultats a la taula de recursos de georeferenciació i al mapa." id="doFilter" type="button" class="btn btn-primary">Filtrar <i class="fa fa-filter" aria-hidden="true"></i></button>
-                            <button data-toggle="tooltip" data-placement="right" title="Elimina totes les condicions de filtre. La taula i el mapa perdran qualsevol filtre aplicat." id="doClear" type="button" class="btn btn-danger">Netejar filtre <i class="fa fa-close" aria-hidden="true"></i></button>
+                            <button data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_filter' %}" id="doFilter" type="button" class="btn btn-primary">{% trans "Filtrar" %} <i class="fa fa-filter" aria-hidden="true"></i></button>
+                            <!-- "Executa una cerca, segons les condicions definides. La cerca mostrarà els resultats a la taula de recursos de georeferenciació i al mapa." -->
+                            <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_clear_filter' %}" id="doClear" type="button" class="btn btn-danger">{% trans "Netejar filtre" %} <i class="fa fa-close" aria-hidden="true"></i></button>
+                            <!-- "Elimina totes les condicions de filtre. La taula i el mapa perdran qualsevol filtre aplicat." -->
                         </div>
                         <div class="row container no_side_margin">
-                            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un filtre prèviament desat. Llavors apareixerà un llistat amb els filtres que conténen el text escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap filtre, a Menú->Recursos cartogràfics->Llistat de filtres de recursos hi ha la llista completa." for="saveDoFilter">Carregar filtre</label>
+                            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_filter_load' %}" for="saveDoFilter">{% trans "Carregar filtre" %}</label>
+                            <!-- "A la caixa de text es pot escriure part del nom d'un filtre prèviament desat. Llavors apareixerà un llistat amb els filtres que conténen el text escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap filtre, a Menú->Recursos cartogràfics->Llistat de filtres de recursos hi ha la llista completa." -->
                             <input id="autoc_filtres" type="text">
                             {% if user.profile.is_admin or user.profile.can_edit_filtre or user.is_superuser %}
-                            <button data-toggle="tooltip" data-placement="right" title="Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el filtre escrivint el nom o part d'ell a la casella de text." id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
+                            <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_filter_save' %}" id="saveDoFilter" type="button" class="btn btn-primary">{% trans "Desar i filtrar" %} <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
+                            <!-- "Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el filtre escrivint el nom o part d'ell a la casella de text." -->
                             {% endif %}
                         </div>
                     </div>
@@ -116,7 +122,8 @@
                 </div>
                 <div class="col-md-5">
                     {% if user.profile.is_admin or user.profile.can_edit_recurs or user.is_superuser %}
-                    <button data-toggle="tooltip" data-placement="right" title="Fes clic aquí per accedir a la fitxa de creació de Recursos Cartogràfics" id="addRecurs" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_add_resource' %}" id="addRecurs" type="button" class="btn btn-primary">{% trans "Afegir" %} <i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <!--"Fes clic aquí per accedir a la fitxa de creació de Recursos Cartogràfics"-->
                     {% endif %}
                     <table id="recursos_list" style="width:100%;"></table>
                 </div>
@@ -124,7 +131,8 @@
         </div>
 
         <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
-            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Ja hi ha un filtre amb aquest nom, el vols sobreescriure?</p>
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{% trans 'msg_warn_overwrite_filter' %}</p>
+            <!-- Ja hi ha un filtre amb aquest nom, el vols sobreescriure? -->
         </div>
 </main>
 {% endblock %}
@@ -138,23 +146,25 @@
         valorsOperadors[1] = {id : "or", value : "OR" };
 
         var valorsCondicions = new Array();
-        valorsCondicions[0] = {id : "nom",value : "Nom"};
-        valorsCondicions[1] = {id : "acronim",value : "Acrònim"};
-        valorsCondicions[2] = {id : "paraulaclau",value : "Paraula clau"};
-        valorsCondicions[3] = {id : "tipus",value : "Tipus"};
-        valorsCondicions[4] = {id : "geografic",value : "Geogràfic (límits capes WMS associades)"};
-        valorsCondicions[5] = {id : "geografic_geo",value : "Geogràfic (elements digitalitzats)"};
+        valorsCondicions[0] = {id : "nom",value : "{% trans 'Nom' %}"};
+        valorsCondicions[1] = {id : "acronim",value : "{% trans 'Acrònim' %}"};
+        valorsCondicions[2] = {id : "paraulaclau",value : "{% trans 'Paraula clau' %}"};
+        valorsCondicions[3] = {id : "tipus",value : "{% trans 'Tipus' %}"};
+        valorsCondicions[4] = {id : "geografic",value : "{% trans 'Geogràfic (límits capes WMS associades)' %}"};
+        valorsCondicions[5] = {id : "geografic_geo",value : "{% trans 'Geogràfic (elements digitalitzats)' %}"};
 
         var valorsTipus = new Array();
         {% for tipus in llista_tipus %}
             valorsTipus.push({id:"{{ tipus.id }}",value:"{{ tipus.nom }}"});
         {% endfor %}
 
-        var txtBotoEsborrarCondicioFiltre = 'Esborrar';
-        var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
+        var txtBotoEsborrarCondicioFiltre = "{% trans 'Esborrar' %}";
+        var txtFuncionamentFiltreCarto = "{% trans 'Cal digitalitzar una geometria sobre el mapa' %}";
+        var txtImportarShapefile = "{% trans 'Importar shapefile' %}";
 
         var editableLayers;
         var controlCapes;
+        var txtTableTitle = "{% trans 'Recurs de georeferenciació' %}";
 
         {% if messages %}
             {% for message in messages %}

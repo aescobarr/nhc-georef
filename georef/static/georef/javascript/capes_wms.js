@@ -13,7 +13,7 @@ $(document).ready(function() {
         },
         "serverSide": true,
         "processing": true,
-        "language": opcions_llenguatge_catala,
+        "language": opcions_llenguatge,
         "pageLength": 25,
         "pagingType": "full_numbers",
         "bLengthChange": false,

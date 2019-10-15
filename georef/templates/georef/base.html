@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,80 +49,80 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a  class="active" href="/">Inici</a></li>
+            <li><a  class="active" href="/">{% trans "Inici" %}</a></li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recursos cartogràfics<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Recursos cartogràfics" %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'recursos' %}">Llistat</a></li>
-                    <li><a href="{% url 'recursfilters' %}">Llistat de filtres de recursos</a></li>
-                    <li><a href="{% url 'recursos_capeswms' %}">Càrrega de capes WMS pròpies</a></li>
-                    <li><a href="{% url 'prefsvisualitzaciowms' %}">Preferències visualització capes WMS</a></li>
+                    <li><a href="{% url 'recursos' %}">{% trans "Llistat" %}</a></li>
+                    <li><a href="{% url 'recursfilters' %}">{% trans "Llistat de filtres de recursos" %}</a></li>
+                    <li><a href="{% url 'recursos_capeswms' %}">{% trans "Càrrega de capes WMS pròpies" %}</a></li>
+                    <li><a href="{% url 'prefsvisualitzaciowms' %}">{% trans "Preferències visualització capes WMS" %}</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Topònims<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Topònims" %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'toponims' %}">Llistat</a></li>
-                    <li><a href="{% url 'toponimstree' %}">Arbre</a></li>
-                    <li><a href="{% url 'toponimfilters' %}">Llistat de filtres de topònims</a></li>
+                    <li><a href="{% url 'toponims' %}">{% trans "Llistat" %}</a></li>
+                    <li><a href="{% url 'toponimstree' %}">{% trans "Arbre" %}</a></li>
+                    <li><a href="{% url 'toponimfilters' %}">{% trans "Llistat de filtres de topònims" %}</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Utilitats<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Utilitats" %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'toponims_search' %}">Cerca topònim</a></li>
-                    <li><a href="{% url 'calculcentroides' %}">Calcula centroides</a></li>
-                    <li><a href="{% url 'toponims_import' %}">Importació de topònims</a></li>
-                    <li><a href="https://www.google.es" target="_blank">Anar a google</a></li>
-                    <li><a href="http://www.icgc.cat/" target="_blank">Anar a ICC</a></li>
+                    <li><a href="{% url 'toponims_search' %}">{% trans "Cerca topònim" %}</a></li>
+                    <li><a href="{% url 'calculcentroides' %}">{% trans "Calcula centroides" %}</a></li>
+                    <li><a href="{% url 'toponims_import' %}">{% trans "Importació de topònims" %}</a></li>
+                    <li><a href="https://www.google.es" target="_blank">{% trans "Anar a google" %}</a></li>
+                    <li><a href="http://www.icgc.cat/" target="_blank">{% trans "Anar a ICC" %}</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="http://betaportal.icgc.cat/convertbox/#" target="_blank">Conversió de coordenades - Convertbox</a></li>
-                    <li><a href="http://www.earthpoint.us/Convert.aspx" target="_blank">Conversió de coordenades - Earth Point: Convert coordinates</a></li>
+                    <li><a href="http://betaportal.icgc.cat/convertbox/#" target="_blank">{% trans "Conversió de coordenades - Convertbox" %}</a></li>
+                    <li><a href="http://www.earthpoint.us/Convert.aspx" target="_blank">{% trans "Conversió de coordenades - Earth Point: Convert coordinates" %}</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="http://www.geo-locate.org/web/WebGeoref.aspx" target="_blank">Georeferenciació - Geolocate</a></li>
-                    <li><a href="http://manisnet.org/gci2.html" target="_blank">Georeferenciació - Georeferencing calculator</a></li>
-                    <li><a href="http://berkeleymapper.berkeley.edu/#" target="_blank">Georeferenciació - Berkeley Mapper</a></li>
+                    <li><a href="http://www.geo-locate.org/web/WebGeoref.aspx" target="_blank">{% trans "Georeferenciació - Geolocate" %}</a></li>
+                    <li><a href="http://manisnet.org/gci2.html" target="_blank">{% trans "Georeferenciació - Georeferencing calculator" %}</a></li>
+                    <li><a href="http://berkeleymapper.berkeley.edu/#" target="_blank">{% trans "Georeferenciació - Berkeley Mapper" %}</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tesaures<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Tesaures" %}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 't_authors' %}">Autors</a></li>
-                    <li><a href="{% url 't_qualificadors' %}">Qualificadors de versió</a></li>
-                    <li><a href="{% url 't_paisos' %}">Països</a></li>
-                    <li><a href="{% url 't_paraulesclau' %}">Paraules clau</a></li>
-                    <li><a href="{% url 't_tipuscontingut' %}">Tipus de contingut</a></li>
-                    <li><a href="{% url 't_tipussuport' %}">Tipus de suport</a></li>
-                    <li><a href="{% url 't_tipustoponim' %}">Tipus topònim</a></li>
-                    <li><a href="{% url 't_tipusunitats' %}">Tipus unitats</a></li>
+                    <li><a href="{% url 't_authors' %}">{% trans "Autors" %}</a></li>
+                    <li><a href="{% url 't_qualificadors' %}">{% trans "Qualificadors de versió" %}</a></li>
+                    <li><a href="{% url 't_paisos' %}">{% trans "Països" %}</a></li>
+                    <li><a href="{% url 't_paraulesclau' %}">{% trans "Paraules clau" %}</a></li>
+                    <li><a href="{% url 't_tipuscontingut' %}">{% trans "Tipus de contingut" %}</a></li>
+                    <li><a href="{% url 't_tipussuport' %}">{% trans "Tipus de suport" %}</a></li>
+                    <li><a href="{% url 't_tipustoponim' %}">{% trans "Tipus topònim" %}</a></li>
+                    <li><a href="{% url 't_tipusunitats' %}">{% trans "Tipus unitats" %}</a></li>
                 </ul>
             </li>
-            <li><a href="{% url 'graphs' %}">Gràfiques</a></li>
-            <li><a href="{% url 'georef_layers' %}">Capes de georeferenciació</a></li>
-            <li><a href="{% url 'help' %}">Ajut</a></li>
+            <li><a href="{% url 'graphs' %}">{% trans "Gràfiques" %}</a></li>
+            <li><a href="{% url 'georef_layers' %}">{% trans "Capes de georeferenciació" %}</a></li>
+            <li><a href="{% url 'help' %}">{% trans "Ajut" %}</a></li>
             {% if user.is_authenticated %}
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Benvingut, {{ user.username }}<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Benvingut" %}, {{ user.username }}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="nav-link" href="{% url 'logout' %}">Tancar sessió - {{ user.username }}</a>
+                        <a class="nav-link" href="{% url 'logout' %}">{% trans "Tancar sessió" %} - {{ user.username }}</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="{% url 'my_profile' %}">El meu perfil</a>
+                        <a class="nav-link" href="{% url 'my_profile' %}">{% trans "El meu perfil" %}</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="{% url 'change_my_password' %}">Canviar el meu password</a>
+                        <a class="nav-link" href="{% url 'change_my_password' %}">{% trans "Canviar el meu password" %}</a>
                     </li>
                     {% if user.profile.is_admin or user.is_superuser %}
                     <li>
-                        <a class="nav-link" href="{% url 'users_list' %}">Gestió usuaris</a>
+                        <a class="nav-link" href="{% url 'users_list' %}">{% trans "Gestió usuaris" %}</a>
                     </li>
                     {% endif %}
                 </ul>
             </li>
             {% else %}
               <li>
-                <a class="nav-link" href="{% url 'login' %}">Iniciar sessió</a>
+                <a class="nav-link" href="{% url 'login' %}">{% trans "Iniciar sessió" %}</a>
               </li>
             {% endif %}
           </ul>
@@ -144,22 +145,22 @@
         <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>
         <script src="{% static 'toastr/toastr.min.js' %}"></script>
         <script>
-            var opcions_llenguatge_catala = {
+            var opcions_llenguatge = {
                 "sProcessing":   '<span class="fa fa-spinner fa-spin" aria-hidden="true"></span>',
-                "sLengthMenu":   "Mostra _MENU_ registres",
-                "sZeroRecords":  "No s'han trobat registres.",
-                "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
-                "sInfoEmpty":    "Mostrant 0 a 0 de 0 registres",
-                "sInfoFiltered": "(filtrat de _MAX_ total registres)",
-                "loadingRecords": "Carregant...",
+                "sLengthMenu":   "{% trans 'sLengthMenu' %}",
+                "sZeroRecords":  "{% trans 'sZeroRecords' %}",
+                "sInfo":         "{% trans 'sInfo' %}",
+                "sInfoEmpty":    "{% trans 'sInfoEmpty' %}",
+                "sInfoFiltered": "{% trans 'sInfoFiltered' %}",
+                "loadingRecords": "{% trans 'loadingRecords' %}",
                 "sInfoPostFix":  "",
-                "sSearch":       "Filtrar:",
+                "sSearch":       "{% trans 'Filtrar' %}:",
                 "sUrl":          "",
                 "oPaginate": {
-                    "sFirst":    "Primer",
-                    "sPrevious": "Anterior",
-                    "sNext":     "Següent",
-                    "sLast":     "Últim"
+                    "sFirst":    "{% trans 'Primer' %}",
+                    "sPrevious": "{% trans 'Anterior' %}",
+                    "sNext":     "{% trans 'Següent' %}",
+                    "sLast":     "{% trans 'Últim' %}"
                 }
             };
         </script>
