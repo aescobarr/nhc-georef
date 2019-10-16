@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
@@ -53,9 +54,9 @@
         <div class="page-header"></div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Recursos</li>
-                <li class="breadcrumb-item active">Edició de recursos</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Recursos' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Edició de recursos' %}</li>
             </ol>
         </div>
         <div class="container">
@@ -64,7 +65,7 @@
                 {% include 'georef/_recursos_fields.html' with show_goto_buttons=True %}
             </form>
         </div>
-        <div id="dialogListToponims" title="Topònims basats en el recurs">
+        <div id="dialogListToponims" title="{% trans 'Topònims basats en el recurs' %}">
             <table>
                 {% for toponim in toponims_basats_recurs %}
                 <tr><td>

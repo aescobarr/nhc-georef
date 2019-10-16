@@ -29,11 +29,11 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "targets":0,
-                "title": "Nom del filtre"
+                "title": gettext("Nom del filtre")
             },
             {
                 "targets":1,
-                "title": "Descripció",
+                "title": gettext("Descripció"),
                 "render": function(value){
                     var retVal = "";
                     retVal += '<span class="label label-warning">' + value + '</span><br>';
@@ -47,7 +47,7 @@ $(document).ready(function() {
                 'sortable': false,
                 'render': function(value){
                     if(value==true){
-                        return "<button class=\"delete_button btn btn-danger\">Esborrar</button>";
+                        return "<button class=\"delete_button btn btn-danger\">" + gettext('Esborrar') + "</button>";
                     }else{
                         return '&nbsp;';
                     }
@@ -67,11 +67,11 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 toastr.success("Esborrat amb èxit!");
+                 toastr.success( gettext("Esborrat amb èxit!") );
                  table.ajax.reload();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error esborrant");
+                toastr.error( gettext("Error esborrant") );
             }
         });
     };
@@ -80,7 +80,7 @@ $(document).ready(function() {
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
-                modal: true, title: 'Esborrant filtre de recursos...', zIndex: 10000, autoOpen: true,
+                modal: true, title: gettext('Esborrant filtre de recursos...'), zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
                 buttons: {
                     Yes: function () {
@@ -101,7 +101,7 @@ $(document).ready(function() {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().idfiltre
-        confirmDialog("Segur que vols esborrar?",id);
+        confirmDialog(gettext("Segur que vols esborrar?"),id);
     });
 
 });

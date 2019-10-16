@@ -26,7 +26,7 @@ $(document).ready(function() {
         var TAB = "\t";
         text = 'lat:' + $('#val_y').text()  + TAB +  ' long:' + $('#val_x').text()  + TAB +  ' prec:' + $('#val_inc').text();
         copyToClipboard(text);
-        toastr.success("Resultats copiats al portapapers!");
+        toastr.success(gettext("Resultats copiats al portapapers!"));
     });
 
     var computeCentroid = function(filename){
@@ -48,10 +48,10 @@ $(document).ready(function() {
             },
             error: function(jqXHR, textStatus, errorThrown){
                 if(jqXHR.responseJSON){
-                    toastr.error("Error calculant centroide - " + jqXHR.responseJSON.detail);
+                    toastr.error(gettext("Error calculant centroide - ") + jqXHR.responseJSON.detail);
                     console.log(jqXHR);
                 }else{
-                    toastr.error("Error inesperat. Si us plau comprova que l'estructura del fitxer zip és correcta.");
+                    toastr.error(gettext("Error inesperat. Si us plau comprova que l'estructura del fitxer zip és correcta."));
                 }
                 show_thinking(false);
             }
@@ -72,12 +72,12 @@ $(document).ready(function() {
                 //toastr.success('Fitxer carregat al servidor amb èxit!')
                 computeCentroid(responseJSON.filename);
             } else {
-                toastr.error('Error pujant fitxer!')
+                toastr.error(gettext('Error pujant fitxer!'));
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Importar shapefile (zip)</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile (zip)</div>' +
+            '<div class="qq-upload-drop-area"><span>' + gettext('Importar shapefile (zip)') + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">' + gettext('Importar shapefile (zip)') + '</div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {

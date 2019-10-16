@@ -50,7 +50,6 @@ $(document).ready(function() {
                 'targets': 1,
                 'data': 'editable',
                 'sortable': false,
-                //'defaultContent': '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
                 'render': function(value){
                     if(value==true){
                         return '<button class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>';
@@ -63,18 +62,13 @@ $(document).ready(function() {
                 'targets': 2,
                 'data': 'editable',
                 'sortable': false,
-                //'defaultContent': '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
                 'render': function(value){
-                    //if(value==true){
-                        return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
-                    //}else{
-                        //return '&nbsp;';
-                    //}
+                    return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
                 }
             },
             {
                 'targets':0,
-                'title': txtTableTitle
+                'title': gettext('Recurs de georeferenciació')
             }
         ]
     } );
@@ -351,8 +345,8 @@ $(document).ready(function() {
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>' + txtImportarShapefile + '</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>' + txtImportarShapefile + '</span></div>' +
+            '<div class="qq-upload-drop-area"><span>' + gettext('Importar shapefile') + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>' + gettext('Importar shapefile') + '</span></div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {

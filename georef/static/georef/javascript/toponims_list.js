@@ -1,18 +1,3 @@
-/*
-$.fn.dataTable.ext.search.push(
-        function( settings, data, dataIndex ) {
-            if($('#lletresllistat a.selected')){
-                var inicial = $('#lletresllistat a.selected')[0].firstChild.data;
-                if(inicial == 'Totes'){
-                    return true;
-                }
-                var nom = data[0];
-                return nom.startsWith(inicial);
-            }
-        }
-    );
-*/
-
 var exportPDF = function(){
     var params = table.ajax.params();
     window.location.href = _toponims_list_pdf + '?' + jQuery.param(params);
@@ -110,60 +95,24 @@ $(document).ready(function() {
                 'data': 'editable',
                 'sortable': false,
                 'render': function(value){
-                    /*if(value==true){
-                        return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
-                    }else{
-                        return '&nbsp;';
-                    }*/
                     return '<button class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
                 }
             },
             {
                 'targets':0,
-                'title': 'Topònim'
+                'title': gettext('Topònim')
             },
             {
                 'targets':1,
-                'title': 'Aquàtic'
+                'title': gettext('Aquàtic')
             },
             {
                 'targets':2,
-                'title': 'Tipus'
+                'title': gettext('Tipus')
             }
         ]
     } );
 
-    /*
-    $("div.toolbar").html('<div id="lletresllistat">' +
-        '<a class="selected" href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'\');return false;">Totes</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'A\');return false;">A</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'B\');return false;">B</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'C\');return false;">C</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'D\');return false;">D</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'E\');return false;">E</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'F\');return false;">F</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'G\');return false;">G</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'H\');return false;">H</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'I\');return false;">I</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'J\');return false;">J</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'K\');return false;">K</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'L\');return false;">L</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'M\');return false;">M</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'N\');return false;">N</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'O\');return false;">O</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'P\');return false;">P</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'Q\');return false;">Q</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'R\');return false;">R</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'S\');return false;">S</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'T\');return false;">T</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'U\');return false;">U</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'V\');return false;">V</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'W\');return false;">W</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'X\');return false;">X</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'Y\');return false;">Y</a>' +
-        '<a href="#lletresllistat" onclick="javascript:filtrarPerLletra(this,\'Z\');return false;">Z</a>' +
-        '</div>');
-        */
 
     $( '#autoc_filtres' ).autocomplete({
         source: function(request,response){
@@ -209,10 +158,10 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Filtre desat amb èxit!');
+                toastr.success(gettext('Filtre desat amb èxit!'));
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error afegint filtre!');
+                toastr.error(gettext('Error afegint filtre!'));
             }
         });
     };
@@ -234,11 +183,11 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Filtre actualitzat amb èxit!');
+                toastr.success(gettext('Filtre actualitzat amb èxit!'));
                 filter();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error actualitzant filtre');
+                toastr.error(gettext('Error actualitzant filtre'));
             }
         });
     };
@@ -254,10 +203,10 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Filtre esborrat amb èxit!');
+                toastr.success(gettext('Filtre esborrat amb èxit!'));
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error esborrant');
+                toastr.error(gettext('Error esborrant'));
             }
         });
     };
@@ -266,7 +215,7 @@ $(document).ready(function() {
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
-                modal: true, title: 'Esborrant topònim...', zIndex: 10000, autoOpen: true,
+                modal: true, title: gettext('Esborrant topònim...'), zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
                 buttons: {
                     Yes: function () {
@@ -287,6 +236,7 @@ $(document).ready(function() {
         var json = extreureJSONDeFiltre();
         var nomfiltre = $('#autoc_filtres').val();
         var modul = 'TOPONIMS';
+        var label_sobreescriure_i_filtrar = gettext('Sobreescriure i filtrar');
         $.ajax({
             url: _check_filtre_url,
             data: 'nomfiltre=' + encodeURI(nomfiltre) + "&modul=" + modul,
@@ -308,7 +258,7 @@ $(document).ready(function() {
                     width: 400,
                     modal: true,
                     buttons: {
-                        'Sobreescriure i filtrar': function() {
+                        label_sobreescriure_i_filtrar: function() {
                             update_filtre(json,nomfiltre,idfiltre,modul);
                             $( this ).dialog( 'close' );
                         },
@@ -332,11 +282,11 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Topònim esborrat amb èxit!');
+                toastr.success(gettext('Topònim esborrat amb èxit!'));
                 table.ajax.reload();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error esborrant topònim');
+                toastr.error(gettext('Error esborrant topònim'));
             }
         });
     };
@@ -345,7 +295,7 @@ $(document).ready(function() {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().id;
-        confirmDialog("S'esborrarà el topònim '" + row.data().nom_str + "' i totes les seves versions i informació associada! Segur que vols continuar?",id);
+        confirmDialog(gettext("S'esborrarà el topònim '") + row.data().nom_str + gettext("' i totes les seves versions i informació associada! Segur que vols continuar?"),id);
     });
 
     $('#toponims_list tbody').on('click', 'td button.edit_button', function () {
@@ -359,12 +309,12 @@ $(document).ready(function() {
     $( '#saveDoFilter' ).click(function() {
         var nomfiltre = $('#autoc_filtres').val();
         if (nomfiltre === '' || nomfiltre === null){
-            toastr.error("El nom de filtre està en blanc. Cal posar un nom vàlid.");
+            toastr.error(gettext("El nom de filtre està en blanc. Cal posar un nom vàlid."));
         }else{
             var jsonFiltre = extreureJSONDeFiltre();
             var json = JSON.parse(jsonFiltre);
             if(json.filtre.length == 0){
-                toastr.error("El filtre no té condicions, està en blanc. Tria alguns criteris i torna-ho a intentar.");
+                toastr.error(gettext("El filtre no té condicions, està en blanc. Tria alguns criteris i torna-ho a intentar."));
             }else{
                 check_nomfiltre();
             }
@@ -404,7 +354,7 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Importació amb èxit!');
+                toastr.success(gettext('Importació amb èxit!'));
                 djangoRef.Map.editableLayers.clearLayers();
                 var geoJson = JSON.parse(data.detail);
                 var geoJSONLayer = L.geoJson(geoJson);
@@ -415,7 +365,7 @@ $(document).ready(function() {
                 );
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+                toastr.error(gettext('Error important fitxer') + ':' + jqXHR.responseJSON.detail);
             }
         });
     };
@@ -435,8 +385,8 @@ $(document).ready(function() {
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>Importar shapefile</span></div>' +
+            '<div class="qq-upload-drop-area"><span>' + gettext('Importar shapefile') + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>' + gettext('Importar shapefile') + '</span></div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {
@@ -460,13 +410,14 @@ $(document).ready(function() {
 
     var overlay_list = [];
     overlay_list.push(toponims);
+    var toponim_key = gettext('Topònims');
 
     var overlays_control_config = [
         {
-            groupName: 'Toponims',
+            groupName: gettext('Topònims'),
             expanded: true,
             layers: {
-                'Topònims': toponims.layer
+                toponim_key: toponims.layer
             }
         }
     ];

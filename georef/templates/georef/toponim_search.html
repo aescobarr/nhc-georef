@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
@@ -14,38 +15,38 @@
       <div class="page-header"></div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Utilitats</li>
-                <li class="breadcrumb-item active">Cerca topònims</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Utilitats' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Cerca topònims' %}</li>
             </ol>
         </div>
         <div class="container separador_seccio">
-            <p><strong>Cerca de topònims:</strong></p>
+            <p><strong>{% trans 'Cerca de topònims' %}:</strong></p>
         </div>
         <div class="container separador_seccio">
-            <label for="autoc_toponim">Cerca:</label>
+            <label for="autoc_toponim">{% trans 'Cerca' %}:</label>
             <input class="form-control" id="autoc_toponim" type="text">
         </div>
         <div class="container separador_seccio">
             <div class="row">
                 <div class="col-xs-12">
-                    <button data-toggle="tooltip" title="Copiar resultats al portapapers" id="clipboard" type="button" class="btn btn-primary"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+                    <button data-toggle="tooltip" title="{% trans 'Copiar resultats al portapapers' %}" id="clipboard" type="button" class="btn btn-primary"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
                 </div>
             </div>
         </div>
         <div class="container separador_seccio">
             <div class="row">
-                <div class="col-xs-2"><span class="label label-primary">Topònim:</span></div>
+                <div class="col-xs-2"><span class="label label-primary">{% trans 'Topònim' %}:</span></div>
                 <div class="col-xs-10" id="val_nom"></div>
             </div>
         </div>
         <div class="container separador_seccio">
             <div class="row">
-                <div class="col-xs-2"><span class="label label-primary">Coordenada Y centroide (lat):</span></div>
+                <div class="col-xs-2"><span class="label label-primary">{% trans 'Coordenada Y centroide (lat)' %}:</span></div>
                 <div class="col-xs-2" id="val_y"></div>
-                <div class="col-xs-2"><span class="label label-primary">Coordenada X centroide (long):</span></div>
+                <div class="col-xs-2"><span class="label label-primary">{% trans 'Coordenada X centroide (long)' %}:</span></div>
                 <div class="col-xs-2" id="val_x"></div>
-                <div class="col-xs-2"><span class="label label-primary">Incertesa de coordenades (m):</span></div>
+                <div class="col-xs-2"><span class="label label-primary">{% trans 'Incertesa de coordenades (m)' %}:</span></div>
                 <div class="col-xs-2" id="val_prec"></div>
             </div>
         </div>

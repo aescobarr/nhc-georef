@@ -79,6 +79,7 @@ from georef.geom_utils import *
 from haversine import haversine
 
 from slugify import slugify
+from django.utils.translation import gettext_lazy as _
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -616,7 +617,8 @@ def recursfilters(request):
 @login_required
 def toponimfilters(request):
     csrf_token = get_token(request)
-    return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token})
+    titol_breadcrumb = _('Topònims')
+    return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token, 'titol_breadcrumb': titol_breadcrumb})
 
 
 @login_required
@@ -803,7 +805,7 @@ def toponimstreenode(request):
         data = []
         node_id = request.query_params.get('id', None)
         if node_id == '#':
-            elem = {'text': 'Tots els topònims', 'id': '1', 'parent': '#', 'children': True}
+            elem = {'text': _('Tots els topònims'), 'id': '1', 'parent': '#', 'children': True}
             return Response(data=elem, status=200)
         elif node_id == '1':
             toponims = Toponim.objects.filter(idpare__isnull=True).order_by('nom')
@@ -891,7 +893,7 @@ def recursos_create(request):
                         cr.save()
 
                 url = reverse('recursos')
-                messages.success(request, "Recurs desat amb èxit!")
+                messages.success(request, _("Recurs desat amb èxit!"))
                 return HttpResponseRedirect(url)
     else:
         form = RecursForm()
@@ -1554,7 +1556,7 @@ def recursos_update(request, id=None):
                         c = Capawms.objects.get(pk=capa)
                         cr = Capesrecurs(idcapa=c, idrecurs=recurs)
                         cr.save()
-                messages.add_message(request, messages.INFO, 'Recurs desat amb èxit!')
+                messages.add_message(request, messages.INFO, _('Recurs desat amb èxit!'))
                 url = reverse('recursos_update', kwargs={'id': form.instance.id})
                 return HttpResponseRedirect(url)
 

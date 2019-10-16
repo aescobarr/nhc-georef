@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
@@ -20,31 +21,36 @@
         <div class="page-header"></div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Recursos cartogràfics</li>
-                <li class="breadcrumb-item active">Càrrega de capes WMS pròpies</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Recursos cartogràfics' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Càrrega de capes WMS pròpies' %}</li>
             </ol>
         </div>
         <div class="container separador_seccio">
-            <p><strong>Creació de capes WMS locals:</strong></p>
+            <p><strong>{% trans 'Càrrega de capes WMS pròpies' %}:</strong></p>
         </div>
         <div class="container">
             <p>
+                {% trans 'wms_layers_help_text' %}
+                <a href="{% url 'prefsvisualitzaciowms' %}">{% trans 'Preferències visualització capes WMS' %}</a>
+                <!--
                 Aquesta utilitat serveix per carregar capes pròpies en un servidor de cartografia local. Aquest servidor
                 de cartografia fa disponibles les capes en un format WMS, de manera que es poden mostrar a la majoria de
                 controls Mapa de dins de l'aplicació.
                 Un cop carregada una capa, està desactivada per defecte. Si vols tenir-la disponible, vés a
                 <a href="{% url 'prefsvisualitzaciowms' %}">Preferències visualització capes WMS</a>
+                -->
             </p>
             <p style="color: red;">
-                És important que les capes, tant ràster com shapefile, estiguin en projecció WGS84.
+                {% trans 'wms_layers_help_text_warning' %}
+                <!-- És important que les capes, tant ràster com shapefile, estiguin en projecció WGS84. -->
             </p>
         <div>
         <div class="container">
             <div class="row">
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="id_nomcapa">Nom de la capa:</label>
+                        <label for="id_nomcapa">{% trans 'Nom de la capa' %}:</label>
                         <input name="nomcapa" class="form-control" id="id_nomcapa" required="true" type="text">
                     </div>
                 </div>
@@ -56,7 +62,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-2">
-                    <input data-toggle="tooltip" data-placement="right" id="btnCreaCapa" role="button" class="btn btn-success" value="Crear capa WMS" />
+                    <input data-toggle="tooltip" data-placement="right" id="btnCreaCapa" role="button" class="btn btn-success" value="{% trans 'Crear capa WMS' %}" />
                 </div>
             </div>
         </div>

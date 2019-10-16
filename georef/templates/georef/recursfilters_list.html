@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
@@ -16,9 +17,9 @@
     </div>
     <div class="container">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-            <li class="breadcrumb-item">Recursos</li>
-            <li class="breadcrumb-item active">Llistat de filtres de recursos</li>
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+            <li class="breadcrumb-item">{% trans 'Recursos' %}</li>
+            <li class="breadcrumb-item active">{% trans 'Llistat de filtres de recursos' %}</li>
         </ol>
     </div>
     <div class="container">

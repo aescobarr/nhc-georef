@@ -119,7 +119,7 @@ function centrarMapaADigitalitzacio(valor){
 }
 
 function createImportCartoButton(valor){
-    var boto = txtFuncionamentFiltreCarto;
+    var boto = gettext('Cal digitalitzar una geometria sobre el mapa');
     if(valor!=null && ''!=valor){
         mostrarGeoJSON(valor);
         centrarMapaADigitalitzacio();

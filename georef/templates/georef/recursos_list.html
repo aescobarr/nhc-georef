@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
+        <div id="dialog-confirm" title="{% trans 'Confirmar sobreescriure filtre' %}" style="display:none;">
             <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{% trans 'msg_warn_overwrite_filter' %}</p>
             <!-- Ja hi ha un filtre amb aquest nom, el vols sobreescriure? -->
         </div>
@@ -158,13 +158,8 @@
             valorsTipus.push({id:"{{ tipus.id }}",value:"{{ tipus.nom }}"});
         {% endfor %}
 
-        var txtBotoEsborrarCondicioFiltre = "{% trans 'Esborrar' %}";
-        var txtFuncionamentFiltreCarto = "{% trans 'Cal digitalitzar una geometria sobre el mapa' %}";
-        var txtImportarShapefile = "{% trans 'Importar shapefile' %}";
-
         var editableLayers;
         var controlCapes;
-        var txtTableTitle = "{% trans 'Recurs de georeferenciació' %}";
 
         {% if messages %}
             {% for message in messages %}
