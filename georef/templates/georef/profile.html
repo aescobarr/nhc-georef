@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
@@ -21,32 +22,32 @@
         </div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Sessió</li>
-                <li class="breadcrumb-item active">Perfil</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Sessió' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Perfil' %}</li>
             </ol>
         </div>
         <div class="container">
-            <input role="button" class="btn btn-success"  type="submit" value="Desar" />
+            <input role="button" class="btn btn-success"  type="submit" value="{% trans 'Desar' %}" />
         </div>
         <div class="container">
             <div class="form-errors"></div>
         </div>
         <div class="container separador_seccio">
-            <p><strong>Dades usuari:</strong></p>
+            <p><strong>{% trans 'Dades usuari' %}:</strong></p>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="user_form.first_name.id_for_label">Nom:</label>
+                        <label for="user_form.first_name.id_for_label">{% trans 'Nom' %}:</label>
                         {{ user_form.first_name }}
                         {{ user_form.first_name.errors }}
                     </div>
                 </div>
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="user_form.last_name.id_for_label">Cognom:</label>
+                        <label for="user_form.last_name.id_for_label">{% trans 'Cognom' %}:</label>
                         {{ user_form.last_name }}
                         {{ user_form.last_name.errors }}
                     </div>
@@ -55,7 +56,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label for="user_form.email.id_for_label">Correu electrònic:</label>
+                        <label for="user_form.email.id_for_label">{% trans 'Correu electrònic' %}:</label>
                         {{ user_form.email }}
                         {{ user_form.email.errors }}
                     </div>
@@ -66,7 +67,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label for="user_form.username.id_for_label">Nom d'usuari:</label>
+                        <label for="user_form.username.id_for_label">{% trans "Nom d'usuari" %}:</label>
                         {{ user_form.username }}
                         {{ user_form.username.errors }}
                     </div>
@@ -74,7 +75,7 @@
             </div>
         </div>
         <div class="container separador_seccio">
-            <input role="button" class="btn btn-success" type="submit" value="Desar" />
+            <input role="button" class="btn btn-success" type="submit" value="{% trans 'Desar' %}" />
         </div>
         <div class="container">
             <div class="form-errors"></div>

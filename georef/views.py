@@ -80,6 +80,7 @@ from haversine import haversine
 
 from slugify import slugify
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.views import login
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -2137,8 +2138,8 @@ def wmslocal_create(request):
 def t_authors(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Nom autor',
-        'class_name_sing': 'Autor',
+        'column_name': _('Nom autor'),
+        'class_name_sing': _('Autor'),
         'crud_url': reverse('autors-list'),
         'list_url': reverse('autors_datatable_list'),
         'instance_label': 't_autors',
@@ -2151,8 +2152,8 @@ def t_authors(request):
 def t_qualificadors(request):
     context = {
         'text_field_name' : 'qualificador',
-        'column_name': 'Nom qualificador',
-        'class_name_sing': 'Qualificador versió',
+        'column_name': _('Nom qualificador'),
+        'class_name_sing': _('Qualificador versió'),
         'crud_url': reverse('qualificadorsversio-list'),
         'list_url': reverse('qualificadors_datatable_list'),
         'instance_label': 't_qualificadors',
@@ -2165,8 +2166,8 @@ def t_qualificadors(request):
 def t_paisos(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Nom país',
-        'class_name_sing': 'País',
+        'column_name': _('Nom país'),
+        'class_name_sing': _('País'),
         'crud_url': reverse('paisos-list'),
         'list_url': reverse('paisos_datatable_list'),
         'instance_label': 't_paisos',
@@ -2179,8 +2180,8 @@ def t_paisos(request):
 def t_paraulesclau(request):
     context = {
         'text_field_name' : 'paraula',
-        'column_name': 'Paraula clau',
-        'class_name_sing': 'Paraula clau',
+        'column_name': _('Paraula clau'),
+        'class_name_sing': _('Paraula clau'),
         'crud_url': reverse('paraulesclau-list'),
         'list_url': reverse('paraulaclau_datatable_list'),
         'instance_label': 't_paraulesclau',
@@ -2193,8 +2194,8 @@ def t_paraulesclau(request):
 def t_tipuscontingut(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Tipus de contingut',
-        'class_name_sing': 'Tipus de contingut',
+        'column_name': _('Tipus de contingut'),
+        'class_name_sing': _('Tipus de contingut'),
         'crud_url': reverse('tipusrecurs-list'),
         'list_url': reverse('tipusrecurs_datatable_list'),
         'instance_label': 't_tipuscontingut',
@@ -2207,8 +2208,8 @@ def t_tipuscontingut(request):
 def t_tipussuport(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Tipus de suport',
-        'class_name_sing': 'Tipus de suport',
+        'column_name': _('Tipus de suport'),
+        'class_name_sing': _('Tipus de suport'),
         'crud_url': reverse('tipussuport-list'),
         'list_url': reverse('suport_datatable_list'),
         'instance_label': 't_tipussuport',
@@ -2221,8 +2222,8 @@ def t_tipussuport(request):
 def t_tipustoponim(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Tipus de topònim',
-        'class_name_sing': 'Tipus de topònim',
+        'column_name': _('Tipus de topònim'),
+        'class_name_sing': _('Tipus de topònim'),
         'crud_url': reverse('tipustoponim-list'),
         'list_url': reverse('tipustoponim_datatable_list'),
         'instance_label': 't_tipustoponim',
@@ -2281,8 +2282,8 @@ def t_checkdelete(request):
 def t_tipusunitats(request):
     context = {
         'text_field_name' : 'tipusunitat',
-        'column_name': "Tipus d'unitats",
-        'class_name_sing': "Tipus d'unitats",
+        'column_name': _("Tipus d'unitats"),
+        'class_name_sing': _("Tipus d'unitats"),
         'crud_url': reverse('tipusunitats-list'),
         'list_url': reverse('tipusunitats_datatable_list'),
         'instance_label': 't_tipusunitats',

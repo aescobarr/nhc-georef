@@ -84,13 +84,15 @@
             _update($('#name_update').val(),$('#id').val());
         }
 
+        var update_text = gettext('Actualitzar');
+
         var dialog_update = $( "#dialog-form-update" ).dialog({
             autoOpen: false,
             height: 300,
             width: 400,
             modal: true,
             buttons: {
-                "Actualitzar": do_update,
+                update_text: do_update,
                 Cancel: function() {
                     dialog_update.dialog( "close" );
                 }
@@ -118,12 +120,12 @@
                     }
                 },
                 success: function( data, textStatus, jqXHR ) {
-                    toastr.success('Actualitzat amb èxit!');
+                    toastr.success(gettext('Actualitzat amb èxit!'));
                     dialog_update.dialog('close');
                     djangoRef.GenericThesaurus.table.ajax.reload();
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    toastr.error('Error actualitzant!');
+                    toastr.error(gettext('Error actualitzant!'));
                 }
             });
         }
@@ -132,13 +134,15 @@
             _add($('#name').val());
         };
 
+        var btn_create = gettext('Crear');
+
         var dialog_create = $( "#dialog-form-create" ).dialog({
             autoOpen: false,
             height: 300,
             width: 400,
             modal: true,
             buttons: {
-                "Crear": do_add,
+                btn_create: do_add,
                 Cancel: function() {
                     dialog_create.dialog( "close" );
                 }
@@ -164,12 +168,12 @@
                     }
                 },
                 success: function( data, textStatus, jqXHR ) {
-                    toastr.success('Afegit amb èxit!');
+                    toastr.success(gettext('Afegit amb èxit!'));
                     dialog_create.dialog('close');
                     djangoRef.GenericThesaurus.table.ajax.reload();
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    toastr.error('Error afegint!');
+                    toastr.error(gettext('Error afegint!'));
                 }
             });
         }
@@ -185,11 +189,11 @@
                     }
                 },
                 success: function( data, textStatus, jqXHR ) {
-                    toastr.success('Esborrat amb èxit!');
+                    toastr.success(gettext('Esborrat amb èxit!'));
                     djangoRef.GenericThesaurus.table.ajax.reload();
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    toastr.error('Error esborrant!');
+                    toastr.error(gettext('Error esborrant!'));
                 }
             });
         };
@@ -219,7 +223,7 @@
             $('<div></div>').appendTo('body')
                 .html(message)
                 .dialog({
-                    modal: true, title: 'Esborrant...', zIndex: 10000, autoOpen: true,
+                    modal: true, title: gettext('Esborrant...'), zIndex: 10000, autoOpen: true,
                     width: 'auto', resizable: false,
                     buttons: {
                         Yes: function () {
@@ -242,7 +246,7 @@
                     if(info.n < 2){
                         show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade_noc">' + info.message + '</div>', id);
                     }else{
-                        show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade">Es produïran els esborrats en cascada següents:</br>' + info.message + '</div>', id);
+                        show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade">' + gettext('Es produïran els esborrats en cascada següents') + ':</br>' + info.message + '</div>', id);
                     }
                 } );
             }else{
@@ -268,7 +272,7 @@
             var tr = $(this).closest('tr');
             var row = djangoRef.GenericThesaurus.table.row( tr );
             var id = row.data().id;
-            confirmDialog("S'esborrarà '" + row.data()[options.text_field_name] + "'! Segur que vols continuar?",id);
+            confirmDialog(gettext("S'esborrarà '") + row.data()[options.text_field_name] + gettext("'! Segur que vols continuar?"),id);
         });
 
     }

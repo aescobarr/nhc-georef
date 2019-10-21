@@ -71,23 +71,31 @@ $(document).ready(function() {
     overlay_list.push(recursos_digit);
     overlay_list.push(recursos_wms);
 
+    var centroides_calc_layer = gettext('Centroides de topònims calculats pel museu');
+    var centroides_digit_layer = gettext('Centroides de topònims extrets de la digitalització');
+    var toponims_layer = gettext('Darreres versions de topònims');
+    var recursos_digit_layer = gettext('Recursos de georeferenciació (límits digitalitzats)');
+    var recursos_wms_layer = gettext('Recursos de georeferenciació (límits de les capes wms associades)');
+
+    var layers_toponims = {};
+    layers_toponims[centroides_calc_layer] = centroides_calc.layer;
+    layers_toponims[centroides_digit_layer] = centroides_digit.layer;
+    layers_toponims[toponims_layer] = toponims.layer;
+
+    var layers_recursos = {};
+    layers_recursos[recursos_digit_layer] = recursos_digit.layer;
+    layers_recursos[recursos_wms_layer] = recursos_wms.layer;
+
     var overlays_control_config = [
         {
-            groupName: 'Toponims',
+            groupName: gettext('Toponims'),
             expanded: true,
-            layers: {
-                'Centroides de topònims calculats pel museu': centroides_calc.layer,
-                'Centroides de topònims extrets de la digitalització': centroides_digit.layer,
-                'Darreres versions de topònims': toponims.layer,
-            }
+            layers: layers_toponims
         },
         {
-            groupName: 'Recursos de georeferenciació',
+            groupName: gettext('Recursos de georeferenciació'),
             expanded: true,
-            layers: {
-                'Recursos de georeferenciació (límits digitalitzats)': recursos_digit.layer,
-                'Recursos de georeferenciació (límits de les capes wms associades)': recursos_wms.layer,
-            }
+            layers: layers_recursos
         }
     ];
 

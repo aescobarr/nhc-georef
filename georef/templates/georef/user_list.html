@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
@@ -17,14 +18,14 @@
         </div>
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Sessió</li>
-                <li class="breadcrumb-item active">Gestió usuaris</li>
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Sessió' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Gestió usuaris' %}</li>
             </ol>
         </div>
         <div class="container separador_seccio">
             <div class="pull-right">
-                <button id="addUser" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+                <button id="addUser" type="button" class="btn btn-primary">{% trans 'Afegir' %} <i class="fa fa-plus" aria-hidden="true"></i></button>
             </div>
         </div>
         <div class="container">

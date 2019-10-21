@@ -25,9 +25,9 @@ $(document).ready(function() {
     var pie_data = [];
     for (var i = 0; i < toponims_aquatic.length; i++){
         if(toponims_aquatic[i][0]=='S'){
-            pie_data.push({ name: 'Aquàtic', y: toponims_aquatic[i][1] })
+            pie_data.push({ name: gettext('Aquàtic'), y: toponims_aquatic[i][1] })
         }else{
-            pie_data.push({ name: 'Terrestre', y: toponims_aquatic[i][1] })
+            pie_data.push({ name: gettext('Terrestre'), y: toponims_aquatic[i][1] })
         }
     }
 
@@ -124,11 +124,11 @@ $(document).ready(function() {
         });
     }
 
-    spawn_chart('toponims_per_pais','Número de topònims per país','Número de topònims','Número de topònims',paisos,toponims_per_pais,-85,'8px');
-    spawn_chart('toponims_per_georeferenciador','Número de topònims per georeferenciador','Número de topònims','Número de topònims',georeferenciadors,toponims_georef,-45,'12px');
-    spawn_chart('toponims_per_tipus','Número de topònims per tipus','Número de topònims','Número de topònims',tipus,tipus_per_pais,-45,'12px');
-    spawn_pie('toponims_humitat','Número de topònims per aquàtic/terrestre','Topònims',pie_data);
-    spawn_chart('recursos_tipus','Número de recursos georeferenciació per tipus','Número de recursos','Número de recursos',recursos,tipus_per_recurs,-45,'12px');
+    spawn_chart('toponims_per_pais',gettext('Número de topònims per país'),gettext('Número de topònims'),gettext('Número de topònims'),paisos,toponims_per_pais,-85,'8px');
+    spawn_chart('toponims_per_georeferenciador',gettext('Número de topònims per georeferenciador'),gettext('Número de topònims'),gettext('Número de topònims'),georeferenciadors,toponims_georef,-45,'12px');
+    spawn_chart('toponims_per_tipus',gettext('Número de topònims per tipus'),gettext('Número de topònims'),gettext('Número de topònims'),tipus,tipus_per_pais,-45,'12px');
+    spawn_pie('toponims_humitat',gettext('Número de topònims per aquàtic/terrestre'),gettext('Topònims'),pie_data);
+    spawn_chart('recursos_tipus',gettext('Número de recursos georeferenciació per tipus'),gettext('Número de recursos'),gettext('Número de recursos'),recursos,tipus_per_recurs,-45,'12px');
 
 
 });
