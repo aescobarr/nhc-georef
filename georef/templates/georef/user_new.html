@@ -23,13 +23,13 @@
     <form action="{% url 'user_new' %}" onsubmit="return checkPermissions()" method="POST">
     {% csrf_token %}
         <div class="page-header">
-        </div>
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
-                <li class="breadcrumb-item">{% trans 'Sessió' %}</li>
-                <li class="breadcrumb-item active">{% trans 'Perfil' %}</li>
-            </ol>
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                    <li class="breadcrumb-item">{% trans 'Sessió' %}</li>
+                    <li class="breadcrumb-item active">{% trans 'Perfil' %}</li>
+                </ol>
+            </div>
         </div>
         <div class="container">
             <input role="button" class="btn btn-success"  type="submit" value="{% trans 'Desar' %}" />

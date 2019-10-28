@@ -439,6 +439,45 @@ def check_filtre(request):
                 return Response(data=content, status=200)
 
 
+@api_view(['POST'])
+def switch_user_language(request):
+    if request.method == 'POST':
+        user = request.user
+        #user_id = request.query_params.get('user_id', None)
+        lang = request.data.get('lang', None)
+        # if user_id is None:
+        #     content = {'status': 'KO', 'detail': 'mandatory param missing'}
+        #     return Response(data=content, status=400)
+        # else:
+        #     try:
+        #         user = get_object_or_404(User, pk=user_id)
+        #     except Http404:
+        #         content = {'status': 'KO', 'detail': 'user for id does not exist'}
+        #         return Response(data=content, status=404)
+        if lang is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            locale_present = False
+            #check if locale is in list
+            for language in settings.LANGUAGES:
+                if language[0] == lang:
+                    locale_present = True
+            if not locale_present:
+                content = {'status': 'KO', 'detail': 'locale not available'}
+                return Response(data=content, status=400)
+
+        user.profile.language = lang
+        user.profile.save()
+
+        content = {'status': 'OK', 'detail': 'profile lang updated'}
+        return Response(data=content, status=200)
+    else:
+        content = {'status': 'KO', 'detail': 'method not allowed'}
+        return Response(data=content, status=400)
+
+
+
 @api_view(['GET'])
 def users_datatable_list(request):
     if request.method == 'GET':
@@ -1390,7 +1429,11 @@ def my_profile(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=this_user)
         if user_form.is_valid():
-            user_form.save()
+            #user_form.save()
+            saved_user = user_form.save(commit=False)
+            saved_user.profile.language = request.POST['language']
+            saved_user.profile.save()
+            saved_user.save()
             successfully_saved = True
         else:
             successfully_saved = False

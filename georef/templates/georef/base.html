@@ -36,7 +36,8 @@
 <body>
     {% block nav %}
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top dark_blue">
+    <!--  <nav class="navbar navbar-default navbar-fixed-top dark_blue"> -->
+    <nav class="navbar navbar-default dark_blue">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -125,6 +126,18 @@
                 <a class="nav-link" href="{% url 'login' %}">{% trans "Iniciar sessió" %}</a>
               </li>
             {% endif %}
+            <li>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Idioma" %}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for lang in LANGUAGES %}
+                    <li {% if LANGUAGE_CODE == lang.0 %} class="active" {% endif %}>
+                        <a class="nav-link lang-item" data-language-code="{{ lang.0 }}" href="{% url 'set_language' %}">{{ lang.1 }}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -134,10 +147,9 @@
     {% endblock %}
     {% block footer %}
     <footer class="footer">
-      <!--<div class="container">
-        <p>Place sticky footer content here.</p>
-      </div>-->
+
     </footer>
+    {% csrf_token %}
     {% endblock %}
     {% block js %}
         <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
@@ -164,6 +176,28 @@
                     "sLast":     "{% trans 'Últim' %}"
                 }
             };
+        </script>
+        <script>
+            function reload_page() {
+                window.location.reload(true);
+            }
+
+            $('.lang-item').click(
+                function(event){
+                    event.preventDefault();
+                    var target = $(event.target);
+                    var url = target.attr('href');
+                    var language_code = target.data('language-code');
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: {language: language_code},
+                        headers: {"X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()}
+                    }).done(function(data, textStatus, jqXHR) {
+                        reload_page();
+                    });
+                }
+            );
         </script>
     {% endblock %}
     {% block extra_js %}

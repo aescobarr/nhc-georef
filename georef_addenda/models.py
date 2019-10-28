@@ -31,7 +31,6 @@ class Profile(models.Model):
     permission_tesaure_edition = models.BooleanField(default=False)
     permission_administrative = models.BooleanField(default=False)
     permission_filter_edition = models.BooleanField(default=False)
-    language = models.CharField(max_length=10, default='ca')
 
     @property
     def is_admin(self):
