@@ -381,3 +381,7 @@ table.toponimsimportats tbody tr.odd{
 	margin: 10px 0 10px;
 	border-bottom: none;
 }
+
+.navbar-nav > li > a {
+	font-size: 12px;
+}
