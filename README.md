@@ -1,12 +1,12 @@
 # Georef
 
-Georef is a georeferencing data tool originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows storage, indexing and querying of georeferencing data, including geometry, and supports multiple versions of the data. Georef is built using [Django](https://www.djangoproject.com/).
+Georef is a tool for georeferencing site names, originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows storage, indexing and querying of georeferenced site names, including geometry, and supports multiple versions of the site names. Georef is built using [Django](https://www.djangoproject.com/).
 
-The application exposes an API which allows mainly querying the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/nhc-georef).
+The application exposes an API which allows to query the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/nhc-georef).
 
 ## Getting Started
 
-These instructions will help you set up a basic working development environment on a Ubuntu 18.04 LTS system. It assumes [Git](https://git-scm.com/) is installed and running in the host machine.
+These instructions will help you set up a basic working development environment on an Ubuntu 18.04 LTS system. It assumes [Git](https://git-scm.com/) is installed and running in the host machine.
 
 ### Prerequisites
 
@@ -113,7 +113,7 @@ sudo apt install tomcat8-admin
 
 ##### Geoserver install and basic setup
 
-The following example is done using GeoServer 2.14.2; this project moves fast so probably this version will be outdated by the time anyone reads this... we recommend using always the latest stable version of GeoServer: the install process should be about the same.
+The following example is done using GeoServer 2.14.2; this project moves fast so probably this version will be outdated by the time anyone reads this... We recommend using always the latest stable version of GeoServer: the install process should be about the same.
 
 From the shell, do something like this:
 ```bash
@@ -173,7 +173,7 @@ Next, we should perform some administrative tasks in the GeoServer instance. Thi
 * Create a workspace to store the created layers
 * Publish a few layers from the PostgreSQL database
 
-Right now this must be done manually, but we are working on scripts to automate all this via scripts that interact with the GeoServer RESTFul API. Stay tuned!
+Right now this must be done manually, but we are working on scripts to automate all this via scripts that interact with the GeoServer RESTFul API.
 
 ### Installing
 
@@ -199,7 +199,7 @@ This will install all the packages listed in requirements.txt in the virtual env
 
 #### Adjusting config files
 
-The cloned repository has a [settings.py](https://github.com/aescobarr/nhc-georef/blob/master/djangoref/settings.py) typical django config file. However, this file is not enough to run the app, as it points to a second settings_local.py file which must be created. This file is not Most parameters in settings.py are overwritten by this file. So it must be created and exist at the same level in the folder structure as settings.py.
+The cloned repository has a [settings.py](https://github.com/aescobarr/nhc-georef/blob/master/djangoref/settings.py) typical django config file. However, this file is not enough to run the app, as it points to a second settings_local.py file which must be created. Most parameters in settings.py are overwritten in the settings_local.py file, so it must be created and exist at the same level in the folder structure as settings.py.
 
 The file settings_local.py contains the following (the comments give a brief description of each config key value):
 ```python
@@ -417,10 +417,6 @@ sudo apt install supervisor
 ```
 We create a supervisor log file and give permissions to georef user (since the gunicorn process will be run as this user):
 ```bash
-sudo apt install supervisor
-```
-We create a supervisor log file and give permissions to georef user (since the gunicorn process will be run as this user):
-```bash
 # create dir
 sudo mkdir /var/log/gunicorn
 # now it belongs to georef user
@@ -484,8 +480,12 @@ We should now use the start command to start the gunicorn instance. If everythin
 
 ## Authors
 
-Conceptual design by Arnald Marcer and Francesc Uribe.
-Coding by [Agustí Escobar](https://github.com/aescobarr)(django version) and [Victor Garcia](https://github.com/vg-coder)(original Georef version).
+Developers: [Agustí Escobar](https://github.com/aescobarr) (current version), [Victor Garcia](https://github.com/vg-coder) (first version)
+Conceptual design: Arnald Marcer (CREAF), Francesc Uribe (Museu de Ciències Naturals de Barcelona)
+
+## How to cite this software
+
+Marcer A., Escobar A., Garcia V. and Uribe F. (2019) Georef. Github repository https://github.com/aescobarr/nhc-georef
 
 ## License
 
