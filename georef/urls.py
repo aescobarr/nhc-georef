@@ -5,6 +5,7 @@ from georef import views
 from django.conf import settings
 
 from . import views
+from django.views.i18n import JavaScriptCatalog
 
 router = routers.DefaultRouter()
 router.register(r'toponims', views.ToponimViewSet, base_name='toponims')
@@ -103,9 +104,12 @@ urlpatterns = [
     url(r'^user/profile/$', views.user_profile, name='user_profile'),
     url(r'^user/profile/(?P<user_id>[0-9A-Za-z_\-]+)/$', views.user_profile, name='user_profile'),
     url(r'^user/new/$', views.user_new, name='user_new'),
+    url(r'^switch_user_language/$', views.switch_user_language, name='switch_user_language'),
     url(r'^user/password/change_mine$', views.change_my_password, name='change_my_password'),
     url(r'^user/password/change$', views.change_password, name='change_password'),
     url(r'^user/password/change/(?P<user_id>[0-9A-Za-z_\-]+)/$', views.change_password, name='change_password'),
     url(r'ajax-upload$', views.import_uploader, name='ajax_upload'),
     url(r'ajax-process-shapefile$', views.process_shapefile, name='process_shapefile'),
+    url(r'^jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

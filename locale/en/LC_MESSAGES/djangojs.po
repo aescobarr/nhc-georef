@@ -1,0 +1,666 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-28 14:01+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: georef/static/georef/javascript/calculcentroides.js:29
+msgid "Resultats copiats al portapapers!"
+msgstr "Results copied to clipboard!"
+
+#: georef/static/georef/javascript/calculcentroides.js:51
+msgid "Error calculant centroide - "
+msgstr "Error computing centroid - "
+
+#: georef/static/georef/javascript/calculcentroides.js:54
+msgid ""
+"Error inesperat. Si us plau comprova que l'estructura del fitxer zip és "
+"correcta."
+msgstr "Unexpected error. Please check the zip file structure."
+
+#: georef/static/georef/javascript/calculcentroides.js:75
+#: georef/static/georef/javascript/capes_wms.js:100
+msgid "Error pujant fitxer!"
+msgstr "Error uploading file!"
+
+#: georef/static/georef/javascript/calculcentroides.js:79
+#: georef/static/georef/javascript/calculcentroides.js:80
+msgid "Importar shapefile (zip)"
+msgstr "Import shapefile (zip)"
+
+#: georef/static/georef/javascript/capes_wms.js:37
+#: georef/static/georef/javascript/prefsvisualitzaciowms.js:34
+msgid "Nom de la capa"
+msgstr "Layer name"
+
+#: georef/static/georef/javascript/capes_wms.js:41
+#: georef/static/georef/javascript/prefsvisualitzaciowms.js:38
+msgid "Títol de la capa"
+msgstr "Layer title"
+
+#: georef/static/georef/javascript/capes_wms.js:45
+#: georef/static/georef/javascript/prefsvisualitzaciowms.js:42
+msgid "URL servidor wms"
+msgstr "WMS server URL"
+
+#: georef/static/georef/javascript/capes_wms.js:50
+#: georef/static/georef/javascript/filtre_recursos.js:78
+#: georef/static/georef/javascript/recursfilters_list.js:50
+#: georef/static/georef/javascript/toponimfilters_list.js:50
+#: static/georef/javascript/toponimfilters_list.js:50
+msgid "Esborrar"
+msgstr "Delete"
+
+#: georef/static/georef/javascript/capes_wms.js:68
+msgid "Capa WMS creada amb èxit!"
+msgstr "WMS layer successfully created!"
+
+#: georef/static/georef/javascript/capes_wms.js:89
+#: georef/static/georef/javascript/toponims_import.js:34
+msgid ""
+"Error a nom de fitxer! Només s'admeten lletres (majúscules i minúscules), "
+"números i el caràcter \"_\""
+msgstr ""
+"File name error! The file name allows letters (upper and lower case), "
+"numbers and the character \"_\""
+
+#: georef/static/georef/javascript/capes_wms.js:97
+msgid "Fitxer carregat al servidor amb èxit!"
+msgstr "File successfully uploaded!"
+
+#: georef/static/georef/javascript/capes_wms.js:104
+#: georef/static/georef/javascript/capes_wms.js:105
+msgid "Importar shapefile (zip) ò tiff"
+msgstr "Import shapefile (zip) or tiff"
+
+#: georef/static/georef/javascript/capes_wms.js:121
+msgid ""
+"Cal seleccionar un fitxer shapefile comprimit en zip, o bé un ràster TIFF"
+msgstr "You have to select a shapefile compressed file, or a TIFF raster file"
+
+#: georef/static/georef/javascript/capes_wms.js:125
+msgid "Cal posar un nom a la capa (un títol)"
+msgstr "The layer name is mandatory (a title)"
+
+#: georef/static/georef/javascript/capes_wms.js:146
+#: georef/static/georef/javascript/generic_thesaurus.js:192
+#: georef/static/georef/javascript/recursfilters_list.js:70
+#: georef/static/georef/javascript/toponimfilters_list.js:70
+#: static/georef/javascript/toponimfilters_list.js:70
+msgid "Esborrat amb èxit!"
+msgstr "Deleted successfully!"
+
+#: georef/static/georef/javascript/capes_wms.js:150
+#: georef/static/georef/javascript/recursfilters_list.js:74
+#: georef/static/georef/javascript/toponimfilters_list.js:74
+#: georef/static/georef/javascript/toponims_list.js:209
+#: georef/static/georef/javascript/users_list.js:81
+#: static/georef/javascript/toponimfilters_list.js:74
+msgid "Error esborrant"
+msgstr "Error deleting"
+
+#: georef/static/georef/javascript/capes_wms.js:159
+msgid "Esborrant capa wms local..."
+msgstr "Deleting wms local layer"
+
+#: georef/static/georef/javascript/capes_wms.js:180
+msgid ""
+"S'esborrarà la capa local WMS, incloent la capa del servidor geoserver. Vols "
+"continuar?"
+msgstr ""
+"The local WMS layer will be deleted, geoserver layer included. Do you want "
+"to proceed?"
+
+#: georef/static/georef/javascript/filtre.js:122
+#: georef/static/georef/javascript/filtre_recursos.js:121
+#: static/georef/javascript/filtre.js:122
+msgid "Cal digitalitzar una geometria sobre el mapa"
+msgstr "A geometry must be digitized in the map"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:87
+msgid "Actualitzar"
+msgstr "Update"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:123
+msgid "Actualitzat amb èxit!"
+msgstr "Successfully updated!"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:128
+msgid "Error actualitzant!"
+msgstr "Error updating!"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:137
+msgid "Crear"
+msgstr "Create"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:171
+msgid "Afegit amb èxit!"
+msgstr "Added successfully!"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:176
+msgid "Error afegint!"
+msgstr "Error adding!"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:196
+msgid "Error esborrant!"
+msgstr "Error deleting!"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:226
+msgid "Esborrant..."
+msgstr "Deleting..."
+
+#: georef/static/georef/javascript/generic_thesaurus.js:249
+msgid "Es produïran els esborrats en cascada següents"
+msgstr "The following cascade deletes will occur"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:275
+msgid "S'esborrarà '"
+msgstr "Will delete '"
+
+#: georef/static/georef/javascript/generic_thesaurus.js:275
+#: georef/static/georef/javascript/users_list.js:132
+msgid "'! Segur que vols continuar?"
+msgstr "'! Are you sure you want to continue?"
+
+#: georef/static/georef/javascript/georef_layers.js:74
+msgid "Centroides de topònims calculats pel museu"
+msgstr "Toponym centroids calculated by the museum"
+
+#: georef/static/georef/javascript/georef_layers.js:75
+msgid "Centroides de topònims extrets de la digitalització"
+msgstr "Toponym centroids extracted from digitalization"
+
+#: georef/static/georef/javascript/georef_layers.js:76
+msgid "Darreres versions de topònims"
+msgstr "Latest versions of toponyms"
+
+#: georef/static/georef/javascript/georef_layers.js:77
+msgid "Recursos de georeferenciació (límits digitalitzats)"
+msgstr "Georeferencing resources (digitized limits)"
+
+#: georef/static/georef/javascript/georef_layers.js:78
+msgid "Recursos de georeferenciació (límits de les capes wms associades)"
+msgstr "Georeferencing resources (associated WMS layer bounds)"
+
+#: georef/static/georef/javascript/georef_layers.js:91
+#: georef/static/georef/javascript/toponim_update.js:509
+msgid "Toponims"
+msgstr "Toponyms"
+
+#: georef/static/georef/javascript/georef_layers.js:96
+msgid "Recursos de georeferenciació"
+msgstr "Georeferencing resource"
+
+#: georef/static/georef/javascript/graphs.js:28
+#: georef/static/georef/javascript/toponims_list.js:107
+msgid "Aquàtic"
+msgstr "Aquatic"
+
+#: georef/static/georef/javascript/graphs.js:30
+msgid "Terrestre"
+msgstr "Terrestrial"
+
+#: georef/static/georef/javascript/graphs.js:127
+msgid "Número de topònims per país"
+msgstr "Number of toponyms by country"
+
+#: georef/static/georef/javascript/graphs.js:127
+#: georef/static/georef/javascript/graphs.js:128
+#: georef/static/georef/javascript/graphs.js:129
+msgid "Número de topònims"
+msgstr "Number of toponyms"
+
+#: georef/static/georef/javascript/graphs.js:128
+msgid "Número de topònims per georeferenciador"
+msgstr "Number of toponyms by georeferencer"
+
+#: georef/static/georef/javascript/graphs.js:129
+msgid "Número de topònims per tipus"
+msgstr "Number of toponyms by type"
+
+#: georef/static/georef/javascript/graphs.js:130
+msgid "Número de topònims per aquàtic/terrestre"
+msgstr "Number of toponyms by aquatic/terrestrial"
+
+#: georef/static/georef/javascript/graphs.js:130
+#: georef/static/georef/javascript/toponims_list.js:413
+#: georef/static/georef/javascript/toponims_list.js:417
+msgid "Topònims"
+msgstr "Toponyms"
+
+#: georef/static/georef/javascript/graphs.js:131
+msgid "Número de recursos georeferenciació per tipus"
+msgstr "Number of georeferencing resources by type"
+
+#: georef/static/georef/javascript/graphs.js:131
+msgid "Número de recursos"
+msgstr "Number of resources"
+
+#: georef/static/georef/javascript/prefsvisualitzaciowms.js:46
+msgid "Mostrar capa"
+msgstr "Show layer"
+
+#: georef/static/georef/javascript/recurs_create.js:97
+#: georef/static/georef/javascript/recurs_create.js:98
+#: georef/static/georef/javascript/recurs_update.js:86
+#: georef/static/georef/javascript/recurs_update.js:87
+#: georef/static/georef/javascript/recursos_list.js:348
+#: georef/static/georef/javascript/recursos_list.js:349
+#: georef/static/georef/javascript/toponim_update.js:408
+#: georef/static/georef/javascript/toponim_update.js:409
+#: georef/static/georef/javascript/toponims_list.js:388
+#: georef/static/georef/javascript/toponims_list.js:389
+msgid "Importar shapefile"
+msgstr "Import shapefile"
+
+#: georef/static/georef/javascript/recursfilters_list.js:32
+#: georef/static/georef/javascript/toponimfilters_list.js:32
+#: static/georef/javascript/toponimfilters_list.js:32
+msgid "Nom del filtre"
+msgstr "Filter name"
+
+#: georef/static/georef/javascript/recursfilters_list.js:36
+#: georef/static/georef/javascript/toponimfilters_list.js:36
+#: static/georef/javascript/toponimfilters_list.js:36
+msgid "Descripció"
+msgstr "Description"
+
+#: georef/static/georef/javascript/recursfilters_list.js:83
+msgid "Esborrant filtre de recursos..."
+msgstr "Deleting resource filter..."
+
+#: georef/static/georef/javascript/recursfilters_list.js:104
+#: georef/static/georef/javascript/toponimfilters_list.js:105
+#: static/georef/javascript/toponimfilters_list.js:105
+msgid "Segur que vols esborrar?"
+msgstr "Are you sure you want to delete?"
+
+#: georef/static/georef/javascript/recursos_list.js:71
+msgid "Recurs de georeferenciació"
+msgstr "Georeferencing resource"
+
+#: georef/static/georef/javascript/toponim_update.js:39
+msgid "Esborrant versió..."
+msgstr "Deleting version..."
+
+#: georef/static/georef/javascript/toponim_update.js:135
+msgid "Versió esborrada amb èxit!"
+msgstr "Version successfully deleted!"
+
+#: georef/static/georef/javascript/toponim_update.js:140
+msgid "Error esborrant la versió"
+msgstr "Error deleting version"
+
+#: georef/static/georef/javascript/toponim_update.js:222
+msgid "error_message_entermarker"
+msgstr ""
+"Enter a valid decimal or integer number. If decimal, use the character '.' "
+"as separator. For example, 206.57"
+
+#: georef/static/georef/javascript/toponim_update.js:249
+msgid "txt_error_digitize_1"
+msgstr ""
+"Enter a valid decimal or integer number for uncertainty radius. If decimal,  "
+"use the character '.' as separator. For example, 206.57"
+
+#: georef/static/georef/javascript/toponim_update.js:251
+msgid "txt_error_digitize_2"
+msgstr ""
+"Enter a valid decimal or integer number for x coordinate. If decimal,  use "
+"the character '.' as separator. For example, 206.57"
+
+#: georef/static/georef/javascript/toponim_update.js:253
+msgid "txt_error_digitize_3"
+msgstr ""
+"Enter a valid decimal or integer number for y coordinate. If decimal,  use "
+"the character '.' as separator. For example, 206.57"
+
+#: georef/static/georef/javascript/toponim_update.js:255
+msgid "txt_error_digitize_4"
+msgstr "Latitude can't be greater than 90 or smaller than 0"
+
+#: georef/static/georef/javascript/toponim_update.js:257
+msgid "txt_error_digitize_5"
+msgstr "Longitude can't be greater than 180 or smaller than -180"
+
+#: georef/static/georef/javascript/toponim_update.js:331
+msgid "D'acord"
+msgstr "D'acord"
+
+#: georef/static/georef/javascript/toponim_update.js:433
+msgid "Sistema de referència no especificat"
+msgstr "Sistema de referència no especificat"
+
+#: georef/static/georef/javascript/toponim_update.js:476
+#: georef/static/georef/javascript/toponims_list.js:357
+msgid "Importació amb èxit!"
+msgstr "Import successful!"
+
+#: georef/static/georef/javascript/toponim_update.js:481
+#: georef/static/georef/javascript/toponims_list.js:368
+msgid "Error important fitxer"
+msgstr "Error importing file"
+
+#: georef/static/georef/javascript/toponimfilters_list.js:83
+#: static/georef/javascript/toponimfilters_list.js:83
+msgid "Esborrant filtre de topònims..."
+msgstr "Deleting toponym filter..."
+
+#: georef/static/georef/javascript/toponims_import.js:51
+#: georef/static/georef/javascript/toponims_import.js:52
+msgid "Pujar fitxer CSV"
+msgstr "Upload CSV file"
+
+#: georef/static/georef/javascript/toponims_import.js:85
+msgid ""
+"El fitxer csv conté alguns errors. Cal arreglar-los i tornar-ho a intentar"
+msgstr "The csv file contains some errors. Please fix them and try again"
+
+#: georef/static/georef/javascript/toponims_import.js:99
+msgid "Error general"
+msgstr "General error"
+
+#: georef/static/georef/javascript/toponims_import.js:105
+msgid "Tipus de fitxer incorrecte. El fitxer és de tipus"
+msgstr "Incorrect file type. File is of type"
+
+#: georef/static/georef/javascript/toponims_import.js:107
+#: georef/static/georef/javascript/toponims_import.js:115
+msgid "Error general de fitxer"
+msgstr "General file error"
+
+#: georef/static/georef/javascript/toponims_import.js:117
+msgid "Línia"
+msgstr "Line"
+
+#: georef/static/georef/javascript/toponims_import.js:139
+msgid "Sumari de resultats importacio"
+msgstr "Import results summary"
+
+#: georef/static/georef/javascript/toponims_import.js:140
+msgid "Número de topònims creats"
+msgstr "Number of created toponyms"
+
+#: georef/static/georef/javascript/toponims_import.js:140
+msgid "Topònims que ja existien"
+msgstr "Already existing toponyms"
+
+#: georef/static/georef/javascript/toponims_import.js:145
+msgid "Topònims creats"
+msgstr "Created toponyms"
+
+#: georef/static/georef/javascript/toponims_import.js:146
+#: georef/static/georef/javascript/toponims_import.js:163
+msgid "Nom del topònim"
+msgstr "Toponym name"
+
+#: georef/static/georef/javascript/toponims_import.js:146
+#: georef/static/georef/javascript/toponims_import.js:163
+msgid "Enllaç al topònim"
+msgstr "Link to toponym"
+
+#: georef/static/georef/javascript/toponims_import.js:162
+msgid "Topònims que ja existien a la base de dades (no s'han importat)"
+msgstr "Toponyms already existed in the database (not imported)"
+
+#: georef/static/georef/javascript/toponims_import.js:181
+msgid "Descarrega fitxer csv de resum"
+msgstr "Download csv summary file"
+
+#: georef/static/georef/javascript/toponims_list.js:103
+msgid "Topònim"
+msgstr "Toponym"
+
+#: georef/static/georef/javascript/toponims_list.js:111
+msgid "Tipus"
+msgstr "Type"
+
+#: georef/static/georef/javascript/toponims_list.js:161
+msgid "Filtre desat amb èxit!"
+msgstr "Filter successfully saved!"
+
+#: georef/static/georef/javascript/toponims_list.js:164
+msgid "Error afegint filtre!"
+msgstr "Error adding filter!"
+
+#: georef/static/georef/javascript/toponims_list.js:186
+msgid "Filtre actualitzat amb èxit!"
+msgstr "Filter successfully updated!"
+
+#: georef/static/georef/javascript/toponims_list.js:190
+msgid "Error actualitzant filtre"
+msgstr "Error updating filter!"
+
+#: georef/static/georef/javascript/toponims_list.js:206
+msgid "Filtre esborrat amb èxit!"
+msgstr "Filter successfully deleted!"
+
+#: georef/static/georef/javascript/toponims_list.js:218
+msgid "Esborrant topònim..."
+msgstr "Deleting toponym..."
+
+#: georef/static/georef/javascript/toponims_list.js:239
+msgid "Sobreescriure i filtrar"
+msgstr "Overwrite and filter"
+
+#: georef/static/georef/javascript/toponims_list.js:285
+msgid "Topònim esborrat amb èxit!"
+msgstr "Toponym successfully deleted!"
+
+#: georef/static/georef/javascript/toponims_list.js:289
+msgid "Error esborrant topònim"
+msgstr "Error deleting toponym"
+
+#: georef/static/georef/javascript/toponims_list.js:298
+msgid "S'esborrarà el topònim '"
+msgstr "Will delete toponym '"
+
+#: georef/static/georef/javascript/toponims_list.js:298
+msgid ""
+"' i totes les seves versions i informació associada! Segur que vols "
+"continuar?"
+msgstr ""
+"' and all versions and associated info! Are you sure you want to proceed?"
+
+#: georef/static/georef/javascript/toponims_list.js:312
+msgid "El nom de filtre està en blanc. Cal posar un nom vàlid."
+msgstr "Filter name is blank. Please assign a name."
+
+#: georef/static/georef/javascript/toponims_list.js:317
+msgid ""
+"El filtre no té condicions, està en blanc. Tria alguns criteris i torna-ho a "
+"intentar."
+msgstr "Filter has no conditions. Choose a few criteria and try again."
+
+#: georef/static/georef/javascript/users_list.js:31
+msgid "Usuari"
+msgstr "User"
+
+#: georef/static/georef/javascript/users_list.js:35
+msgid "Nom"
+msgstr "First Name"
+
+#: georef/static/georef/javascript/users_list.js:39
+msgid "1er cognom"
+msgstr "Last Name"
+
+#: georef/static/georef/javascript/users_list.js:43
+msgid "Correu-e"
+msgstr "Email"
+
+#: georef/static/georef/javascript/users_list.js:49
+msgid "Esborrar usuari"
+msgstr "Delete user"
+
+#: georef/static/georef/javascript/users_list.js:55
+msgid "Editar perfil"
+msgstr "Edit profile"
+
+#: georef/static/georef/javascript/users_list.js:61
+msgid "Canviar password"
+msgstr "Change password"
+
+#: georef/static/georef/javascript/users_list.js:77
+msgid "Usuari esborrat amb èxit!"
+msgstr "User successfully deleted!"
+
+#: georef/static/georef/javascript/users_list.js:90
+msgid "Esborrant usuari..."
+msgstr "Deleting user..."
+
+#: georef/static/georef/javascript/users_list.js:132
+msgid "S'esborrarà l'usuari '"
+msgstr "Will delete the user '"
+
+# "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+#: static/admin/js/SelectFilter2.js:46
+#, javascript-format
+msgid "Available %s"
+msgstr ""
+
+#: static/admin/js/SelectFilter2.js:56
+msgid "Choose"
+msgstr ""
+
+#: static/admin/js/SelectFilter2.js:59
+msgid "Remove"
+msgstr ""
+
+#: static/admin/js/SelectFilter2.js:66
+#, javascript-format
+msgid "Chosen %s"
+msgstr ""
+
+#: static/admin/js/actions.js:48 static/admin/js/actions.min.js:2
+msgid "%(sel)s of %(cnt)s selected"
+msgid_plural "%(sel)s of %(cnt)s selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: static/admin/js/actions.js:117 static/admin/js/actions.min.js:4
+msgid ""
+"You have unsaved changes on individual editable fields. If you run an "
+"action, your unsaved changes will be lost."
+msgstr ""
+
+#: static/admin/js/actions.js:129 static/admin/js/actions.min.js:5
+msgid ""
+"You have selected an action, but you haven't saved your changes to "
+"individual fields yet. Please click OK to save. You'll need to re-run the "
+"action."
+msgstr ""
+
+#: static/admin/js/actions.js:131 static/admin/js/actions.min.js:5
+msgid ""
+"You have selected an action, and you haven't made any changes on individual "
+"fields. You're probably looking for the Go button rather than the Save "
+"button."
+msgstr ""
+
+#: static/admin/js/calendar.js:12
+msgid "January"
+msgstr ""
+
+#: static/admin/js/calendar.js:13
+msgid "February"
+msgstr ""
+
+#: static/admin/js/calendar.js:14
+msgid "March"
+msgstr ""
+
+#: static/admin/js/calendar.js:15
+msgid "April"
+msgstr ""
+
+#: static/admin/js/calendar.js:16
+msgid "May"
+msgstr ""
+
+#: static/admin/js/calendar.js:17
+msgid "June"
+msgstr ""
+
+#: static/admin/js/calendar.js:18
+msgid "July"
+msgstr ""
+
+#: static/admin/js/calendar.js:19
+msgid "August"
+msgstr ""
+
+#: static/admin/js/calendar.js:20
+msgid "September"
+msgstr ""
+
+#: static/admin/js/calendar.js:21
+msgid "October"
+msgstr ""
+
+#: static/admin/js/calendar.js:22
+msgid "November"
+msgstr ""
+
+#: static/admin/js/calendar.js:23
+msgid "December"
+msgstr ""
+
+#: static/admin/js/calendar.js:26
+msgctxt "one letter Sunday"
+msgid "S"
+msgstr ""
+
+#: static/admin/js/calendar.js:27
+msgctxt "one letter Monday"
+msgid "M"
+msgstr ""
+
+#: static/admin/js/calendar.js:28
+msgctxt "one letter Tuesday"
+msgid "T"
+msgstr ""
+
+#: static/admin/js/calendar.js:29
+msgctxt "one letter Wednesday"
+msgid "W"
+msgstr ""
+
+#: static/admin/js/calendar.js:30
+msgctxt "one letter Thursday"
+msgid "T"
+msgstr ""
+
+#: static/admin/js/calendar.js:31
+msgctxt "one letter Friday"
+msgid "F"
+msgstr ""
+
+#: static/admin/js/calendar.js:32
+msgctxt "one letter Saturday"
+msgid "S"
+msgstr ""
+
+#: static/admin/js/collapse.js:10 static/admin/js/collapse.js:21
+#: static/admin/js/collapse.min.js:1
+msgid "Show"
+msgstr ""
+
+#: static/admin/js/collapse.js:18 static/admin/js/collapse.min.js:1
+msgid "Hide"
+msgstr ""
+
+#~ msgid "Error important fitxer:"
+#~ msgstr "Error importing file!"

@@ -6,7 +6,7 @@ $(document).ready(function() {
         },
         'serverSide': true,
         'processing': true,
-        "language": opcions_llenguatge_catala,
+        "language": opcions_llenguatge,
         'pageLength': 25,
         'pagingType': 'full_numbers',
         'bLengthChange': false,
@@ -28,37 +28,37 @@ $(document).ready(function() {
         'columnDefs': [
             {
                 'targets':0,
-                'title': 'Usuari'
+                'title': gettext('Usuari')
             },
             {
                 'targets':1,
-                'title': 'Nom'
+                'title': gettext('Nom')
             },
             {
                 'targets':2,
-                'title': '1er cognom'
+                'title': gettext('1er cognom')
             },
             {
                 'targets':3,
-                'title': 'Correu-e'
+                'title': gettext('Correu-e')
             },
             {
                 'targets': 4,
                 'data': null,
                 'sortable': false,
-                'defaultContent': '<button title="Esborrar usuari" class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
+                'defaultContent': '<button title="' + gettext('Esborrar usuari') + '" class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
             },
             {
                 'targets': 5,
                 'data': null,
                 'sortable': false,
-                'defaultContent': '<button title="Editar perfil" class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+                'defaultContent': '<button title="' + gettext('Editar perfil') + '" class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
             },
             {
                 'targets': 6,
                 'data': null,
                 'sortable': false,
-                'defaultContent': '<button title="Canviar password" class="chgpsswd_button btn btn-danger"><i class="fa fa-lock"></i></button>'
+                'defaultContent': '<button title="' + gettext('Canviar password') + '" class="chgpsswd_button btn btn-danger"><i class="fa fa-lock"></i></button>'
             }
         ]
     } );
@@ -74,11 +74,11 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Usuari esborrat amb èxit!');
+                toastr.success(gettext('Usuari esborrat amb èxit!'));
                 table.ajax.reload();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error esborrant');
+                toastr.error(gettext('Error esborrant'));
             }
         });
     };
@@ -87,7 +87,7 @@ $(document).ready(function() {
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
-                modal: true, title: 'Esborrant usuari...', zIndex: 10000, autoOpen: true,
+                modal: true, title: gettext('Esborrant usuari...'), zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
                 buttons: {
                     Yes: function () {
@@ -129,6 +129,6 @@ $(document).ready(function() {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().user.id;
-        confirmDialog("S'esborrarà l'usuari '" + row.data().user.first_name + " " + row.data().user.last_name + "'! Segur que vols continuar?",id);
+        confirmDialog(gettext("S'esborrarà l'usuari '") + row.data().user.first_name + " " + row.data().user.last_name + gettext("'! Segur que vols continuar?"),id);
     });
 });

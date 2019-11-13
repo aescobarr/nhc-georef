@@ -36,7 +36,7 @@ var confirmDialog = function(message,id){
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
-                modal: true, title: 'Esborrant versió...', zIndex: 10000, autoOpen: true,
+                modal: true, title: gettext('Esborrant versió...'), zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
                 buttons: {
                     Yes: function () {
@@ -132,12 +132,12 @@ var delete_versio = function(id){
             }
         },
         success: function( data, textStatus, jqXHR ) {
-             toastr.success("Versió esborrada amb èxit!");
+             toastr.success(gettext("Versió esborrada amb èxit!"));
              $('table#versions tr#' + id).remove();
              window.location.href = _last_version_url;
         },
         error: function(jqXHR, textStatus, errorThrown){
-            toastr.error("Error esborrant la versió");
+            toastr.error(gettext("Error esborrant la versió"));
         }
     });
 };
@@ -219,7 +219,9 @@ $(document).ready(function() {
         //Draw centroid
         var radius = $('#radi').val();
         var radius_ctrl = $('#radi');
-        valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTips");
+        var error_message_entermarker = gettext('error_message_entermarker');
+        // 'Cal posar un nombre decimal o enter vàlid. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57'
+        valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , error_message_entermarker, "validateTips");
         if(valid){
             /*$$*/
             /*djangoRef_map.refreshCentroid(radius/1000);*/
@@ -243,11 +245,21 @@ $(document).ready(function() {
         var coord_x_ctrl = $('#coord_x_kb');
         var coord_y = $('#coord_y_kb').val();
         var coord_y_ctrl = $('#coord_y_kb');
-        valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid pel radi d\'incertesa. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTipsKb");
-        valid = valid && checkRegexp(coord_x_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid per la coordenada x. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTipsKb");
-        valid = valid && checkRegexp(coord_y_ctrl, /^[+-]?\d+(\.\d+)?$/ , 'Cal posar un nombre decimal o enter vàlid per la coordenada y. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57', "validateTipsKb");
-        valid = valid && checkLat(coord_y_ctrl, 'La latitud no pot ser superior a 90 ni inferior a 0', "validateTipsKb");
-        valid = valid && checkLong(coord_x_ctrl, 'La longitud no pot ser superior a 180 ni inferior a -180', "validateTipsKb");
+        // 'Cal posar un nombre decimal o enter vàlid pel radi d\'incertesa. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57'
+        var txt_error_digitize_1 = gettext('txt_error_digitize_1');
+        // 'Cal posar un nombre decimal o enter vàlid per la coordenada x. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57'
+        var txt_error_digitize_2 = gettext('txt_error_digitize_2');
+        // 'Cal posar un nombre decimal o enter vàlid per la coordenada y. Si és decimal,  usar com a separador el caràcter ".". Per exemple, 206.57'
+        var txt_error_digitize_3 = gettext('txt_error_digitize_3');
+        // 'La latitud no pot ser superior a 90 ni inferior a 0'
+        var txt_error_digitize_4 = gettext('txt_error_digitize_4');
+        // 'La longitud no pot ser superior a 180 ni inferior a -180'
+        var txt_error_digitize_5 = gettext('txt_error_digitize_5');
+        valid = valid && checkRegexp(radius_ctrl, /^[+-]?\d+(\.\d+)?$/ , txt_error_digitize_1, "validateTipsKb");
+        valid = valid && checkRegexp(coord_x_ctrl, /^[+-]?\d+(\.\d+)?$/ , txt_error_digitize_2, "validateTipsKb");
+        valid = valid && checkRegexp(coord_y_ctrl, /^[+-]?\d+(\.\d+)?$/ , txt_error_digitize_3, "validateTipsKb");
+        valid = valid && checkLat(coord_y_ctrl, txt_error_digitize_4, "validateTipsKb");
+        valid = valid && checkLong(coord_x_ctrl, txt_error_digitize_5, "validateTipsKb");
         if(valid){
             //Draw geometry
             djangoRef.Map.editableLayers.clearLayers();
@@ -316,13 +328,15 @@ $(document).ready(function() {
         return false;
     });
 
+    var ok_button_text = gettext("D'acord");
+
     var dialog_centroid = $( "#dialog-uncertainty-radius").dialog({
       autoOpen: false,
       height: 250,
       width: 400,
       modal: true,
       buttons: {
-        "D'acord": enterMarkerUncertaintyRadius,
+        ok_button_text: enterMarkerUncertaintyRadius,
         Cancel: function() {
             dialog_centroid.dialog( "close" );
             djangoRef_map.editableLayers.clearLayers();
@@ -331,9 +345,6 @@ $(document).ready(function() {
       },
       close: function() {
         $('#radi').val('');
-        /*djangoRef_map.editableLayers.clearLayers();
-        djangoRef_map.centroid.clearLayers();*/
-        //allFields.removeClass( "ui-state-error" );
       }
     });
 
@@ -394,8 +405,8 @@ $(document).ready(function() {
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Importar shapefile</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>Importar shapefile</span></div>' +
+            '<div class="qq-upload-drop-area"><span>' + gettext('Importar shapefile') + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default"><span>' + gettext('Importar shapefile') + '</span></div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {
@@ -419,7 +430,7 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 if(data.detail == ''){
-                    $('#sistref_recurs').html('Sistema de referència no especificat');
+                    $('#sistref_recurs').html(gettext('Sistema de referència no especificat'));
                 }else{
                     $('#sistref_recurs').html(data.detail);
                 }
@@ -462,12 +473,12 @@ $(document).ready(function() {
                     if(djangoRef_map.centroid.getBounds().isValid()){
                         djangoRef_map.map.fitBounds(djangoRef_map.centroid.getBounds());
                     }
-                    toastr.success('Importació amb èxit!');
+                    toastr.success(gettext('Importació amb èxit!'));
                 }
 
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error('Error important fitxer:' + jqXHR.responseJSON.detail);
+                toastr.error(gettext('Error important fitxer') + ':' + jqXHR.responseJSON.detail);
             }
         });
     };
@@ -495,12 +506,14 @@ $(document).ready(function() {
     var overlay_list = [];
     overlay_list.push(toponims);
 
+    var toponims_label = gettext('Toponims');
+
     var overlays_control_config = [
         {
-            groupName: 'Toponims',
+            groupName: toponims_label,
             expanded: true,
             layers: {
-                'Topònims': toponims.layer
+                toponims_label: toponims.layer
             }
         }
     ];

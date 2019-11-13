@@ -31,7 +31,7 @@ $(document).ready(function() {
             $('#filename').val('');
             var regex = /^[\w.]{0,256}$/;
             if( regex.exec(fileName) == null){
-                toastr.error('Error a nom de fitxer! Només s\'admeten lletres (majúscules i minúscules), números i el caràcter "_"');
+                toastr.error(gettext('Error a nom de fitxer! Només s\'admeten lletres (majúscules i minúscules), números i el caràcter "_"'));
                 return false;
             }
             resetInterface();
@@ -48,8 +48,8 @@ $(document).ready(function() {
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Pujar fitxer CSV</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Pujar fitxer CSV</div>' +
+            '<div class="qq-upload-drop-area"><span>' + gettext('Pujar fitxer CSV') + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">' + gettext('Pujar fitxer CSV') + '</div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {
@@ -82,7 +82,7 @@ $(document).ready(function() {
     }
 
     var mostrarCaixaErrors = function(text){
-            var missatge = "<h3>El fitxer csv conté alguns errors. Cal arreglar-los i tornar-ho a intentar:</h3><ul>";
+            var missatge = "<h3>" + gettext('El fitxer csv conté alguns errors. Cal arreglar-los i tornar-ho a intentar') + ":</h3><ul>";
             missatge += "<li>"+text+"</li>";
             var caixa = $("#errors");
             //caixa.innerHTML = missatge+"</ul>";
@@ -96,15 +96,15 @@ $(document).ready(function() {
         var response = responseJSON.detail;
         var html = new Array();
         if(typeof response == 'string'){
-            html.push("<p><strong>Error general:</strong></p>");
+            html.push("<p><strong>" + gettext('Error general') + ":</strong></p>");
             html.push("<p>   * " + response + "</p>");
             return html.join("");
         }else{
             if(response.length == 1){
                 if(responseJSON.status_type != null && responseJSON.status_type == 'FILE_TYPE_WRONG'){
-                    html.push("<p><strong>Tipus de fitxer incorrecte. El fitxer és de tipus:</strong></p>");
+                    html.push("<p><strong>" + gettext('Tipus de fitxer incorrecte. El fitxer és de tipus') + ":</strong></p>");
                 }else{
-                    html.push("<p><strong>Error general de fitxer:</strong></p>");
+                    html.push("<p><strong>" + gettext('Error general de fitxer') + ":</strong></p>");
                 }
                 html.push("<p>   * " + response[0] + "</p>");
                 return html.join("");
@@ -112,9 +112,9 @@ $(document).ready(function() {
                 for(var i=0; i < response.length; i++){
                     result = response[i];
                     if(result[0] == -1){
-                        html.push("<p><strong>Error general de fitxer:</strong></p>");
+                        html.push("<p><strong>" + gettext('Error general de fitxer') + ":</strong></p>");
                     }else{
-                        html.push("<p><strong>Línia " + result[0] + " :</strong></p>");
+                        html.push("<p><strong>" + gettext('Línia') + " " + result[0] + " :</strong></p>");
                     }
                     for(var j=0; j < result[1].length; j++){
                         html.push("<p>   * " + result[1][j] + "</p>");
@@ -136,14 +136,14 @@ $(document).ready(function() {
         var tbl_head = "";
         var odd_even = false;
 
-        tbl_summary_head = "<tr><th>Sumari de resultats importacio</th><th>&nbsp;</th></tr>"
-        tbl_summary_body = "<tr><td>Número de topònims creats</td><td>" + responseJSON.results[0].numToponimsCreats + "</td></tr><tr><td>Topònims que ja existien</td><td>" + responseJSON.results[1].numToponimsJaExisteixen + "</td></tr>"
+        tbl_summary_head = "<tr><th>" + gettext('Sumari de resultats importacio') + "</th><th>&nbsp;</th></tr>"
+        tbl_summary_body = "<tr><td>" + gettext('Número de topònims creats') + "</td><td>" + responseJSON.results[0].numToponimsCreats + "</td></tr><tr><td>" + gettext('Topònims que ja existien') + "</td><td>" + responseJSON.results[1].numToponimsJaExisteixen + "</td></tr>"
         $("#sumari thead").html(tbl_summary_head);
         $("#sumari tbody").html(tbl_summary_body);
 
         if(responseJSON.results[2].creats.length > 0){
-            tbl_creats_head = "<tr><th>Topònims creats</th><th>&nbsp;</th></tr>";
-            tbl_creats_head += "<tr><th>Nom del topònim</th><th>Enllaç al topònim</th></tr>";
+            tbl_creats_head = "<tr><th>" + gettext('Topònims creats') + "</th><th>&nbsp;</th></tr>";
+            tbl_creats_head += "<tr><th>" + gettext('Nom del topònim') + "</th><th>" + gettext('Enllaç al topònim') + "</th></tr>";
             var creats_body_arr = new Array();
             for( var i = 0; i < responseJSON.results[2].creats.length; i++ ){
                 var fila = "<tr class=\""+( odd_even ? "odd" : "even")+"\">" + "<td>" + responseJSON.results[2].creats[i].nom + "</td><td><a target=\"_blank\" href=\"/Zoologia/toponims/editartoponim.htm?idtoponim=" + responseJSON.results[2].creats[i].id + "\">Link</a></td></tr>";
@@ -159,8 +159,8 @@ $(document).ready(function() {
         }
 
         if(responseJSON.results[3].existents.length > 0){
-            tbl_existents_head = "<tr><th>Topònims que ja existien a la base de dades (no s'han importat)</th><th>&nbsp;</th></tr>";
-            tbl_existents_head += "<tr><th>Nom del topònim</th><th>Enllaç al topònim</th></tr>";
+            tbl_existents_head = "<tr><th>" + gettext("Topònims que ja existien a la base de dades (no s'han importat)") + "</th><th>&nbsp;</th></tr>";
+            tbl_existents_head += "<tr><th>" + gettext("Nom del topònim") + "</th><th>" + gettext("Enllaç al topònim") + "</th></tr>";
             var existents_body_arr = new Array();
             odd_even = false;
             for( var i = 0; i < responseJSON.results[3].existents.length; i++ ){
@@ -178,7 +178,7 @@ $(document).ready(function() {
 
         $("#resultats tbody").html(tbl_body);
         $("#linkDescarrega").attr("href",responseJSON.fileLink);
-        $("a#linkDescarrega").text('Descarrega fitxer csv de resum');
+        $("a#linkDescarrega").text( gettext('Descarrega fitxer csv de resum') );
     };
 
 

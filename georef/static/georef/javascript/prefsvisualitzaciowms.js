@@ -10,7 +10,7 @@ $(document).ready(function() {
         },
         "serverSide": true,
         "processing": true,
-        "language": opcions_llenguatge_catala,
+        "language": opcions_llenguatge,
         "pageLength": 25,
         "pagingType": "full_numbers",
         "bLengthChange": false,
@@ -31,19 +31,19 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "targets":0,
-                "title": "Nom de la capa"
+                "title": gettext("Nom de la capa")
             },
             {
                 "targets":1,
-                "title": "Títol de la capa"
+                "title": gettext("Títol de la capa")
             },
             {
                 "targets":2,
-                "title": "URL servidor wms"
+                "title": gettext("URL servidor wms")
             },
             {
                 "targets": 3,
-                "title": "Mostrar capa",
+                "title": gettext("Mostrar capa"),
                 "render": function(value){
                     var retVal = "";
                     if(value){

@@ -79,6 +79,8 @@ from georef.geom_utils import *
 from haversine import haversine
 
 from slugify import slugify
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.views import login
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -437,6 +439,45 @@ def check_filtre(request):
                 return Response(data=content, status=200)
 
 
+@api_view(['POST'])
+def switch_user_language(request):
+    if request.method == 'POST':
+        user = request.user
+        #user_id = request.query_params.get('user_id', None)
+        lang = request.data.get('lang', None)
+        # if user_id is None:
+        #     content = {'status': 'KO', 'detail': 'mandatory param missing'}
+        #     return Response(data=content, status=400)
+        # else:
+        #     try:
+        #         user = get_object_or_404(User, pk=user_id)
+        #     except Http404:
+        #         content = {'status': 'KO', 'detail': 'user for id does not exist'}
+        #         return Response(data=content, status=404)
+        if lang is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            locale_present = False
+            #check if locale is in list
+            for language in settings.LANGUAGES:
+                if language[0] == lang:
+                    locale_present = True
+            if not locale_present:
+                content = {'status': 'KO', 'detail': 'locale not available'}
+                return Response(data=content, status=400)
+
+        user.profile.language = lang
+        user.profile.save()
+
+        content = {'status': 'OK', 'detail': 'profile lang updated'}
+        return Response(data=content, status=200)
+    else:
+        content = {'status': 'KO', 'detail': 'method not allowed'}
+        return Response(data=content, status=400)
+
+
+
 @api_view(['GET'])
 def users_datatable_list(request):
     if request.method == 'GET':
@@ -616,7 +657,8 @@ def recursfilters(request):
 @login_required
 def toponimfilters(request):
     csrf_token = get_token(request)
-    return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token})
+    titol_breadcrumb = _('Topònims')
+    return render(request, 'georef/toponimfilters_list.html', context={'csrf_token': csrf_token, 'titol_breadcrumb': titol_breadcrumb})
 
 
 @login_required
@@ -803,7 +845,7 @@ def toponimstreenode(request):
         data = []
         node_id = request.query_params.get('id', None)
         if node_id == '#':
-            elem = {'text': 'Tots els topònims', 'id': '1', 'parent': '#', 'children': True}
+            elem = {'text': _('Tots els topònims'), 'id': '1', 'parent': '#', 'children': True}
             return Response(data=elem, status=200)
         elif node_id == '1':
             toponims = Toponim.objects.filter(idpare__isnull=True).order_by('nom')
@@ -891,7 +933,7 @@ def recursos_create(request):
                         cr.save()
 
                 url = reverse('recursos')
-                messages.success(request, "Recurs desat amb èxit!")
+                messages.success(request, _("Recurs desat amb èxit!"))
                 return HttpResponseRedirect(url)
     else:
         form = RecursForm()
@@ -1387,7 +1429,11 @@ def my_profile(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=this_user)
         if user_form.is_valid():
-            user_form.save()
+            #user_form.save()
+            saved_user = user_form.save(commit=False)
+            saved_user.profile.language = request.POST['language']
+            saved_user.profile.save()
+            saved_user.save()
             successfully_saved = True
         else:
             successfully_saved = False
@@ -1554,7 +1600,7 @@ def recursos_update(request, id=None):
                         c = Capawms.objects.get(pk=capa)
                         cr = Capesrecurs(idcapa=c, idrecurs=recurs)
                         cr.save()
-                messages.add_message(request, messages.INFO, 'Recurs desat amb èxit!')
+                messages.add_message(request, messages.INFO, _('Recurs desat amb èxit!'))
                 url = reverse('recursos_update', kwargs={'id': form.instance.id})
                 return HttpResponseRedirect(url)
 
@@ -2135,8 +2181,8 @@ def wmslocal_create(request):
 def t_authors(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Nom autor',
-        'class_name_sing': 'Autor',
+        'column_name': _('Nom autor'),
+        'class_name_sing': _('Autor'),
         'crud_url': reverse('autors-list'),
         'list_url': reverse('autors_datatable_list'),
         'instance_label': 't_autors',
@@ -2149,8 +2195,8 @@ def t_authors(request):
 def t_qualificadors(request):
     context = {
         'text_field_name' : 'qualificador',
-        'column_name': 'Nom qualificador',
-        'class_name_sing': 'Qualificador versió',
+        'column_name': _('Nom qualificador'),
+        'class_name_sing': _('Qualificador versió'),
         'crud_url': reverse('qualificadorsversio-list'),
         'list_url': reverse('qualificadors_datatable_list'),
         'instance_label': 't_qualificadors',
@@ -2163,8 +2209,8 @@ def t_qualificadors(request):
 def t_paisos(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Nom país',
-        'class_name_sing': 'País',
+        'column_name': _('Nom país'),
+        'class_name_sing': _('País'),
         'crud_url': reverse('paisos-list'),
         'list_url': reverse('paisos_datatable_list'),
         'instance_label': 't_paisos',
@@ -2177,8 +2223,8 @@ def t_paisos(request):
 def t_paraulesclau(request):
     context = {
         'text_field_name' : 'paraula',
-        'column_name': 'Paraula clau',
-        'class_name_sing': 'Paraula clau',
+        'column_name': _('Paraula clau'),
+        'class_name_sing': _('Paraula clau'),
         'crud_url': reverse('paraulesclau-list'),
         'list_url': reverse('paraulaclau_datatable_list'),
         'instance_label': 't_paraulesclau',
@@ -2191,8 +2237,8 @@ def t_paraulesclau(request):
 def t_tipuscontingut(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Tipus de contingut',
-        'class_name_sing': 'Tipus de contingut',
+        'column_name': _('Tipus de contingut'),
+        'class_name_sing': _('Tipus de contingut'),
         'crud_url': reverse('tipusrecurs-list'),
         'list_url': reverse('tipusrecurs_datatable_list'),
         'instance_label': 't_tipuscontingut',
@@ -2205,8 +2251,8 @@ def t_tipuscontingut(request):
 def t_tipussuport(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Tipus de suport',
-        'class_name_sing': 'Tipus de suport',
+        'column_name': _('Tipus de suport'),
+        'class_name_sing': _('Tipus de suport'),
         'crud_url': reverse('tipussuport-list'),
         'list_url': reverse('suport_datatable_list'),
         'instance_label': 't_tipussuport',
@@ -2219,8 +2265,8 @@ def t_tipussuport(request):
 def t_tipustoponim(request):
     context = {
         'text_field_name' : 'nom',
-        'column_name': 'Tipus de topònim',
-        'class_name_sing': 'Tipus de topònim',
+        'column_name': _('Tipus de topònim'),
+        'class_name_sing': _('Tipus de topònim'),
         'crud_url': reverse('tipustoponim-list'),
         'list_url': reverse('tipustoponim_datatable_list'),
         'instance_label': 't_tipustoponim',
@@ -2279,8 +2325,8 @@ def t_checkdelete(request):
 def t_tipusunitats(request):
     context = {
         'text_field_name' : 'tipusunitat',
-        'column_name': "Tipus d'unitats",
-        'class_name_sing': "Tipus d'unitats",
+        'column_name': _("Tipus d'unitats"),
+        'class_name_sing': _("Tipus d'unitats"),
         'crud_url': reverse('tipusunitats-list'),
         'list_url': reverse('tipusunitats_datatable_list'),
         'instance_label': 't_tipusunitats',

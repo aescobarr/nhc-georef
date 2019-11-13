@@ -13,7 +13,7 @@ $(document).ready(function() {
         },
         "serverSide": true,
         "processing": true,
-        "language": opcions_llenguatge_catala,
+        "language": opcions_llenguatge,
         "pageLength": 25,
         "pagingType": "full_numbers",
         "bLengthChange": false,
@@ -34,20 +34,20 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "targets":0,
-                "title": "Nom de la capa"
+                "title": gettext("Nom de la capa")
             },
             {
                 "targets":1,
-                "title": "Títol de la capa"
+                "title": gettext("Títol de la capa")
             },
             {
                 "targets":2,
-                "title": "URL servidor wms"
+                "title": gettext("URL servidor wms")
             },
             {
                 "targets": -1,
                 "data": null,
-                "defaultContent": "<button class=\"delete_button btn btn-danger\">Esborrar</button>",
+                "defaultContent": "<button class=\"delete_button btn btn-danger\">" + gettext('Esborrar') + "</button>",
                 "sortable": false
             }
         ]
@@ -65,7 +65,7 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                toastr.success('Capa WMS creada amb èxit!');
+                toastr.success( gettext('Capa WMS creada amb èxit!') );
                 table.ajax.reload();
                 $('#id_nomcapa').val('');
                 $('.qq-upload-list').empty();
@@ -86,7 +86,7 @@ $(document).ready(function() {
             $('#filename').val('');
             var regex = /^[\w.]{0,256}$/;
             if( regex.exec(fileName) == null){
-                toastr.error('Error a nom de fitxer! Només s\'admeten lletres (majúscules i minúscules), números i el caràcter "_"');
+                toastr.error(gettext('Error a nom de fitxer! Només s\'admeten lletres (majúscules i minúscules), números i el caràcter "_"') );
                 return false;
             }
             this.params.deletePrevious = true;
@@ -94,15 +94,15 @@ $(document).ready(function() {
         onComplete: function(id, fileName, responseJSON) {
             if(responseJSON.success) {
                 $('#filename').val(responseJSON.filename);
-                toastr.success('Fitxer carregat al servidor amb èxit!')
+                toastr.success(gettext('Fitxer carregat al servidor amb èxit!'))
             } else {
                 //alert('upload failed!');
-                toastr.error('Error pujant fitxer!')
+                toastr.error(gettext('Error pujant fitxer!'))
             }
         },
         template:'<div class="qq-uploader">' +
-            '<div class="qq-upload-drop-area"><span>Importar shapefile (zip) ò tiff</span></div>' +
-            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">Importar shapefile (zip) ò tiff</div>' +
+            '<div class="qq-upload-drop-area"><span>' + gettext('Importar shapefile (zip) ò tiff') + '</span></div>' +
+            '<div class="qq-upload-button ui-widget-content ui-button ui-corner-all ui-state-default">' + gettext('Importar shapefile (zip) ò tiff') + '</div>' +
             '<ul class="qq-upload-list"></ul>' +
             '</div>',
         params: {
@@ -118,11 +118,11 @@ $(document).ready(function() {
         var nomCapa = $('#id_nomcapa').val();
         var errorMsg = "";
         if(filename == '' || filename == null){
-            errorMsg += '<p>Cal seleccionar un fitxer shapefile comprimit en zip, o bé un ràster TIFF</p>';
+            errorMsg += '<p>' + gettext('Cal seleccionar un fitxer shapefile comprimit en zip, o bé un ràster TIFF') + '</p>';
             errors = true;
         }
         if(nomCapa == '' || nomCapa == null){
-            errorMsg += '<p>Cal posar un nom a la capa (un títol)</p>';
+            errorMsg += '<p>' + gettext('Cal posar un nom a la capa (un títol)') + '</p>';
             errors = true;
         }
         if(errors){
@@ -143,11 +143,11 @@ $(document).ready(function() {
                 }
             },
             success: function( data, textStatus, jqXHR ) {
-                 toastr.success("Esborrat amb èxit!");
+                 toastr.success(gettext('Esborrat amb èxit!'));
                  table.ajax.reload();
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error esborrant");
+                toastr.error(gettext('Error esborrant'));
             }
         });
     };
@@ -156,7 +156,7 @@ $(document).ready(function() {
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
-                modal: true, title: 'Esborrant capa wms local...', zIndex: 10000, autoOpen: true,
+                modal: true, title: gettext('Esborrant capa wms local...'), zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
                 buttons: {
                     Yes: function () {
@@ -177,6 +177,6 @@ $(document).ready(function() {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
         var id = row.data().id
-        confirmDialog("S'esborrarà la capa local WMS, incloent la capa del servidor geoserver. Vols continuar?",id);
+        confirmDialog(gettext('S\'esborrarà la capa local WMS, incloent la capa del servidor geoserver. Vols continuar?'),id);
     });
 });

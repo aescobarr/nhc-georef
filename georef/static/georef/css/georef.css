@@ -375,3 +375,13 @@ table.toponimsimportats tbody tr.odd{
     color: green;
     font-size: 12px;
 }
+
+.page-header {
+	/* padding-bottom: 9px; */
+	margin: 10px 0 10px;
+	border-bottom: none;
+}
+
+.navbar-nav > li > a {
+	font-size: 12px;
+}

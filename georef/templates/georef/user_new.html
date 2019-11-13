@@ -23,35 +23,35 @@
     <form action="{% url 'user_new' %}" onsubmit="return checkPermissions()" method="POST">
     {% csrf_token %}
         <div class="page-header">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                    <li class="breadcrumb-item">{% trans 'Sessió' %}</li>
+                    <li class="breadcrumb-item active">{% trans 'Perfil' %}</li>
+                </ol>
+            </div>
         </div>
         <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-                <li class="breadcrumb-item">Sessió</li>
-                <li class="breadcrumb-item active">Perfil</li>
-            </ol>
-        </div>
-        <div class="container">
-            <input role="button" class="btn btn-success"  type="submit" value="Desar" />
+            <input role="button" class="btn btn-success"  type="submit" value="{% trans 'Desar' %}" />
         </div>
         <div class="container">
             <div class="form-errors"></div>
         </div>
         <div class="container separador_seccio">
-            <p><strong>Dades usuari:</strong></p>
+            <p><strong>{% trans 'Dades usuari' %}:</strong></p>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="user_form.first_name.id_for_label">Nom:</label>
+                        <label for="user_form.first_name.id_for_label">{% trans 'Nom' %}:</label>
                         {{ user_form.first_name }}
                         {{ user_form.first_name.errors }}
                     </div>
                 </div>
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="user_form.last_name.id_for_label">Cognom:</label>
+                        <label for="user_form.last_name.id_for_label">{% trans 'Cognom' %}:</label>
                         {{ user_form.last_name }}
                         {{ user_form.last_name.errors }}
                     </div>
@@ -60,7 +60,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label for="user_form.email.id_for_label">Correu electrònic:</label>
+                        <label for="user_form.email.id_for_label">{% trans 'Correu electrònic' %}:</label>
                         {{ user_form.email }}
                         {{ user_form.email.errors }}
                     </div>
@@ -71,7 +71,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label for="user_form.username.id_for_label">Nom d'usuari:</label>
+                        <label for="user_form.username.id_for_label">{% trans "Nom d'usuari" %}:</label>
                         {{ user_form.username }}
                         {{ user_form.username.errors }}
                     </div>
@@ -82,40 +82,40 @@
             <div class="row">
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="user_form.password.id_for_label">Password:</label>
+                        <label for="user_form.password.id_for_label">{% trans "Password" %}:</label>
                         {{ user_form.password }}
                         {{ user_form.password.errors }}
                     </div>
                 </div>
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <label for="password_2">Password(repetir):</label>
+                        <label for="password_2">{% trans "Password(repetir)" %}:</label>
                         <input id="password_2" class="form-control" name="password_2" required="" type="password">
                     </div>
                 </div>
             </div>
         </div>
         <div class="container separador_seccio">
-            <p><strong>Permisos:</strong></p>
+            <p><strong>{% trans "Permisos" %}:</strong></p>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-xs-4">
                     <div class="form-check">
                         {{ profile_form.permission_administrative }}
-                        <label class="form-check-label" for="profile_form.permission_administrative.id_for_label">Administració</label>
+                        <label class="form-check-label" for="profile_form.permission_administrative.id_for_label">{% trans "Administració" %}</label>
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-check">
                         {{ profile_form.permission_filter_edition }}
-                        <label class="form-check-label" for="profile_form.permission_filter_edition.id_for_label">Edició filtres</label>
+                        <label class="form-check-label" for="profile_form.permission_filter_edition.id_for_label">{% trans "Edició filtres" %}</label>
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-check">
                         {{ profile_form.permission_tesaure_edition }}
-                        <label class="form-check-label" for="profile_form.permission_tesaure_edition.id_for_label">Edició tesaures</label>
+                        <label class="form-check-label" for="profile_form.permission_tesaure_edition.id_for_label">{% trans "Edició tesaures" %}</label>
                     </div>
                 </div>
             </div>
@@ -123,13 +123,13 @@
                 <div class="col-xs-4">
                     <div class="form-check">
                         {{ profile_form.permission_toponim_edition }}
-                        <label class="form-check-label" for="profile_form.permission_toponim_edition.id_for_label">Edició topònim</label>
+                        <label class="form-check-label" for="profile_form.permission_toponim_edition.id_for_label">{% trans "Edició topònim" %}</label>
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="form-check">
                         {{ profile_form.permission_recurs_edition }}
-                        <label class="form-check-label" for="profile_form.permission_recurs_edition.id_for_label">Edició recurs cartogràfic</label>
+                        <label class="form-check-label" for="profile_form.permission_recurs_edition.id_for_label">{% trans "Edició recurs cartogràfic" %}</label>
                     </div>
                 </div>
             </div>
@@ -139,7 +139,7 @@
             <div id="jstree"></div>
         </div>
         <div class="container separador_seccio">
-            <input role="button" class="btn btn-success" type="submit" value="Desar" />
+            <input role="button" class="btn btn-success" type="submit" value="{% trans 'Desar' %}" />
         </div>
         <div class="container">
             <div class="form-errors"></div>

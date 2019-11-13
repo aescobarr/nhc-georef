@@ -5,6 +5,7 @@ from django.forms import ModelForm
 from django.forms import inlineformset_factory
 from datetimewidget.widgets import DateWidget
 from georef_addenda.models import Profile
+from djangoref import settings
 
 
 class ChangePasswordForm(forms.Form):

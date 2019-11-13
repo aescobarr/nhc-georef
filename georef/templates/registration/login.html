@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load bootstrap3 %}
 {% block main %}
     <main>
@@ -8,7 +9,7 @@
             {% csrf_token %}
             {% bootstrap_form form %}
             {% buttons %}
-            <button type="submit">Iniciar sessió</button>
+            <button type="submit">{% trans "Iniciar sessió" %}</button>
             {% endbuttons %}
             </form>
         </div>

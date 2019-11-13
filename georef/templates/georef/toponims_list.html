@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
@@ -83,13 +84,13 @@
         <input type="hidden" name="CQL_FILTER" id="CQL_FILTER" value="" />
     </form>
     <div class="page-header">
-    </div>
-    <div class="container">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-            <li class="breadcrumb-item">Topònims</li>
-            <li class="breadcrumb-item active">Llistat</li>
-        </ol>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Topònims' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Llistat' %}</li>
+            </ol>
+        </div>
     </div>
     <div class="container">
         <div class="pull-right">
@@ -104,27 +105,27 @@
         <div class="row">
             <div class="col-md-7">
                 <div class="wrapper clear_blue">
-                    <button data-toggle="tooltip" data-placement="left" title="Afegeix una nova condició a la taula de filtre. Es pot modificar els paràmetres de la condició un cop apareix a la taula." id="addCondicio" type="button" class="btn btn-primary">Afegir condició <i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_add_condicio' %}" id="addCondicio" type="button" class="btn btn-primary">{% trans "Afegir condició" %} <i class="fa fa-plus" aria-hidden="true"></i></button>
                     <table id="taulafiltre">
                         <tbody>
                             <tr>
-                                <td><strong>Operador</strong></td>
-                                <td><strong>NOT</strong></td>
-                                <td><strong>Condició</strong></td>
-                                <td><strong>Valor</strong></td>
+                                <td><strong>{% trans "Operador" %}</strong></td>
+                                <td><strong>{% trans "NOT" %}</strong></td>
+                                <td><strong>{% trans "Condició" %}</strong></td>
+                                <td><strong>{% trans "Valor" %}</strong></td>
                                 <td>&nbsp;</td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="row container no_side_margin">
-                        <button data-toggle="tooltip" data-placement="left" title="Executa una cerca, segons les condicions definides. La cerca mostrarà els resultats a la taula de recursos de georeferenciació i al mapa." id="doFilter" type="button" class="btn btn-primary">Filtrar <i class="fa fa-filter" aria-hidden="true"></i></button>
-                        <button data-toggle="tooltip" data-placement="right" title="Elimina totes les condicions de filtre. La taula i el mapa perdran qualsevol filtre aplicat." id="doClear" type="button" class="btn btn-danger">Netejar filtre <i class="fa fa-close" aria-hidden="true"></i></button>
+                        <button data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_filter' %}" id="doFilter" type="button" class="btn btn-primary">{% trans "Filtrar" %} <i class="fa fa-filter" aria-hidden="true"></i></button>
+                        <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_clear_filter' %}" id="doClear" type="button" class="btn btn-danger">{% trans "Netejar filtre" %} <i class="fa fa-close" aria-hidden="true"></i></button>
                     </div>
                     <div class="row container no_side_margin">
-                        <label class="iconainfo"  data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un filtre prèviament desat. Llavors apareixerà un llistat amb els filtres que conténen el text escrit i l'usuari en podrà triar un. Si no recordes o no saps el nom de cap filtre, a Menú->Topòmims->Llistat de filtres de topònims hi ha la llista completa." for="saveDoFilter">Carregar filtre</label>
+                        <label class="iconainfo"  data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_filter_load' %}" for="saveDoFilter">{% trans "Carregar filtre" %}</label>
                         <input id="autoc_filtres" type="text">
                         {% if user.profile.is_admin or user.profile.can_edit_filtre or user.is_superuser %}
-                        <button data-toggle="tooltip" data-placement="right" title="Aquí pots desar un filtre que hagis creat. Escriu un nom força descriptiu a la casella de text (que no existeixi ja) i prem el botó. Podràs recuperar el filtre escrivint el nom o part d'ell a la casella de text." id="saveDoFilter" type="button" class="btn btn-primary">Desar i filtrar <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
+                        <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_filter_save' %}" id="saveDoFilter" type="button" class="btn btn-primary">{% trans "Desar i filtrar" %} <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
                         {% endif %}
                     </div>
                 </div>
@@ -135,14 +136,14 @@
             </div>
             <div class="col-md-5">
                 {% if user.profile.is_admin or user.profile.can_edit_toponim or user.is_superuser %}
-                <button data-toggle="tooltip" data-placement="right" title="Fes clic aquí per accedir a la fitxa de creació de Topònims" id="addToponim" type="button" class="btn btn-primary">Afegir <i class="fa fa-plus" aria-hidden="true"></i></button>
+                <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_add_toponym' %}" id="addToponim" type="button" class="btn btn-primary">{% trans 'Afegir' %} <i class="fa fa-plus" aria-hidden="true"></i></button>
                 {% endif %}
                 <table id="toponims_list" style="width:100%;"></table>
             </div>
         </div>
     </div>
-    <div id="dialog-confirm" title="Confirmar sobreescriure filtre" style="display:none;">
-        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Ja hi ha un filtre amb aquest nom, el vols sobreescriure?</p>
+    <div id="dialog-confirm" title="{% trans 'Confirmar sobreescriure filtre' %}" style="display:none;">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{% trans 'msg_warn_overwrite_filter' %}</p>
     </div>
 </main>
 {% endblock %}
@@ -156,12 +157,12 @@
         valorsOperadors[1] = {id : "or", value : "OR" };
 
         var valorsCondicions = new Array();
-        valorsCondicions[0] = {id : "nom",value : "Nom"};
-        valorsCondicions[1] = {id : "nomautor",value : "Autor"};
-        valorsCondicions[2] = {id : "tipus",value : "Tipus"};
-        valorsCondicions[3] = {id : "pais",value : "País"};
-        valorsCondicions[4] = {id : "aquatic",value : "Aquàtic?"};
-        valorsCondicions[5] = {id : "geografic",value : "Filtre geogràfic"};
+        valorsCondicions[0] = {id : "nom",value : "{% trans 'Nom' %}"};
+        valorsCondicions[1] = {id : "nomautor",value : "{% trans 'Autor' %}"};
+        valorsCondicions[2] = {id : "tipus",value : "{% trans 'Tipus' %}"};
+        valorsCondicions[3] = {id : "pais",value : "{% trans 'País' %}"};
+        valorsCondicions[4] = {id : "aquatic",value : "{% trans 'Aquàtic' %}?"};
+        valorsCondicions[5] = {id : "geografic",value : "{% trans 'Filtre geogràfic' %}"};
 
         var valorsAquatic = new Array();
         valorsAquatic[0] = {id : "S",value : "Sí"};
@@ -181,9 +182,6 @@
         {% for pais in llista_paisos %}
             valorsPaisos.push({id:"{{ pais.id }}",value:"{{ pais.nom }}"});
         {% endfor %}
-
-        var txtBotoEsborrarCondicioFiltre = 'Esborrar';
-        var txtFuncionamentFiltreCarto = 'Cal digitalitzar una geometria sobre el mapa';
 
         var editableLayers;
         var controlCapes;

@@ -1,4 +1,5 @@
 {% extends "georef/base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'jquery-ui/themes/base/jquery-ui.min.css' %}" rel="stylesheet">
@@ -12,8 +13,6 @@
         for(var i = 0; i < node_list_full.length; i++){
             node_list.push(node_list_full[i].split('$')[0]);
         }
-        /*var node_list_full = [];*/
-        /*var node_ini = "1";*/
         var node_ini = "{{ node_ini }}";
     </script>
     <script>
@@ -23,45 +22,45 @@
 {% block main %}
 <main>
     <div class="page-header">
-    </div>
-    <div class="container">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inici</a></li>
-            <li class="breadcrumb-item">Topònims</li>
-            <li class="breadcrumb-item active">Creació de topònim</li>
-        </ol>
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans 'Inici' %}</a></li>
+                <li class="breadcrumb-item">{% trans 'Topònims' %}</li>
+                <li class="breadcrumb-item active">{% trans 'Creació de topònim' %}</li>
+            </ol>
+        </div>
     </div>
     <div class="container">
         <form action="{% url 'toponims_create' %}" onsubmit="return validate_toponim_create()" method="post">
             {% csrf_token %}
             <div class="container">
-                <a role="button" class="btn btn-success" href="{% url 'toponims' %}">Cancel·lar</a>
-                <input role="button" class="btn btn-success" type="submit" value="Desar" />
+                <a role="button" class="btn btn-success" href="{% url 'toponims' %}">{% trans 'Cancel·lar' %}</a>
+                <input role="button" class="btn btn-success" type="submit" value="{% trans 'Desar' %}" />
             </div>
             <div class="container separador_seccio">
-                <p><strong>Dades bàsiques:</strong></p>
+                <p><strong>{% trans 'Dades bàsiques' %}:</strong></p>
             </div>
             <div class="container">
                 <div class="row">
                     <div class="col-sm-6">
                         <table id="toponim_edit">
                             <tr>
-                                <th><label for="{{ form.nom.id_for_label }}">Nom:</label></th>
+                                <th><label for="{{ form.nom.id_for_label }}">{% trans 'Nom' %}:</label></th>
                                 <td>{{ form.nom }}</td>
                                 <td>{{ form.nom.errors }}</td>
                             </tr>
                             <tr>
-                                <th><label for="{{ form.idtipustoponim.id_for_label }}">Tipus:</label></th>
+                                <th><label for="{{ form.idtipustoponim.id_for_label }}">{% trans 'Tipus' %}:</label></th>
                                 <td>{{ form.idtipustoponim }}</td>
                                 <td>{{ form.idtipustoponim.errors }}</td>
                             </tr>
                             <tr>
-                                <th><label for="{{ form.idpais.id_for_label }}">País:</label></th>
+                                <th><label for="{{ form.idpais.id_for_label }}">{% trans 'País' %}:</label></th>
                                 <td>{{ form.idpais }}</td>
                                 <td>{{ form.idpais.errors }}</td>
                             </tr>
                             <tr>
-                                <th><label for="{{ form.aquatic.id_for_label }}">Aquàtic?:</label></th>
+                                <th><label for="{{ form.aquatic.id_for_label }}">{% trans 'Aquàtic' %}?:</label></th>
                                 <td>{{ form.aquatic }}</td>
                                 <td>{{ form.aquatic.errors }}</td>
                             </tr>
@@ -69,9 +68,9 @@
                     </div>
                     {{ form.idpare.as_hidden }}
                     <div class="col-sm-6">
-                        <label id="seleccio">Seleccionat: cap</label>
+                        <label id="seleccio">{% trans 'Seleccionat: cap' %}</label>
                         </br>
-                        <label>Topònim pare:</label>
+                        <label>{% trans 'Topònim pare' %}:</label>
                         <div class="scroll_jstree" id="jstree"></div>
                     </div>
                 </div>

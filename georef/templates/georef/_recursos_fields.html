@@ -1,11 +1,12 @@
+{% load i18n %}
 <div class="container">
-    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Tornar al llistat</a>
+    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">{% trans 'Tornar al llistat' %}</a>
     {% if user.profile.is_admin or user.profile.can_edit_recurs or user.is_superuser %}
-    <input role="button" class="btn btn-success" type="submit" value="Desar" />
+    <input role="button" class="btn btn-success" type="submit" value="{% trans 'Desar' %}" />
     {% endif %}
 </div>
 <div class="container separador_seccio">
-    <p><strong>Dades bàsiques:</strong></p>
+    <p><strong>{% trans 'Dades bàsiques' %}:</strong></p>
 </div>
 {% if form.instance.iduser %}
 <div class="container">
@@ -19,14 +20,14 @@
     <div class="row">
         <div class="col-xs-6">
             <div class="form-group">
-                <label for="{{ form.nom.id_for_label }}">Nom:</label>
+                <label for="{{ form.nom.id_for_label }}">{% trans 'Nom' %}:</label>
                 {{ form.nom }}
                 {{ form.nom.errors }}
             </div>
         </div>
         <div class="col-xs-6">
             <div class="form-group">
-                <label for="{{ form.acronim.id_for_label }}">Acrònim:</label>
+                <label for="{{ form.acronim.id_for_label }}">{% trans 'Acrònim' %}:</label>
                 {{ form.acronim }}
                 {{ form.acronim.errors }}
             </div>
@@ -35,14 +36,15 @@
     <div class="row">
         <div class="col-xs-6">
             <div class="form-group">
-                <label for="{{ form.idtipusrecursgeoref.id_for_label }}">Tipus de contingut:</label>
+                <label for="{{ form.idtipusrecursgeoref.id_for_label }}">{% trans 'Tipus de contingut' %}:</label>
                 {{ form.idtipusrecursgeoref }}
                 {{ form.idtipusrecursgeoref.errors }}
             </div>
         </div>
         <div class="col-xs-6">
             <div class="form-group">
-                <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Identificació de la versió disponible o consultada del recurs." for="{{ form.versio.id_for_label }}">Versió:</label>
+                <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_version_tooltip' %}" for="{{ form.versio.id_for_label }}">{% trans 'Versió' %}:</label>
+                <!-- "Identificació de la versió disponible o consultada del recurs." -->
                 {{ form.versio }}
                 {{ form.versio.errors }}
             </div>
@@ -50,18 +52,20 @@
     </div>
     <div class="row">
         <div class="col-xs-6">
-            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'una paraula clau (mínim 3 lletres). Llavors apareixerà un llistat amb les paraules que contenen el text escrit i l'usuari en podrà triar una. Després s'omplirà el control de paraules clau amb la paraula triada. Si una paraula clau no existia, s'afegirà al tesaure de paraules clau automàticament." for="paraulaclau_list">Paraules clau:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_keywords_tooltip' %}" for="paraulaclau_list">{% trans 'Paraules clau' %}:</label>
+            <!-- "A la caixa de text es pot escriure part del nom d'una paraula clau (mínim 3 lletres). Llavors apareixerà un llistat amb les paraules que contenen el text escrit i l'usuari en podrà triar una. Després s'omplirà el control de paraules clau amb la paraula triada. Si una paraula clau no existia, s'afegirà al tesaure de paraules clau automàticament." -->
             <ul id="paraulaclau_list"></ul>
         </div>
         <div class="col-xs-6">
-            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="A la caixa de text es pot escriure part del nom d'un autor (mínim 3 lletres). Llavors apareixerà un llistat amb els autors que contenen el text escrit i l'usuari en podrà triar un. Després s'omplirà el control d'autors amb l'element triat. Si un autor no existia, es crearà i s'afegirà al tesaure d'autors automàticament." for="autor_list">Autors:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_authors_tooltip' %}" for="autor_list">{% trans 'Autors' %}:</label>
+            <!-- "A la caixa de text es pot escriure part del nom d'un autor (mínim 3 lletres). Llavors apareixerà un llistat amb els autors que contenen el text escrit i l'usuari en podrà triar un. Després s'omplirà el control d'autors amb l'element triat. Si un autor no existia, es crearà i s'afegirà al tesaure d'autors automàticament." -->
             <ul id="autor_list"></ul>
         </div>
     </div>
     {% if show_goto_buttons %}
         {% if toponims_basats_recurs %}
     <div class="row">
-        <div class="col-xs-2"><label>Versions de topònims basats en el recurs:</label></div>
+        <div class="col-xs-2"><label>{% trans 'Versions de topònims basats en el recurs' %}:</label></div>
         <div id="toponimsbasats" class="col-xs-10"><ul></ul></div>
     </div>
         {% endif %}
@@ -73,54 +77,58 @@
     </div>
 </div>
 <div class="container separador_seccio">
-    <p><strong>Toponímia:</strong></p>
+    <p><strong>{% trans 'Toponímia' %}:</strong></p>
 </div>
 <div class="container">
     <div class="row">
         <div class="col-xs-6">
-            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="En l’estructura d’informació del recurs identificar el camp d’informació sobre el qual es poden fer cerques toponímiques"for="{{ form.campidtoponim.id_for_label }}">Camp identificador toponímia:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_toponymy_id_field_tooltip' %}" for="{{ form.campidtoponim.id_for_label }}">{% trans 'Camp identificador toponímia' %}:</label>
+            <!-- "En l’estructura d’informació del recurs identificar el camp d’informació sobre el qual es poden fer cerques toponímiques" -->
             {{ form.campidtoponim }}
             {{ form.campidtoponim.errors }}
         </div>
         <div class="col-xs-6">
-            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Fitxer gràfic que conté els límits base a partir dels quals s’obtenen les coordenades" for="{{ form.fitxergraficbase.id_for_label }}">Fitxer gràfic de base:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_base_graphic_file_tooltip' %}" for="{{ form.fitxergraficbase.id_for_label }}">{% trans 'Fitxer gràfic de base' %}:</label>
+            <!-- "Fitxer gràfic que conté els límits base a partir dels quals s’obtenen les coordenades" -->
             {{ form.fitxergraficbase }}
             {{ form.fitxergraficbase.errors }}
         </div>
     </div>
 </div>
 <div class="container separador_seccio">
-    <p><strong>Sistema de referència:</strong></p>
+    <p><strong>{% trans 'Sistema de referència' %}:</strong></p>
 </div>
 <div class="container">
     <div class="row">
         <div class="col-xs-6">
-            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Indicació de datum i projecció" for="{{ form.idsistemareferenciamm.id_for_label }}">Sistema de referència:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_refsys_tooltip' %}" for="{{ form.idsistemareferenciamm.id_for_label }}">{% trans 'Sistema de referència' %}:</label>
+            <!-- "Indicació de datum i projecció" -->
             {{ form.idsistemareferenciamm }}
             {{ form.idsistemareferenciamm.errors }}
         </div>
         <div class="col-xs-6">
-            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="Unitats en què el recurs proporciona les coordenades" for="{{ form.fitxergraficbase.id_for_label }}">Unitats:</label>
+            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'resource_units_tooltip' %}" for="{{ form.fitxergraficbase.id_for_label }}">{% trans 'Unitats' %}:</label>
+            <!-- "Unitats en què el recurs proporciona les coordenades" -->
             {{ form.idtipusunitatscarto }}
             {{ form.idtipusunitatscarto.errors }}
         </div>
     </div>
 </div>
 <div class="container separador_seccio">
-    <p><strong>Recursos WMS:</strong></p>
+    <p><strong>{% trans 'Recursos WMS' %}:</strong></p>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.base_url_wms.id_for_label }}">Servidor WMS:</label>
+            <label for="{{ form.base_url_wms.id_for_label }}">{% trans 'Servidor WMS' %}:</label>
             {{ form.base_url_wms }}
             {{ form.base_url_wms.errors }}
-            <button id="wms_connect" type="button" class="btn btn-primary">Connectar</button>
+            <button id="wms_connect" type="button" class="btn btn-primary">{% trans 'Connectar' %}</button>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label>Capes:</label>
+            <label>{% trans 'Capes' %}:</label>
             <select id="layersWms"></select>
-            <button id="wms_add" type="button" class="btn btn-primary">Afegir</button>
+            <button id="wms_add" type="button" class="btn btn-primary">{% trans 'Afegir' %}</button>
         </div>
     </div>
     <div class="row">
@@ -130,77 +138,77 @@
     </div>
 </div>
 <div class="container separador_seccio">
-    <p><strong>Fonts:</strong></p>
+    <p><strong>{% trans 'Fonts' %}:</strong></p>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.idsuport.id_for_label }}">Tipus de suport:</label>
+            <label for="{{ form.idsuport.id_for_label }}">{% trans 'Tipus de suport' %}:</label>
             {{ form.idsuport }}
             {{ form.idsuport.errors }}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.urlsuport.id_for_label }}">URL o directori:</label>
+            <label for="{{ form.urlsuport.id_for_label }}">{% trans 'URL o directori' %}:</label>
             {{ form.urlsuport }}
             {{ form.urlsuport.errors }}
             {% if show_goto_buttons %}
-                <button type="button" class="btn btn-primary" onclick="javascript:anarAUrl('id_urlsuport');">Anar-hi</button>
+                <button type="button" class="btn btn-primary" onclick="javascript:anarAUrl('id_urlsuport');">{% trans 'Anar-hi' %}</button>
             {% endif %}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.actualitzaciosuport.id_for_label }}">Altres webs:</label>
+            <label for="{{ form.actualitzaciosuport.id_for_label }}">{% trans 'Altres webs' %}:</label>
             {{ form.actualitzaciosuport }}
             {{ form.actualitzaciosuport.errors }}
             {% if show_goto_buttons %}
-                <button type="button" class="btn btn-primary" onclick="javascript:anarAUrl('id_actualitzaciosuport');">Anar-hi</button>
+                <button type="button" class="btn btn-primary" onclick="javascript:anarAUrl('id_actualitzaciosuport');">{% trans 'Anar-hi' %}</button>
             {% endif %}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.ubicaciorecurs.id_for_label }}">Ubicació del recurs:</label>
+            <label for="{{ form.ubicaciorecurs.id_for_label }}">{% trans 'Ubicació del recurs' %}:</label>
             {{ form.ubicaciorecurs }}
             {{ form.ubicaciorecurs.errors }}
         </div>
     </div>
 </div>
 <div class="container separador_seccio">
-    <p><strong>Comentaris:</strong></p>
+    <p><strong>{% trans 'Comentaris' %}:</strong></p>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.comentariinfo.id_for_label }}">Informació:</label>
+            <label for="{{ form.comentariinfo.id_for_label }}">{% trans 'Informació' %}:</label>
             {{ form.comentariinfo }}
             {{ form.comentariinfo.errors }}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.comentariinfo.id_for_label }}">Consulta:</label>
+            <label for="{{ form.comentariinfo.id_for_label }}">{% trans 'Consulta' %}:</label>
             {{ form.comentariconsulta }}
             {{ form.comentariconsulta.errors }}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.comentariqualitat.id_for_label }}">Qualitat:</label>
+            <label for="{{ form.comentariqualitat.id_for_label }}">{% trans 'Qualitat' %}:</label>
             {{ form.comentariqualitat }}
             {{ form.comentariqualitat.errors }}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <label for="{{ form.divisiopoliticoadministrativa.id_for_label }}">Divisió política administrativa:</label>
+            <label for="{{ form.divisiopoliticoadministrativa.id_for_label }}">{% trans 'Divisió política administrativa' %}:</label>
             {{ form.divisiopoliticoadministrativa }}
             {{ form.divisiopoliticoadministrativa.errors }}
         </div>
     </div>
 </div>
 <div class="container">
-    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">Tornar al llistat</a>
+    <a role="button" class="btn btn-success" href="{% url 'recursos' %}">{% trans 'Tornar al llistat' %}</a>
     {% if user.profile.is_admin or user.profile.can_edit_recurs or user.is_superuser %}
-    <input role="button" class="btn btn-success" type="submit" value="Desar" />
+    <input role="button" class="btn btn-success" type="submit" value="{% trans 'Desar' %}" />
     {% endif %}
 </div>
 <input id="geometria" name="geometria" type="hidden" value=""/>
