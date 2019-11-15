@@ -50,10 +50,33 @@ $(document).ready(function() {
             'dataType': 'json',
             'data': function(d){
                 var valorFiltre = getCookie('filtre_t');
+                var valorOrg = getCookie('torg' + current_user_id);
                 if(valorFiltre){
-                    d.filtrejson = valorFiltre;
+                    if(valorOrg == ''){
+                        d.filtrejson = valorFiltre;
+                    }else{
+                        //Add org filter condition
+                        var filtreJson = JSON.parse(valorFiltre);
+                        if ( filtreJson.filtre.length > 0 ){
+                            filtreJson.filtre.push( { "condicio":"org", "not":"", "operador":"and", "text_valor":"", "valor":valorOrg } );
+                        }else{
+                            filtreJson.filtre.push( { "condicio":"org", "not":"", "operador":"", "text_valor":"", "valor":valorOrg } );
+                        }
+                        d.filtrejson = JSON.stringify(filtreJson);
+                    }
                 }else{
-                    d.filtrejson = extreureJSONDeFiltre();
+                    if(valorOrg == '' || valorOrg != current_user_idorg){
+                        d.filtrejson = extreureJSONDeFiltre();
+                    }else{
+                        //Add org filter condition
+                        var filtreJson = JSON.parse(valorFiltre);
+                        if ( filtreJson.filtre.length > 0 ){
+                            filtreJson.filtre.push( { "condicio":"org", "not":"", "operador":"and", "text_valor":"", "valor":valorOrg } );
+                        }else{
+                            filtreJson.filtre.push( { "condicio":"org", "not":"", "operador":"", "text_valor":"", "valor":valorOrg } );
+                        }
+                        d.filtrejson = JSON.stringify(filtreJson);
+                    }
                 }
             }
         },
@@ -64,7 +87,6 @@ $(document).ready(function() {
         'pagingType': 'full_numbers',
         'bLengthChange': false,
         stateSave: true,
-        //"dom": '<"toolbar"><"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
         'dom': '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
         stateSaveCallback: function(settings,data) {
             localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) );
@@ -76,10 +98,11 @@ $(document).ready(function() {
             { 'data': 'nom_str' }
             ,{ 'data': 'aquatic_str' }
             ,{ 'data': 'idtipustoponim.nom' }
+            ,{ 'data': 'idorganization.name' }
         ],
         'columnDefs': [
             {
-                'targets': 3,
+                'targets': 4,
                 'data': 'editable',
                 'sortable': false,
                 'render': function(value){
@@ -91,7 +114,7 @@ $(document).ready(function() {
                 }
             },
             {
-                'targets': 4,
+                'targets': 5,
                 'data': 'editable',
                 'sortable': false,
                 'render': function(value){
@@ -109,6 +132,19 @@ $(document).ready(function() {
             {
                 'targets':2,
                 'title': gettext('Tipus')
+            },
+            {
+                'targets':3,
+                'title': gettext('Organització'),
+                'render': function(value){
+                    if(value){
+                        //console.log(value);
+                        return value;
+                    }else{
+                        return gettext('No assignada');
+                        //console.log(value);
+                    }
+                }
             }
         ]
     } );
@@ -499,16 +535,27 @@ $(document).ready(function() {
 
     map = new djangoRef.Map.createMap(map_options);
 
+    $('.btn.btn-default.sometbtn').click( function(e) {
+        $('.btn-group').find('.btn').toggleClass('active');
+        setCookie('torg' + current_user_id,$(this).data('idorg'));
+        filter();
+    });
+
+    $('.btn.btn-default.alltbtn').click( function(e) {
+        $('.btn-group').find('.btn').toggleClass('active');
+        setCookie('torg' + current_user_id,'');
+        filter();
+    });
+
+    var idorg = getCookie('torg'  + current_user_id);
+    if( idorg != '' ){
+        $('.btn.btn-default.sometbtn').addClass('active');
+        $('.btn.btn-default.alltbtn').removeClass('active');
+    }
+
+    setTimeout(function(){ filterMap(); }, 1000);
 
 });
-
-/*
-var filtrarPerLletra = function(elem, lletra){
-    $('#lletresllistat a.selected').removeClass('selected');
-    $(elem).addClass('selected');
-    table.draw();
-};
-*/
 
 
 $(window).bind('beforeunload', function(){

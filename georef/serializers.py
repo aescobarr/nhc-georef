@@ -1,9 +1,14 @@
 from rest_framework import serializers
 from georef.models import Toponim, Tipustoponim, Filtrejson, Recursgeoref, Toponimversio, Paraulaclau, Capawms, \
     Capesrecurs, Qualificadorversio, Pais, Tipusrecursgeoref, Suport, Tipusunitats, Sistemareferenciamm
-from georef_addenda.models import Profile, Autor
+from georef_addenda.models import Profile, Autor, Organization
 from django.contrib.auth.models import User
 import json
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = '__all__'
 
 
 class TipusToponimSerializer(serializers.ModelSerializer):
@@ -20,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
+    organization = OrganizationSerializer()
     class Meta:
         model = Profile
         fields = '__all__'
@@ -58,15 +64,20 @@ class ToponimSearchSerializer(serializers.ModelSerializer):
         else:
             return darrera_versio.get_incertesa_centroide
 
+
 class ToponimSerializer(serializers.ModelSerializer):
     aquatic_str = serializers.ReadOnlyField()
     nom_str = serializers.ReadOnlyField()
     idtipustoponim = TipusToponimSerializer(required=True)
+    idorganization = OrganizationSerializer()
     editable = serializers.SerializerMethodField()
 
     class Meta:
         model = Toponim
         fields = '__all__'
+
+    def get_org(self, obj):
+        pass
 
     def get_editable(self, obj):
         user = self.context['request'].user

@@ -20,6 +20,15 @@ function transformarCondicioPaisACQL(idpais){
     return filtre;
 }
 
+function transformarCondicioOrgACQL(idorg){
+    var filtre = new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: 'idorg',
+        value: parseInt(idorg)
+    });
+    return filtre;
+}
+
 function transformarCondicioTipusACQL(idtipus){
     var filtre = new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
@@ -73,6 +82,8 @@ function transformarCondicioFiltreJSONACQL(filtreAnterior,operador,condicio,valo
         }else{
             filtreNou = transformarCondicioPartNomACQL(valor);
         }
+    }else if('org'==condicio){
+        filtreNou = transformarCondicioOrgACQL(valor);
     }else if('tipus'==condicio){
         if('S'==not){
             filtreNou = transformarNotCQL(transformarCondicioTipusACQL(valor));

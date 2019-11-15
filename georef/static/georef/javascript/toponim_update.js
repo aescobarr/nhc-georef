@@ -615,6 +615,7 @@ $(document).ready(function() {
             djangoRef_map.editableLayers.addLayer(l);
         }
     );
+    refreshDigitizedGeometry();
     if(stored_centroid_radius_m){
         /*$$*/
         /*djangoRef_map.refreshCentroid(stored_centroid_radius_m/1000);*/

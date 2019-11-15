@@ -8,7 +8,7 @@ import json
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, pkgen
-from georef_addenda.models import Autor
+from georef_addenda.models import Autor, Organization
 from georef.geom_utils import *
 import datetime
 import itertools
@@ -88,6 +88,10 @@ class Toponim(models.Model):
     idtipustoponim = models.ForeignKey(Tipustoponim, models.CASCADE, db_column='idtipustoponim')
     idpais = models.ForeignKey(Pais, models.CASCADE, db_column='idpais', blank=True, null=True)
     idpare = models.ForeignKey('self', models.DO_NOTHING, db_column='idpare', blank=True, null=True)
+    # This field holds the organization to which the last toponym version author belongs
+    # it is automatically updated when somebody edits/adds/deletes the versions, and should not be
+    # edited directly
+    idorganization = models.ForeignKey(Organization, models.SET_NULL, blank=True, null=True)
     nom_fitxer_importacio = models.CharField(max_length=255, blank=True, null=True)
     linia_fitxer_importacio = models.TextField(blank=True, null=True)
     denormalized_toponimtree = models.TextField(blank=True, null=True)
@@ -145,6 +149,8 @@ class Toponim(models.Model):
     def crea_query_de_filtre(json_filtre):
         accum_query = None
         for condicio in json_filtre:
+            if condicio['condicio'] == 'org':
+                accum_query = append_chain_query(accum_query, Q(idorganization__id=condicio['valor']), condicio)
             if condicio['condicio'] == 'nom':
                 if condicio['not'] == 'S':
                     accum_query = append_chain_query(accum_query, ~Q(nom__icontains=condicio['valor']), condicio)
@@ -574,8 +580,8 @@ def my_callback(sender, instance, *args, **kwargs):
     instance.denormalized_toponimtree = recalc_denormalized_toponim_tree
 
 
-@receiver(post_delete, sender=Toponimversio)
-def reassign_last_version(sender, instance, *args, **kwargs):
+@receiver(post_save, sender=Toponimversio)
+def update_toponim_org(sender, instance, *args, **kwargs):
     versions = Toponimversio.objects.filter(idtoponim__id=instance.idtoponim_id)
     max = -1
     darrer = None
@@ -584,5 +590,25 @@ def reassign_last_version(sender, instance, *args, **kwargs):
             max = versio.numero_versio
             darrer = versio
     if darrer is not None:
-        darrer.last_version = True
-        darrer.save()
+        darrer.idtoponim.idorganization_id = darrer.iduser.profile.organization
+        darrer.idtoponim.save()
+
+
+@receiver(post_delete, sender=Toponimversio)
+def reassign_last_version(sender, instance, *args, **kwargs):
+    versions = Toponimversio.objects.filter(idtoponim__id=instance.idtoponim_id)
+    max = -1
+    darrer = None
+    if len(versions) == 0:
+        instance.idtoponim.idorganization_id = None
+        instance.idtoponim.save()
+    else:
+        for versio in versions:
+            if versio.numero_versio > max:
+                max = versio.numero_versio
+                darrer = versio
+        if darrer is not None:
+            darrer.last_version = True
+            darrer.save()
+            darrer.idtoponim.idorganization_id = darrer.iduser.profile.organization
+            darrer.idtoponim.save()

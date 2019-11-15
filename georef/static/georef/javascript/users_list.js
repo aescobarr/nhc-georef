@@ -24,6 +24,7 @@ $(document).ready(function() {
             ,{ 'data': 'user.first_name' }
             ,{ 'data': 'user.last_name' }
             ,{ 'data': 'user.email' }
+            ,{ 'data': 'organization.name' }
         ],
         'columnDefs': [
             {
@@ -43,19 +44,23 @@ $(document).ready(function() {
                 'title': gettext('Correu-e')
             },
             {
-                'targets': 4,
-                'data': null,
-                'sortable': false,
-                'defaultContent': '<button title="' + gettext('Esborrar usuari') + '" class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
+                'targets':4,
+                'title': gettext('Organització')
             },
             {
                 'targets': 5,
                 'data': null,
                 'sortable': false,
-                'defaultContent': '<button title="' + gettext('Editar perfil') + '" class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+                'defaultContent': '<button title="' + gettext('Esborrar usuari') + '" class="delete_button btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>'
             },
             {
                 'targets': 6,
+                'data': null,
+                'sortable': false,
+                'defaultContent': '<button title="' + gettext('Editar perfil') + '" class="edit_button btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'
+            },
+            {
+                'targets': 7,
                 'data': null,
                 'sortable': false,
                 'defaultContent': '<button title="' + gettext('Canviar password') + '" class="chgpsswd_button btn btn-danger"><i class="fa fa-lock"></i></button>'

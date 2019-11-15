@@ -93,6 +93,12 @@
         </div>
     </div>
     <div class="container">
+        <div class="btn-group" role="group">
+            <button class="btn btn-default alltbtn active">Mostrant tots els topònims</button>
+            <button data-idorg="{{ user.profile.organization.id }}" class="btn btn-default sometbtn">Mostrant només els topònims de <b>'{{ user.profile.organization.name }}'</b></button>
+        </div>
+    </div>
+    <div class="container">
         <div class="pull-right">
                 <a class="imatge_shp" href="#" onclick="javascript:exportSHP(); return false;"></a>
                 <a class="imatge_kml" href="#" onclick="javascript:exportKML(); return false;"></a>
@@ -185,6 +191,7 @@
 
         var editableLayers;
         var controlCapes;
+        var current_user_id = '{{ user.id }}';
 
     </script>
     <script src="{{ google_maps }}" async defer></script>

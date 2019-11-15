@@ -261,14 +261,29 @@ function clearTaula(idtaula){
     $('#' + idtaula).find('tr[id*="fila_"]').remove();
 }
 
-function filter(){
+function filterMap(){
     var valorJson = extreureJSONDeFiltre();
     setCookie('filtre_t',valorJson,1);
+    var valorOrg = getCookie('torg' + current_user_id);
+    if(valorOrg != ''){
+        //Append org filter
+        var filtreJson = JSON.parse(valorJson);
+        if ( filtreJson.filtre.length > 0 ){
+            filtreJson.filtre.push( { "condicio":"org", "not":"", "operador":"and", "text_valor":"", "valor":valorOrg } );
+        }else{
+            filtreJson.filtre.push( { "condicio":"org", "not":"", "operador":"", "text_valor":"", "valor":valorOrg } );
+        }
+        valorJson = JSON.stringify(filtreJson);
+    }
     var activeOverlays = djangoRef.Map.getActiveOverlays();
     for(var i = 0; i < activeOverlays.length; i++){
         var layer = activeOverlays[i];
         filterCQL(valorJson,layer);
     }
+}
+
+function filter(){
+    filterMap();
     table.ajax.reload();
 }
 

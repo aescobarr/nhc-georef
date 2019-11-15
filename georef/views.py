@@ -6,9 +6,9 @@ from rest_framework import status, viewsets
 from georef.serializers import ToponimSerializer, FiltrejsonSerializer, RecursgeorefSerializer, ToponimVersioSerializer, \
     UserSerializer, ProfileSerializer, ParaulaClauSerializer, AutorSerializer, CapawmsSerializer, ToponimSearchSerializer, \
     QualificadorversioSerializer, PaisSerializer, TipusrecursgeorefSerializer, SuportSerializer, TipusToponimSerializer, \
-    TipusunitatsSerializer, SistemareferenciammSerializer
+    TipusunitatsSerializer, SistemareferenciammSerializer, OrganizationSerializer
 from georef.models import Toponim, Filtrejson, Recursgeoref, Paraulaclau, Autorrecursgeoref, Tipusunitats
-from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio, HelpFile
+from georef_addenda.models import Profile, Autor, GeometriaRecurs, GeometriaToponimVersio, HelpFile, Organization
 from georef_addenda.forms import HelpfileForm
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -37,7 +37,7 @@ from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from georef.forms import ToponimsUpdateForm, ToponimversioForm, ProfileForm, UserForm, ChangePasswordForm, NewUserForm, \
-    RecursForm
+    RecursForm, NewUserProfileForm
 from django.forms import formset_factory
 from django.db import IntegrityError, transaction
 from georef.tasks import compute_denormalized_toponim_tree_val, format_denormalized_toponimtree, \
@@ -256,6 +256,15 @@ class TipusSuportViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(nom__icontains=name)
         return queryset
 
+class OrganizationViewSet(viewsets.ModelViewSet):
+    serializer_class = OrganizationSerializer
+
+    def get_queryset(self):
+        queryset = Organization.objects.all()
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset
 
 class TipusrecursgeorefViewSet(viewsets.ModelViewSet):
     serializer_class = TipusrecursgeorefSerializer
@@ -481,11 +490,11 @@ def switch_user_language(request):
 @api_view(['GET'])
 def users_datatable_list(request):
     if request.method == 'GET':
-        search_field_list = ('user.username', 'user.first_name', 'user.last_name', 'user.email')
+        search_field_list = ('user.username', 'user.first_name', 'user.last_name', 'user.email', 'organization.name',)
         sort_translation_list = {'user.username': 'user__username', 'user.first_name': 'user__first_name',
-                                 'user.last_name': 'user__last_name', 'user.email': 'user__email'}
+                                 'user.last_name': 'user__last_name', 'user.email': 'user__email', 'organization.name':'organization__name'}
         field_translation_list = {'user.username': 'user__username', 'user.first_name': 'user__first_name',
-                                  'user.last_name': 'user__last_name', 'user.email': 'user__email'}
+                                  'user.last_name': 'user__last_name', 'user.email': 'user__email', 'organization.name':'organization__name'}
         response = generic_datatable_list_endpoint(request, search_field_list, Profile, ProfileSerializer,
                                                    field_translation_list, sort_translation_list)
         return response
@@ -554,6 +563,13 @@ def paraulaclau_datatable_list(request):
         response = generic_datatable_list_endpoint(request, search_field_list, Paraulaclau, ParaulaClauSerializer)
         return response
 
+
+@api_view(['GET'])
+def organizations_datatable_list(request):
+    if request.method == 'GET':
+        search_field_list = ('name',)
+        response = generic_datatable_list_endpoint(request, search_field_list, Organization, OrganizationSerializer)
+        return response
 
 @api_view(['GET'])
 def paisos_datatable_list(request):
@@ -1142,11 +1158,12 @@ def toponims_update_2(request, idtoponim=None, idversio=None):
                 darrer.save()
 
                 json_geometry_string = request.POST["geometria"]
-                json_geometry = json.loads(json_geometry_string)
-                for feature in json_geometry['features']:
-                    feature_geometry = GEOSGeometry(json.dumps(feature['geometry']))
-                    g = GeometriaToponimVersio(idversio=toponimversio, geometria=feature_geometry)
-                    g.save()
+                if json_geometry_string != '':
+                    json_geometry = json.loads(json_geometry_string)
+                    for feature in json_geometry['features']:
+                        feature_geometry = GEOSGeometry(json.dumps(feature['geometry']))
+                        g = GeometriaToponimVersio(idversio=toponimversio, geometria=feature_geometry)
+                        g.save()
 
                 url = reverse('toponims_update_2', kwargs={'idtoponim': form.instance.id, 'idversio': idversio})
                 return HttpResponseRedirect(url)
@@ -1511,7 +1528,7 @@ def user_new(request):
     nodelist_full = []
     if request.method == 'POST':
         user_form = NewUserForm(request.POST or None)
-        profile_form = ProfileForm(request.POST or None)
+        profile_form = NewUserProfileForm(request.POST or None)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
             profile = profile_form.save(commit=False)
@@ -1528,7 +1545,7 @@ def user_new(request):
             return HttpResponseRedirect(url)
     else:
         user_form = NewUserForm()
-        profile_form = ProfileForm()
+        profile_form = NewUserProfileForm()
     return render(request, 'georef/user_new.html',
                   {'user_form': user_form, 'profile_form': profile_form, 'nodelist_full': nodelist_full})
 
@@ -2175,6 +2192,20 @@ def wmslocal_create(request):
         os.remove(filepath)
         content = {'status': 'KO', 'detail': 'Tipus de fitxer no identificat {}'.format(file_type)}
         return Response(data=content, status=400)
+
+
+@login_required
+def t_organizations(request):
+    context = {
+        'text_field_name': 'name',
+        'column_name': _('Nom organització'),
+        'class_name_sing': _('Organització'),
+        'crud_url': reverse('organizations-list'),
+        'list_url': reverse('organizations_datatable_list'),
+        'instance_label': 't_organizations',
+        'class_full_qualified_name': 'georef_addenda.Organization'
+    }
+    return render(request, 'georef/t_generic.html', context)
 
 
 @login_required

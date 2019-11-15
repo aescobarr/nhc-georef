@@ -23,8 +23,16 @@ class GeometriaRecurs(models.Model):
     geometria = models.GeometryField(srid=4326)
 
 
+class Organization(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey('georef_addenda.Organization', on_delete=models.CASCADE, blank=True, null=True)
     toponim_permission = models.CharField(max_length=200, null=True, blank=True)
     permission_recurs_edition = models.BooleanField(default=False)
     permission_toponim_edition = models.BooleanField(default=False)

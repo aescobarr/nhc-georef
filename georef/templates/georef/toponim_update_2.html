@@ -330,6 +330,7 @@
 
 {% endblock %}
 {% block extra_js %}
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
     <script src="{% static 'georef/javascript/tree_util.js' %}"></script>
     <script src="{{ google_maps }}" async defer></script>

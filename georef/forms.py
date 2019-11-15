@@ -116,16 +116,32 @@ class NewUserForm(forms.ModelForm):
         return password_1
 
 
+class NewUserProfileForm(forms.ModelForm):
+    permission_tesaure_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    permission_administrative = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    permission_filter_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    permission_toponim_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    permission_recurs_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    organization = forms.ModelChoiceField(queryset=Organization.objects.all().order_by('name'), widget=forms.Select(attrs={'class': 'form-control'}), required=True)
+
+    class Meta:
+        model = Profile
+        fields = ('toponim_permission', 'permission_tesaure_edition', 'permission_administrative', 'permission_filter_edition', 'permission_toponim_edition', 'permission_recurs_edition', 'organization')
+        widgets = {
+            'toponim_permission': forms.HiddenInput(),
+        }
+
 class ProfileForm(forms.ModelForm):
     permission_tesaure_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
     permission_administrative = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
     permission_filter_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
     permission_toponim_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
     permission_recurs_edition = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), required=False)
+    organization = forms.ModelChoiceField(queryset=Organization.objects.all().order_by('name'), widget=forms.Select(attrs={'class': 'form-control'}), required=False, disabled=True)
 
     class Meta:
         model = Profile
-        fields = ('toponim_permission', 'permission_tesaure_edition', 'permission_administrative', 'permission_filter_edition', 'permission_toponim_edition', 'permission_recurs_edition', )
+        fields = ('toponim_permission', 'permission_tesaure_edition', 'permission_administrative', 'permission_filter_edition', 'permission_toponim_edition', 'permission_recurs_edition', 'organization')
         widgets = {
             'toponim_permission': forms.HiddenInput(),
         }
