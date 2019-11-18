@@ -2321,7 +2321,8 @@ def create_dependencies_report(accumulated_data, to_delete, depth):
             accumulated_data.append('</ul>')
         else:
             accumulated_data.append('<li>')
-            accumulated_data.append( '<strong>' + elem.__class__.__name__ + '</strong> ' + str(elem) )
+            #accumulated_data.append( '<strong>' + elem.__class__.__name__ + '</strong> ' + str(elem) )
+            accumulated_data.append('<strong>' + str(elem._meta.verbose_name) + '</strong> ' + str(elem))
             accumulated_data.append('</li>')
 
 

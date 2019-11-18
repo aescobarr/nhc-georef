@@ -68,6 +68,27 @@ $(document).ready(function() {
         ]
     } );
 
+    var perform_delete_check = function(id){
+        var def = $.Deferred();
+        $.ajax({
+            url: check_delete_url + '?' + 'mfqn=auth.User&id=' + encodeURI(id),
+            method: 'GET',
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    var csrftoken = getCookie('csrftoken');
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            },
+            success: function( data, textStatus, jqXHR ) {
+                def.resolve({ 'message': data.detail, 'n': data.to_delete_len});
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                def.reject({ 'message': textStatus, 'n': -1});
+            }
+        });
+        return def.promise();
+    }
+
     var delete_usuari = function(id){
         $.ajax({
             url: _user_delete_url + id,
@@ -89,6 +110,39 @@ $(document).ready(function() {
     };
 
     var confirmDialog = function(message,id){
+        perform_delete_check(id).then( function(info){
+            if(info.n < 2){
+                show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade_noc">' + info.message + '</div>', id);
+            }else{
+                show_delete_dialog('<div class="warning_delete_body">' + message + '</div>' + '</br>' + '<div class="warning_delete_cascade">' + gettext('Es produïran els esborrats en cascada següents') + ':</br>' + info.message + '</div>', id);
+            }
+        } );
+    };
+
+
+    var show_delete_dialog = function(message,id){
+        $('<div></div>').appendTo('body')
+        .html(message)
+        .dialog({
+            modal: true, title: gettext('Esborrant...'), zIndex: 10000, autoOpen: true,
+            width: 'auto', resizable: false,
+            buttons: {
+                Yes: function () {
+                    delete_usuari(id);
+                    $(this).dialog("close");
+                },
+                No: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function (event, ui) {
+                $(this).remove();
+            }
+        });
+    }
+
+    /*
+    var confirmDialog = function(message,id){
         $('<div></div>').appendTo('body')
             .html('<div><h6>'+message+'</h6></div>')
             .dialog({
@@ -108,6 +162,7 @@ $(document).ready(function() {
                 }
         });
     };
+    */
 
     $( '#addUser' ).click(function() {
         var url = _add_user_url;

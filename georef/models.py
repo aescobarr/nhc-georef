@@ -13,6 +13,7 @@ from georef.geom_utils import *
 import datetime
 import itertools
 from haversine import haversine
+from django.utils.translation import gettext as _
 
 # Create your models here.
 
@@ -39,6 +40,7 @@ class Tipustoponim(models.Model):
     class Meta:
         managed = False
         db_table = 'tipustoponim'
+        verbose_name = _('Tipus de topònim')
 
     def __str__(self):
         return '%s' % (self.nom)
@@ -51,6 +53,7 @@ class Pais(models.Model):
     class Meta:
         managed = False
         db_table = 'pais'
+        verbose_name = _('País')
 
     def __str__(self):
         return '%s' % (self.nom)
@@ -63,6 +66,7 @@ class Qualificadorversio(models.Model):
     class Meta:
         managed = False
         db_table = 'qualificadorversio'
+        verbose_name = _('Qualificador de la versió de topònim')
 
     def __str__(self):
         return '%s' % (self.qualificador)
@@ -78,6 +82,7 @@ class Sistemareferenciarecurs(models.Model):
     class Meta:
         managed = False
         db_table = 'sistemareferenciarecurs'
+        verbose_name = _('Sistema de referència del recurs')
 
 
 class Toponim(models.Model):
@@ -99,6 +104,7 @@ class Toponim(models.Model):
     class Meta:
         managed = False
         db_table = 'toponim'
+        verbose_name = _('Topònim')
 
     def get_darrera_versio(self):
         max = -1
@@ -200,6 +206,7 @@ class Tipusunitats(models.Model):
     class Meta:
         managed = False
         db_table = 'tipusunitats'
+        verbose_name = _('Tipus unitats')
 
     def __str__(self):
         return '%s' % (self.tipusunitat)
@@ -215,6 +222,7 @@ class Tipusrecursgeoref(models.Model):
     class Meta:
         managed = False
         db_table = 'tipusrecursgeoref'
+        verbose_name = _('Tipus de recurs')
 
 
 class Suport(models.Model):
@@ -227,6 +235,7 @@ class Suport(models.Model):
     class Meta:
         managed = False
         db_table = 'suport'
+        verbose_name = _('Tipus de suport')
 
 
 class Sistemareferenciamm(models.Model):
@@ -236,6 +245,7 @@ class Sistemareferenciamm(models.Model):
     class Meta:
         managed = False
         db_table = 'sistemareferenciamm'
+        verbose_name = _('Sistema de referència')
 
     def __str__(self):
         return '%s' % (self.nom)
@@ -250,6 +260,7 @@ class PrefsVisibilitatCapes(models.Model):
     class Meta:
         managed = False
         db_table = 'prefs_visibilitat_capes'
+        verbose_name = _('Preferències visualització capes WMS')
 
 
 class Toponimversio(models.Model):
@@ -285,6 +296,7 @@ class Toponimversio(models.Model):
     class Meta:
         managed = False
         db_table = 'toponimversio'
+        verbose_name = _('Versió de topònim')
 
     def __str__(self):
         return '%s' % (self.nom)
@@ -361,6 +373,7 @@ class Paraulaclau(models.Model):
     class Meta:
         managed = False
         db_table = 'paraulaclau'
+        verbose_name = _('Paraula clau')
 
     def __str__(self):
         return '%s' % (self.paraula)
@@ -374,6 +387,7 @@ class ParaulaclauRecurs(models.Model):
     class Meta:
         managed = False
         db_table = 'paraulaclaurecursgeoref'
+        verbose_name = _('Paraules clau del recurs (relació)')
 
     def __str__(self):
         return 'Paraula clau - %s / Recurs - %s' % (self.idparaula.paraula, str(self.idrecursgeoref))
@@ -388,6 +402,7 @@ class Autorrecursgeoref(models.Model):
         managed = False
         db_table = 'autorrecursgeoref'
         unique_together = (('autor', 'recurs'),)
+        verbose_name = _('Autors del recurs (relació)')
 
     def __str__(self):
         return 'Recurs - %s / Autor - %s' % (self.recurs.nom, self.autor.nom)
@@ -425,6 +440,7 @@ class Capawms(models.Model):
     class Meta:
         managed = False
         db_table = 'capawms'
+        verbose_name = _('Capa WMS')
 
 
 class Capesrecurs(models.Model):
@@ -435,6 +451,7 @@ class Capesrecurs(models.Model):
     class Meta:
         managed = False
         db_table = 'capesrecurs'
+        verbose_name = _('Capes WMS del recurs (relació)')
 
 
 class Recursgeoref(models.Model):
@@ -470,6 +487,8 @@ class Recursgeoref(models.Model):
     class Meta:
         managed = False
         db_table = 'recursgeoref'
+        verbose_name = _('Recurs de georeferenciació')
+
 
     def __str__(self):
         return '%s' % (self.nom)
@@ -572,6 +591,7 @@ class Filtrejson(models.Model):
     class Meta:
         managed = False
         db_table = 'filtrejson'
+        verbose_name = _('Filtre')
 
 
 @receiver(pre_save, sender=Toponim)
