@@ -136,17 +136,16 @@
 
         var btn_create = gettext('Crear');
 
+        var dialog_buttons = {};
+        dialog_buttons[btn_create] = do_add;
+        dialog_buttons['Cancel'] = function() { dialog_create.dialog( "close" ); }
+
         var dialog_create = $( "#dialog-form-create" ).dialog({
             autoOpen: false,
             height: 300,
             width: 400,
             modal: true,
-            buttons: {
-                btn_create: do_add,
-                Cancel: function() {
-                    dialog_create.dialog( "close" );
-                }
-            },
+            buttons: dialog_buttons,
             close: function() {
                 form_create[ 0 ].reset();
             }

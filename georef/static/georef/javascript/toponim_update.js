@@ -329,20 +329,20 @@ $(document).ready(function() {
     });
 
     var ok_button_text = gettext("D'acord");
+    var dialog_buttons = {};
+    dialog_buttons[ok_button_text] = enterMarkerUncertaintyRadius;
+    dialog_buttons['Cancel'] = function() {
+        dialog_centroid.dialog( "close" );
+        djangoRef_map.editableLayers.clearLayers();
+        djangoRef_map.centroid.clearLayers();
+    }
 
     var dialog_centroid = $( "#dialog-uncertainty-radius").dialog({
       autoOpen: false,
       height: 250,
       width: 400,
       modal: true,
-      buttons: {
-        ok_button_text: enterMarkerUncertaintyRadius,
-        Cancel: function() {
-            dialog_centroid.dialog( "close" );
-            djangoRef_map.editableLayers.clearLayers();
-            djangoRef_map.centroid.clearLayers();
-        }
-      },
+      buttons: dialog_buttons,
       close: function() {
         $('#radi').val('');
       }
