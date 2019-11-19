@@ -447,14 +447,14 @@ $(document).ready(function() {
     var overlay_list = [];
     overlay_list.push(toponims);
     var toponim_key = gettext('Topònims');
+    var layers_obj = {};
+    layers_obj[toponim_key] = toponims.layer;
 
     var overlays_control_config = [
         {
             groupName: gettext('Topònims'),
             expanded: true,
-            layers: {
-                toponim_key: toponims.layer
-            }
+            layers: layers_obj
         }
     ];
 

@@ -507,14 +507,14 @@ $(document).ready(function() {
     overlay_list.push(toponims);
 
     var toponims_label = gettext('Toponims');
+    var layer_obj = {};
+    layer_obj[toponims_label] = toponims.layer;
 
     var overlays_control_config = [
         {
             groupName: toponims_label,
             expanded: true,
-            layers: {
-                toponims_label: toponims.layer
-            }
+            layers: layer_obj
         }
     ];
 

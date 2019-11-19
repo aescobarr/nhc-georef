@@ -202,7 +202,7 @@ msgstr "Toponyms"
 
 #: georef/static/georef/javascript/georef_layers.js:96
 msgid "Recursos de georeferenciació"
-msgstr "Georeferencing resource"
+msgstr "Georeferencing resources    "
 
 #: georef/static/georef/javascript/graphs.js:28
 #: georef/static/georef/javascript/toponims_list.js:130

@@ -371,14 +371,15 @@ $(document).ready(function() {
 
     var overlay_list = [];
     overlay_list.push(recursos);
+    var recurs_key = gettext('Recursos de georeferenciació (límits digitalitzats)');
+    var layers_obj = {};
+    layers_obj[recurs_key] = recursos.layer;
 
     var overlays_control_config = [
         {
-            groupName: 'Recursos de georeferenciació',
+            groupName: gettext('Recursos de georeferenciació'),
             expanded: true,
-            layers: {
-                'Recursos de georeferenciació (límits digitalitzats)': recursos.layer
-            }
+            layers: layers_obj
         }
     ];
 
