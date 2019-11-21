@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-21 08:59+0100\n"
+"POT-Creation-Date: 2019-11-21 12:43+0100\n"
 "PO-Revision-Date: 2019-11-18 09:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -25,13 +25,13 @@ msgstr "Catalan"
 msgid "English"
 msgstr "English"
 
-#: georef/models.py:43 georef/views.py:2299 georef/views.py:2300
+#: georef/models.py:43 georef/views.py:2334 georef/views.py:2335
 msgid "Tipus de topònim"
 msgstr "Toponym type"
 
 #: georef/models.py:56 georef/templates/georef/toponim_create.html:58
 #: georef/templates/georef/toponim_update_2.html:107
-#: georef/templates/georef/toponims_list.html:169 georef/views.py:2244
+#: georef/templates/georef/toponims_list.html:169 georef/views.py:2279
 msgid "País"
 msgstr "Country"
 
@@ -56,8 +56,8 @@ msgid "Tipus de recurs"
 msgstr "Resource type"
 
 #: georef/models.py:238 georef/templates/georef/_recursos_fields.html:144
-#: georef/templates/georef/base.html:97 georef/views.py:2285
-#: georef/views.py:2286
+#: georef/templates/georef/base.html:97 georef/views.py:2320
+#: georef/views.py:2321
 msgid "Tipus de suport"
 msgstr "Support type"
 
@@ -78,7 +78,7 @@ msgid "Versió de topònim"
 msgstr "Toponym version"
 
 #: georef/models.py:376 georef/templates/georef/recursos_list.html:151
-#: georef/views.py:2257 georef/views.py:2258
+#: georef/views.py:2292 georef/views.py:2293
 msgid "Paraula clau"
 msgstr "Key word"
 
@@ -149,8 +149,8 @@ msgid "Acrònim"
 msgstr "Acronym"
 
 #: georef/templates/georef/_recursos_fields.html:39
-#: georef/templates/georef/base.html:96 georef/views.py:2271
-#: georef/views.py:2272
+#: georef/templates/georef/base.html:96 georef/views.py:2306
+#: georef/views.py:2307
 msgid "Tipus de contingut"
 msgstr "Content type"
 
@@ -250,7 +250,7 @@ msgstr "Layers"
 #: georef/templates/georef/recursos_list.html:125
 #: georef/templates/georef/t_generic.html:41
 #: georef/templates/georef/toponims_list.html:145
-#: georef/templates/georef/user_list.html:29
+#: georef/templates/georef/user_list.html:38
 msgid "Afegir"
 msgstr "Add"
 
@@ -317,7 +317,7 @@ msgstr "Administrative division"
 #: georef/templates/georef/toponims_list.html:89
 #: georef/templates/georef/toponimstree.html:22
 #: georef/templates/georef/user_base.html:31
-#: georef/templates/georef/user_list.html:21
+#: georef/templates/georef/user_list.html:22
 #: georef/templates/georef/user_new.html:29
 msgid "Inici"
 msgstr "Home"
@@ -350,7 +350,7 @@ msgstr "User defined WMS Layer upload"
 #: georef/templates/georef/toponim_create.html:28
 #: georef/templates/georef/toponim_update_2.html:78
 #: georef/templates/georef/toponims_list.html:90
-#: georef/templates/georef/toponimstree.html:23 georef/views.py:676
+#: georef/templates/georef/toponimstree.html:23 georef/views.py:711
 msgid "Topònims"
 msgstr "Toponyms"
 
@@ -464,7 +464,7 @@ msgid "Canviar el meu password"
 msgstr "Change password"
 
 #: georef/templates/georef/base.html:120
-#: georef/templates/georef/user_list.html:23
+#: georef/templates/georef/user_list.html:24
 msgid "Gestió usuaris"
 msgstr "User management"
 
@@ -585,7 +585,7 @@ msgstr "Create WMS layer"
 #: georef/templates/georef/change_password.html:21
 #: georef/templates/georef/profile.html:25
 #: georef/templates/georef/user_base.html:32
-#: georef/templates/georef/user_list.html:22
+#: georef/templates/georef/user_list.html:23
 #: georef/templates/georef/user_new.html:30
 msgid "Sessió"
 msgstr "Session"
@@ -709,7 +709,7 @@ msgstr "User data"
 
 #: georef/templates/georef/profile.html:42
 #: georef/templates/georef/user_base.html:88
-#: georef/templates/georef/user_new.html:86 georef/views.py:2202
+#: georef/templates/georef/user_new.html:86 georef/views.py:2237
 #: georef_addenda/models.py:37
 msgid "Organització"
 msgstr "Organization"
@@ -959,7 +959,7 @@ msgid "Data"
 msgstr "Date"
 
 #: georef/templates/georef/toponim_update_2.html:146
-#: georef/templates/georef/toponims_list.html:167 georef/views.py:2216
+#: georef/templates/georef/toponims_list.html:167 georef/views.py:2251
 #: georef_addenda/models.py:84
 msgid "Autor"
 msgstr "Author"
@@ -1004,7 +1004,7 @@ msgstr ""
 msgid "Número versió"
 msgstr "Version number"
 
-#: georef/templates/georef/toponim_update_2.html:196 georef/views.py:2230
+#: georef/templates/georef/toponim_update_2.html:196 georef/views.py:2265
 msgid "Qualificador versió"
 msgstr "Version qualifier"
 
@@ -1213,6 +1213,14 @@ msgstr "Toponym edition"
 msgid "Edició recurs cartogràfic"
 msgstr "Cartographic resources edition"
 
+#: georef/templates/georef/user_list.html:30
+msgid "message_user_delete_warning"
+msgstr ""
+"Caution is advised when deleting users: user deletion usually has a cascade "
+"effect and if the user has put data in the application this data will be "
+"deleted. In most cases, it's better to deactivate the user. Deactivated "
+"users are shown in grey in the table."
+
 #: georef/templates/georef/user_new.html:96
 msgid "Password"
 msgstr "Password"
@@ -1221,31 +1229,31 @@ msgstr "Password"
 msgid "Password(repetir)"
 msgstr "Password(repeat)"
 
-#: georef/views.py:864
+#: georef/views.py:899
 msgid "Tots els topònims"
 msgstr "All toponyms"
 
-#: georef/views.py:952 georef/views.py:1620
+#: georef/views.py:987 georef/views.py:1655
 msgid "Recurs desat amb èxit!"
 msgstr "Resource successfully saved!"
 
-#: georef/views.py:2201
+#: georef/views.py:2236
 msgid "Nom organització"
 msgstr "Organization name"
 
-#: georef/views.py:2215
+#: georef/views.py:2250
 msgid "Nom autor"
 msgstr "Author name"
 
-#: georef/views.py:2229
+#: georef/views.py:2264
 msgid "Nom qualificador"
 msgstr "Qualifier name"
 
-#: georef/views.py:2243
+#: georef/views.py:2278
 msgid "Nom país"
 msgstr "Country name"
 
-#: georef/views.py:2360 georef/views.py:2361
+#: georef/views.py:2395 georef/views.py:2396
 msgid "Tipus d'unitats"
 msgstr "Unit type"
 

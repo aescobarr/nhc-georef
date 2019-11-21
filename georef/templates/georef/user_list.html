@@ -11,6 +11,8 @@
         var _add_user_url = "{% url 'user_new' %}";
         var _user_delete_url = "{% url 'users-list' %}";
         var check_delete_url = "{% url 't_checkdelete' %}";
+        var _user_lock_url = "{% url 'block_user' %}";
+        var user_id = {{ user.id }};
     </script>
 {% endblock %}
 {% block main %}
@@ -23,6 +25,11 @@
                     <li class="breadcrumb-item active">{% trans 'Gestió usuaris' %}</li>
                 </ol>
             </div>
+        </div>
+        <div class="container">
+            <p>
+                {% trans 'message_user_delete_warning' %}
+            </p>
         </div>
         <div class="container separador_seccio">
             <div class="pull-right">
@@ -38,5 +45,6 @@
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js' %}"></script>
     <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
+    <script src="{% static 'georef/javascript/utils.js' %}"></script>
     <script src="{% static 'georef/javascript/users_list.js' %}"></script>
 {% endblock %}

@@ -81,6 +81,7 @@ from haversine import haversine
 from slugify import slugify
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.views import login
+from django.http import Http404
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -374,6 +375,7 @@ class RecursGeoRefViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(nom__icontains=term)
         return queryset
 
+
 @api_view(['GET'])
 def sistrefassociat(request):
     if request.method == 'GET':
@@ -388,6 +390,39 @@ def sistrefassociat(request):
             else:
                 content = {'status': 'OK', 'detail': ''}
             return Response(data=content, status=200)
+
+
+@api_view(['POST'])
+def block_user(request):
+    if request.method == 'POST':
+        user = None
+        id = request.query_params.get('id', None)
+        act = request.query_params.get('act', None)
+        if id is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            try:
+                user = get_object_or_404(User,id=id)
+            except Http404 as e:
+                content = {'status': 'KO', 'detail': 'no user found'}
+                return Response(data=content, status=404)
+        if act is None:
+            content = {'status': 'KO', 'detail': 'mandatory param missing'}
+            return Response(data=content, status=400)
+        else:
+            if act == '0':
+                act = False
+            elif act == '1':
+                act = True
+            else:
+                content = {'status': 'KO', 'detail': 'invalid param'}
+                return Response(data=content, status=400)
+        user.is_active = act
+        user.save()
+        content = {'status': 'OK', 'detail': 'Toggled ok'}
+        return Response(data=content, status=200)
+
 
 
 @api_view(['POST'])

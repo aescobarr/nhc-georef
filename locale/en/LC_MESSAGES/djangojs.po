@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-15 16:30+0100\n"
+"POT-Creation-Date: 2019-11-21 14:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,7 +96,7 @@ msgid "Cal posar un nom a la capa (un títol)"
 msgstr "The layer name is mandatory (a title)"
 
 #: georef/static/georef/javascript/capes_wms.js:146
-#: georef/static/georef/javascript/generic_thesaurus.js:192
+#: georef/static/georef/javascript/generic_thesaurus.js:191
 #: georef/static/georef/javascript/recursfilters_list.js:70
 #: georef/static/georef/javascript/toponimfilters_list.js:70
 #: static/georef/javascript/toponimfilters_list.js:70
@@ -107,7 +107,7 @@ msgstr "Deleted successfully!"
 #: georef/static/georef/javascript/recursfilters_list.js:74
 #: georef/static/georef/javascript/toponimfilters_list.js:74
 #: georef/static/georef/javascript/toponims_list.js:245
-#: georef/static/georef/javascript/users_list.js:86
+#: georef/static/georef/javascript/users_list.js:118
 #: static/georef/javascript/toponimfilters_list.js:74
 msgid "Error esborrant"
 msgstr "Error deleting"
@@ -146,32 +146,34 @@ msgstr "Error updating!"
 msgid "Crear"
 msgstr "Create"
 
-#: georef/static/georef/javascript/generic_thesaurus.js:171
+#: georef/static/georef/javascript/generic_thesaurus.js:170
 msgid "Afegit amb èxit!"
 msgstr "Added successfully!"
 
-#: georef/static/georef/javascript/generic_thesaurus.js:176
+#: georef/static/georef/javascript/generic_thesaurus.js:175
 msgid "Error afegint!"
 msgstr "Error adding!"
 
-#: georef/static/georef/javascript/generic_thesaurus.js:196
+#: georef/static/georef/javascript/generic_thesaurus.js:195
 msgid "Error esborrant!"
 msgstr "Error deleting!"
 
-#: georef/static/georef/javascript/generic_thesaurus.js:226
+#: georef/static/georef/javascript/generic_thesaurus.js:225
+#: georef/static/georef/javascript/users_list.js:168
 msgid "Esborrant..."
 msgstr "Deleting..."
 
-#: georef/static/georef/javascript/generic_thesaurus.js:249
+#: georef/static/georef/javascript/generic_thesaurus.js:248
+#: georef/static/georef/javascript/users_list.js:158
 msgid "Es produïran els esborrats en cascada següents"
 msgstr "The following cascade deletes will occur"
 
-#: georef/static/georef/javascript/generic_thesaurus.js:275
+#: georef/static/georef/javascript/generic_thesaurus.js:274
 msgid "S'esborrarà '"
 msgstr "Will delete '"
 
-#: georef/static/georef/javascript/generic_thesaurus.js:275
-#: georef/static/georef/javascript/users_list.js:137
+#: georef/static/georef/javascript/generic_thesaurus.js:274
+#: georef/static/georef/javascript/users_list.js:266
 msgid "'! Segur que vols continuar?"
 msgstr "'! Are you sure you want to continue?"
 
@@ -184,10 +186,13 @@ msgid "Centroides de topònims extrets de la digitalització"
 msgstr "Toponym centroids extracted from digitalization"
 
 #: georef/static/georef/javascript/georef_layers.js:76
+#: georef/static/georef/javascript/toponims_list.js:500
 msgid "Darreres versions de topònims"
 msgstr "Latest versions of toponyms"
 
 #: georef/static/georef/javascript/georef_layers.js:77
+#: georef/static/georef/javascript/recursos_list.js:374
+#: georef/static/georef/javascript/recursos_list.js:425
 msgid "Recursos de georeferenciació (límits digitalitzats)"
 msgstr "Georeferencing resources (digitized limits)"
 
@@ -201,11 +206,13 @@ msgid "Toponims"
 msgstr "Toponyms"
 
 #: georef/static/georef/javascript/georef_layers.js:96
+#: georef/static/georef/javascript/recursos_list.js:380
 msgid "Recursos de georeferenciació"
 msgstr "Georeferencing resources    "
 
 #: georef/static/georef/javascript/graphs.js:28
 #: georef/static/georef/javascript/toponims_list.js:130
+#: georef/static/georef/javascript/toponims_list.js:502
 msgid "Aquàtic"
 msgstr "Aquatic"
 
@@ -237,7 +244,7 @@ msgstr "Number of toponyms by aquatic/terrestrial"
 
 #: georef/static/georef/javascript/graphs.js:130
 #: georef/static/georef/javascript/toponims_list.js:449
-#: georef/static/georef/javascript/toponims_list.js:453
+#: georef/static/georef/javascript/toponims_list.js:455
 msgid "Topònims"
 msgstr "Toponyms"
 
@@ -291,6 +298,14 @@ msgstr "Are you sure you want to delete?"
 #: georef/static/georef/javascript/recursos_list.js:71
 msgid "Recurs de georeferenciació"
 msgstr "Georeferencing resource"
+
+#: georef/static/georef/javascript/recursos_list.js:426
+msgid "Nom recurs"
+msgstr "Resource name"
+
+#: georef/static/georef/javascript/recursos_list.js:427
+msgid "Acrònim"
+msgstr "Acronym"
 
 #: georef/static/georef/javascript/toponim_update.js:39
 msgid "Esborrant versió..."
@@ -429,7 +444,7 @@ msgid "Tipus"
 msgstr "Type"
 
 #: georef/static/georef/javascript/toponims_list.js:138
-#: georef/static/georef/javascript/users_list.js:48
+#: georef/static/georef/javascript/users_list.js:53
 msgid "Organització"
 msgstr "Organitzation"
 
@@ -494,43 +509,102 @@ msgid ""
 "intentar."
 msgstr "Filter has no conditions. Choose a few criteria and try again."
 
-#: georef/static/georef/javascript/users_list.js:32
+#: georef/static/georef/javascript/toponims_list.js:501
+msgid "Nom topònim"
+msgstr "Toponym name"
+
+#: georef/static/georef/javascript/toponims_list.js:503
+msgid "Tipus de topònim"
+msgstr "Toponym type"
+
+#: georef/static/georef/javascript/toponims_list.js:504
+msgid "Número de versió"
+msgstr "Version number"
+
+#: georef/static/georef/javascript/users_list.js:37
 msgid "Usuari"
 msgstr "User"
 
-#: georef/static/georef/javascript/users_list.js:36
+#: georef/static/georef/javascript/users_list.js:41
 msgid "Nom"
 msgstr "First Name"
 
-#: georef/static/georef/javascript/users_list.js:40
+#: georef/static/georef/javascript/users_list.js:45
 msgid "1er cognom"
 msgstr "Last Name"
 
-#: georef/static/georef/javascript/users_list.js:44
+#: georef/static/georef/javascript/users_list.js:49
 msgid "Correu-e"
 msgstr "Email"
 
-#: georef/static/georef/javascript/users_list.js:54
+#: georef/static/georef/javascript/users_list.js:59
 msgid "Esborrar usuari"
 msgstr "Delete user"
 
-#: georef/static/georef/javascript/users_list.js:60
+#: georef/static/georef/javascript/users_list.js:65
 msgid "Editar perfil"
 msgstr "Edit profile"
 
-#: georef/static/georef/javascript/users_list.js:66
+#: georef/static/georef/javascript/users_list.js:71
 msgid "Canviar password"
 msgstr "Change password"
 
-#: georef/static/georef/javascript/users_list.js:82
+#: georef/static/georef/javascript/users_list.js:77
+msgid "Activar/Desactivar usuari"
+msgstr ""
+
+#: georef/static/georef/javascript/users_list.js:114
 msgid "Usuari esborrat amb èxit!"
 msgstr "User successfully deleted!"
 
-#: georef/static/georef/javascript/users_list.js:95
-msgid "Esborrant usuari..."
-msgstr "Deleting user..."
-
 #: georef/static/georef/javascript/users_list.js:137
+msgid "Usuari bloquejat amb èxit!"
+msgstr "User successfully blocked!"
+
+#: georef/static/georef/javascript/users_list.js:139
+msgid "Usuari desbloquejat amb èxit!"
+msgstr "User successfully unblocked!"
+
+#: georef/static/georef/javascript/users_list.js:145
+msgid "Error bloquejant"
+msgstr "Error blocking"
+
+#: georef/static/georef/javascript/users_list.js:147
+msgid "Error desbloquejant"
+msgstr "Error unblocking"
+
+#: georef/static/georef/javascript/users_list.js:189
+msgid ""
+"Atenció: Estàs a punt de desactivar el teu usuari! Quan tanquis la sessió "
+"actual no podràs tornar a fer login!"
+msgstr ""
+"Warning: You are about to deactivate your own user! If you log out of the current session, "
+"you will not be able to log back in again!"
+
+#: georef/static/georef/javascript/users_list.js:192
+msgid ""
+"Es desactivarà l'usuari. No podrà fer login a l'aplicació ni editar "
+"registres. Vols continuar?"
+msgstr ""
+"User will be deactivated. Login and edition will be disabled for this user. "
+"Continue?"
+
+#: georef/static/georef/javascript/users_list.js:193
+msgid "Bloquejant..."
+msgstr "Blocking..."
+
+#: georef/static/georef/javascript/users_list.js:195
+msgid ""
+"S'activarà l'usuari. Podrà tornar a loginar-se a l'aplicació i editar "
+"registres. Vols continuar?"
+msgstr ""
+"User will be activated. Login and edition will be possible again. Continue?"
+
+#: georef/static/georef/javascript/users_list.js:196
+msgid "Desbloquejant..."
+msgstr "Unblocking..."
+
+#: georef/static/georef/javascript/users_list.js:266
 msgid "S'esborrarà l'usuari '"
 msgstr "Will delete the user '"
 
@@ -670,6 +744,14 @@ msgstr ""
 #: static/admin/js/collapse.js:18 static/admin/js/collapse.min.js:1
 msgid "Hide"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Aquàtic"
+#~ msgid "Aquàtic?"
+#~ msgstr "Aquatic"
+
+#~ msgid "Esborrant usuari..."
+#~ msgstr "Deleting user..."
 
 #~ msgid "Error important fitxer:"
 #~ msgstr "Error importing file!"

@@ -107,6 +107,7 @@ urlpatterns = [
     url(r'^user/profile/$', views.user_profile, name='user_profile'),
     url(r'^user/profile/(?P<user_id>[0-9A-Za-z_\-]+)/$', views.user_profile, name='user_profile'),
     url(r'^user/new/$', views.user_new, name='user_new'),
+    url(r'^user/block_user/$', views.block_user, name='block_user'),
     url(r'^switch_user_language/$', views.switch_user_language, name='switch_user_language'),
     url(r'^user/password/change_mine$', views.change_my_password, name='change_my_password'),
     url(r'^user/password/change$', views.change_password, name='change_password'),

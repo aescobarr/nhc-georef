@@ -385,3 +385,9 @@ table.toponimsimportats tbody tr.odd{
 .navbar-nav > li > a {
 	font-size: 12px;
 }
+
+table.dataTable tr.disabled {
+    color: #7c7c7c;
+    font-style: italic;
+    background-color: #dedede;
+}
