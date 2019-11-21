@@ -94,8 +94,8 @@
     </div>
     <div class="container">
         <div class="btn-group" role="group">
-            <button class="btn btn-default alltbtn active">Mostrant tots els topònims</button>
-            <button data-idorg="{{ user.profile.organization.id }}" class="btn btn-default sometbtn">Mostrant només els topònims de <b>'{{ user.profile.organization.name }}'</b></button>
+            <button class="btn btn-default alltbtn active">{% trans 'Mostrant tots els topònims' %}</button>
+            <button data-idorg="{{ user.profile.organization.id }}" class="btn btn-default sometbtn">{% trans 'Mostrant només els topònims de' %} <b>'{{ user.profile.organization.name }}'</b></button>
         </div>
     </div>
     <div class="container">

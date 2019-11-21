@@ -162,7 +162,7 @@
                     <td><a href="{% url 'toponims_update_2' idtoponim versio.id %}" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></a></td>
                     <td>
                         {% if user.profile.is_admin or user.profile.can_edit_toponim or user.is_superuser %}
-                        <button id="delete_version" class="btn btn-danger" onclick="javascript:confirmDialog('Estàs a punt d\'esborrar la versió \'{{ versio.nom | safe }}\' amb numero \'{{ versio.numero_versio | safe }}\', vols continuar?','{{ versio.id }}');" type="reset"><i class="fa fa-times"></i></button>
+                        <button id="delete_version" class="btn btn-danger" onclick="javascript:confirmDialog('{% trans "Estàs a punt d'esborrar la versió "%}\'{{ versio.nom | safe }}\'{% trans " amb número " %}\'{{ versio.numero_versio | safe }}\', {% trans "vols continuar?" %}','{{ versio.id }}');" type="reset"><i class="fa fa-times"></i></button>
                         {% else %}
                         &nbsp;
                         {% endif %}

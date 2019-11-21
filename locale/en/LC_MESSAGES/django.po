@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-18 09:28+0100\n"
+"POT-Creation-Date: 2019-11-21 08:59+0100\n"
 "PO-Revision-Date: 2019-11-18 09:42+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.2.4\n"
 
 #: djangoref/settings.py:21
@@ -710,7 +710,7 @@ msgstr "User data"
 #: georef/templates/georef/profile.html:42
 #: georef/templates/georef/user_base.html:88
 #: georef/templates/georef/user_new.html:86 georef/views.py:2202
-#: georef_addenda/models.py:36
+#: georef_addenda/models.py:37
 msgid "Organització"
 msgstr "Organization"
 
@@ -960,13 +960,25 @@ msgstr "Date"
 
 #: georef/templates/georef/toponim_update_2.html:146
 #: georef/templates/georef/toponims_list.html:167 georef/views.py:2216
-#: georef_addenda/models.py:83
+#: georef_addenda/models.py:84
 msgid "Autor"
 msgstr "Author"
 
 #: georef/templates/georef/toponim_update_2.html:152
 msgid "Afegint nova versió..."
 msgstr "Adding new version..."
+
+#: georef/templates/georef/toponim_update_2.html:165
+msgid "Estàs a punt d'esborrar la versió "
+msgstr "You are about to delete version "
+
+#: georef/templates/georef/toponim_update_2.html:165
+msgid " amb número "
+msgstr " with number "
+
+#: georef/templates/georef/toponim_update_2.html:165
+msgid "vols continuar?"
+msgstr "continue?"
 
 #: georef/templates/georef/toponim_update_2.html:179
 msgid "Dades versió"
@@ -1155,6 +1167,14 @@ msgstr ""
 "uploaded a success report will be shown, with a list of the newly created "
 "records.This report can be downloaded as a csv file.</p>"
 
+#: georef/templates/georef/toponims_list.html:97
+msgid "Mostrant tots els topònims"
+msgstr "Showing all toponyms"
+
+#: georef/templates/georef/toponims_list.html:98
+msgid "Mostrant només els topònims de"
+msgstr "Showing only toponyms for"
+
 #: georef/templates/georef/toponims_list.html:145
 msgid "help_btn_add_toponym"
 msgstr "Click here to access the Toponym creation form"
@@ -1229,18 +1249,18 @@ msgstr "Country name"
 msgid "Tipus d'unitats"
 msgstr "Unit type"
 
-#: georef_addenda/models.py:18
+#: georef_addenda/models.py:19
 msgid "Geometria de versió de topònim"
 msgstr "Toponym version geometry"
 
-#: georef_addenda/models.py:29
+#: georef_addenda/models.py:30
 msgid "Geometria de recurs de georeferenciació"
 msgstr "Georeferencing resource geometry"
 
-#: georef_addenda/models.py:53
+#: georef_addenda/models.py:54
 msgid "Perfil d'usuari"
 msgstr "User profile"
 
-#: georef_addenda/models.py:96
+#: georef_addenda/models.py:97
 msgid "Fitxer d'ajuda"
 msgstr "Help file"

@@ -431,11 +431,11 @@ msgstr "Type"
 #: georef/static/georef/javascript/toponims_list.js:138
 #: georef/static/georef/javascript/users_list.js:48
 msgid "Organització"
-msgstr ""
+msgstr "Organitzation"
 
 #: georef/static/georef/javascript/toponims_list.js:144
 msgid "No assignada"
-msgstr ""
+msgstr "Unassigned"
 
 #: georef/static/georef/javascript/toponims_list.js:197
 msgid "Filtre desat amb èxit!"
