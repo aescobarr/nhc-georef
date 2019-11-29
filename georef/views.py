@@ -1575,6 +1575,7 @@ def user_new(request):
             user.profile.permission_filter_edition = profile.permission_filter_edition
             user.profile.permission_recurs_edition = profile.permission_recurs_edition
             user.profile.permission_tesaure_edition = profile.permission_tesaure_edition
+            user.profile.organization = profile.organization
             user.save()
             url = reverse('users_list')
             return HttpResponseRedirect(url)

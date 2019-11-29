@@ -14,6 +14,8 @@ import datetime
 import itertools
 from haversine import haversine
 from django.utils.translation import gettext as _
+from django.core.exceptions import ObjectDoesNotExist
+
 
 # Create your models here.
 
@@ -620,8 +622,11 @@ def reassign_last_version(sender, instance, *args, **kwargs):
     max = -1
     darrer = None
     if len(versions) == 0:
-        instance.idtoponim.idorganization_id = None
-        instance.idtoponim.save()
+        try:
+            instance.idtoponim.idorganization_id = None
+            instance.idtoponim.save()
+        except ObjectDoesNotExist:
+            pass
     else:
         for versio in versions:
             if versio.numero_versio > max:
