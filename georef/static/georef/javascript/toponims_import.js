@@ -146,7 +146,7 @@ $(document).ready(function() {
             tbl_creats_head += "<tr><th>" + gettext('Nom del topònim') + "</th><th>" + gettext('Enllaç al topònim') + "</th></tr>";
             var creats_body_arr = new Array();
             for( var i = 0; i < responseJSON.results[2].creats.length; i++ ){
-                var fila = "<tr class=\""+( odd_even ? "odd" : "even")+"\">" + "<td>" + responseJSON.results[2].creats[i].nom + "</td><td><a target=\"_blank\" href=\"/Zoologia/toponims/editartoponim.htm?idtoponim=" + responseJSON.results[2].creats[i].id + "\">Link</a></td></tr>";
+                var fila = "<tr class=\""+( odd_even ? "odd" : "even")+"\">" + "<td>" + responseJSON.results[2].creats[i].nom + "</td><td><a target=\"_blank\" href=\"/toponims/update/" + responseJSON.results[2].creats[i].id + "/-1/\">Link</a></td></tr>";
                 creats_body_arr.push(fila);
                 odd_even = !odd_even;
             }
