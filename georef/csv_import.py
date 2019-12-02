@@ -333,9 +333,9 @@ def process_line(line, line_string, errors, toponims_exist, toponims_to_create, 
             t.linia_fitxer_importacio = line_string
 
             tv = Toponimversio()
-            tv.coordenada_x = coordX_original
-            tv.coordenada_y = coordY_original
-            tv.coordenada_z = coordZ_original
+            tv.coordenada_x_origen = coordX_original
+            tv.coordenada_y_origen = coordY_original
+            tv.coordenada_z_origen = coordZ_original
             tv.datacaptura = data
 
             tv.nom = nomToponimRecurs;

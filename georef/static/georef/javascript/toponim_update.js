@@ -183,7 +183,7 @@ $(document).ready(function() {
 
     function checkLat( control, error_message, tipsclass ) {
         var latValue = parseFloat(control.val());
-        if (0 <= latValue && latValue <= 90){
+        if (-90 <= latValue && latValue <= 90){
             control.removeClass( "ui-state-error" );
             return true;
         }else{

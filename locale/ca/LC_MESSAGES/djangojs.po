@@ -348,7 +348,7 @@ msgstr ""
 
 #: georef/static/georef/javascript/toponim_update.js:255
 msgid "txt_error_digitize_4"
-msgstr "La latitud no pot ser superior a 90 ni inferior a 0"
+msgstr "La latitud no pot ser superior a 90 ni inferior a -90"
 
 #: georef/static/georef/javascript/toponim_update.js:257
 msgid "txt_error_digitize_5"
