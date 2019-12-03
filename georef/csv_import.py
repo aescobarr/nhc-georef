@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.db.models import Q
 import operator, functools
+import re
 
 class NumberOfColumnsException(Exception):
     pass
@@ -55,7 +56,7 @@ def get_model_by_attribute(attribute_name, attribute_value, model_name):
 
 def get_toponim_nom_estructurat(nom_toponim):
     if nom_toponim != '':
-        if '-' in nom_toponim:
+        if 'terrestre' in nom_toponim.lower() or 'aquàtic' in nom_toponim.lower():
             filter_clause = []
             nom_info_addicional = nom_toponim.split('-')
             nom = nom_info_addicional[0].strip()

@@ -1929,7 +1929,8 @@ def import_toponims(request, file_name=None):
             raw_lines = f.readlines()
         raw_lines = [x.strip() for x in raw_lines]
         with open(filepath,'rt') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            #dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.seek(0)
             reader = csv.reader(csvfile,dialect)
             for row in reader:
