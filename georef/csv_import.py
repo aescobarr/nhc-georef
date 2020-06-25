@@ -54,11 +54,26 @@ def get_model_by_attribute(attribute_name, attribute_value, model_name):
         return None
 
 
+def find_all(a_str, sub):
+    start = 0
+    while True:
+        start = a_str.find(sub, start)
+        if start == -1: return
+        yield start
+        start += len(sub) # use start += 1 to find overlapping matches
+
 def get_toponim_nom_estructurat(nom_toponim):
     if nom_toponim != '':
         if 'terrestre' in nom_toponim.lower() or 'aquàtic' in nom_toponim.lower():
             filter_clause = []
-            nom_info_addicional = nom_toponim.split('-')
+            sep_character_apparitions = [i for i in find_all(nom_toponim,'-')]
+            if len(sep_character_apparitions) > 1:
+                last_index_sep = sep_character_apparitions[-1]
+                nom_info_addicional = []
+                nom_info_addicional.append(nom_toponim[:last_index_sep].strip())
+                nom_info_addicional.append(nom_toponim[(last_index_sep + 1):].strip())
+            else:
+                nom_info_addicional = nom_toponim.split('-')
             nom = nom_info_addicional[0].strip()
             info_addicional = nom_info_addicional[1].strip().split('(')
             pais = info_addicional[0].strip().lower()
