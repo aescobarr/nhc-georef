@@ -555,6 +555,13 @@ $(document).ready(function() {
 
     setTimeout(function(){ filterMap(); }, 1000);
 
+    var sidebar = L.control.sidebar('sidebar', {
+        position: 'right'
+    });
+
+    map.map.addControl(sidebar);
+    sidebar.show();
+
 });
 
 

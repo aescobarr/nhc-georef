@@ -354,7 +354,7 @@ table.toponimsimportats tbody tr.odd{
 }
 
 /* Autocomplete fix */
-.ui-autocomplete { z-index: 1051; }
+.ui-autocomplete { z-index: 9999; }
 
 .qq-upload-button.ui-widget-content.ui-button.ui-corner-all.ui-state-default span{
     font-size: 10px;
