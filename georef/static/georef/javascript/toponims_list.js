@@ -368,6 +368,7 @@ $(document).ready(function() {
 
     $( '#doClear' ).click(function() {
         clearTaula('taulafiltre');
+        map.editableLayers.clearLayers();
         filter();
         $('#autoc_filtres').val('');
     });
@@ -486,10 +487,22 @@ $(document).ready(function() {
         });
     }
 
+    /* Move control capes to bottom left position */
+    var controlcapes_options = {
+        position: "bottomleft"
+    };
+
+    /* Move coordinates to bottom left position */
+    var coordinates_options = {
+        position:"bottomleft"
+    };
+
     map_options = {
         editable:true,
         overlays: overlay_list,
         overlays_control_config: overlays_control_config,
+        controlcapes_options: controlcapes_options,
+        coordinates_options: coordinates_options,
         wms_url: wms_url
     };
 
@@ -555,12 +568,12 @@ $(document).ready(function() {
 
     setTimeout(function(){ filterMap(); }, 1000);
 
-    var sidebar = L.control.sidebar('sidebar', {
-        position: 'right'
+    /*var sidebar = L.control.sidebar('sidebar', {
+        position: 'left'
     });
 
-    map.map.addControl(sidebar);
-    sidebar.show();
+    map.map.addControl(sidebar);*/
+    var sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
 
 });
 

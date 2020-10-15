@@ -93,13 +93,21 @@
             exclusive       	: false
         };
 
+        controlCapes_options = $.extend({}, controlCapes_options, options.controlcapes_options);
+
         if(options.formatters){
             djangoRef.Map.featureInfoFormatters = options.formatters;
         }
 
         if(options.show_coordinates){
+            coordinates_options = {
+                position:"bottomright",
+                enableUserInput:false
+            };
+            coordinates_options = $.extend({}, coordinates_options, options.coordinates_options);
             //coordControl = L.control.coordinates({position:"bottomleft",enableUserInput:false});
-            coordControl = L.control.coordinates({position:"bottomright",enableUserInput:false});
+            //coordControl = L.control.coordinates({position:"bottomright",enableUserInput:false});
+            coordControl = L.control.coordinates(coordinates_options);
             map.addControl(coordControl);
         }
 

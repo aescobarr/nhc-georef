@@ -115,7 +115,7 @@ function mostrarGeoJSON(valor){
 }
 
 function centrarMapaADigitalitzacio(valor){
-    map.fitBounds(djangoRef.Map.editableLayers.getBounds());
+    map.map.fitBounds(djangoRef.Map.editableLayers.getBounds());
 }
 
 function createImportCartoButton(valor){

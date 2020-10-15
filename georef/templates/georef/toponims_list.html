@@ -10,7 +10,7 @@
     <link href="{% static 'georef/css/georef.css' %}" rel="stylesheet">
     <link href="{% static 'georef/javascript/ajaxuploader/css/fileuploader.css' %}" media="screen" rel="stylesheet" type="text/css" >
     <link href="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.css' %}" rel="stylesheet">
-    <link href="{% static 'georef/javascript/leaflet.plugins/leaflet-sidebar/L.Control.Sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'georef/javascript/leaflet.plugins/leaflet-sidebar-v2/leaflet-sidebar.css' %}" rel="stylesheet">
     <style>
         table#toponims_list.dataTable.no-footer tbody tr td {
             font-size: 10px;
@@ -42,6 +42,9 @@
         #map {
             margin-top: 10px;
             height: 700px;
+        }
+        #sidebar{
+            margin-top: 50px;
         }
     </style>
 {% endblock %}
@@ -98,24 +101,33 @@
         </div>
     </div>
     <div class="container">
-        <div class="btn-group" role="group">
-            <button class="btn btn-default alltbtn active">{% trans 'Mostrant tots els topònims' %}</button>
-            <button data-idorg="{{ user.profile.organization.id }}" class="btn btn-default sometbtn">{% trans 'Mostrant només els topònims de' %} <b>'{{ user.profile.organization.name }}'</b></button>
-        </div>
-    </div>
-    <div class="container">
-        <div class="pull-right">
+        <div class="row">
+            <div class="col-md-1">
                 <a class="imatge_shp" href="#" onclick="javascript:exportSHP(); return false;"></a>
                 <a class="imatge_kml" href="#" onclick="javascript:exportKML(); return false;"></a>
                 <a class="imatge_xls" href="#" onclick="javascript:exportXLS(); return false;"></a>
                 <a class="imatge_csv" href="#" onclick="javascript:exportCSV(); return false;"></a>
                 <a class="imatge_pdf" href="#" onclick="javascript:exportPDF(); return false;"></a>
+            </div>
+            <div class="btn-group col-md-11" role="group">
+                <button class="btn btn-default alltbtn active">{% trans 'Mostrant tots els topònims' %}</button>
+                <button data-idorg="{{ user.profile.organization.id }}" class="btn btn-default sometbtn">{% trans 'Mostrant només els topònims de' %} <b>'{{ user.profile.organization.name }}'</b></button>
+            </div>
         </div>
     </div>
     <div class="container-fluid">
-        <div id="map"></div>
-        <div id="fileuploader"></div>
-        <div id="sidebar">
+        <div id="map" style="margin-right:40px;"></div>
+        <div id="fileuploader" style="margin-right:40px;"></div>
+        <div id="sidebar" class="sidebar collapsed">
+            <div class="sidebar-tabs">
+                <ul role="tablist">
+                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                </ul>
+            </div>
+            <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">{% trans 'Topònims' %}<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
             <div class="wrapper clear_blue">
                 <button data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_add_condicio' %}" id="addCondicio" type="button" class="btn btn-primary">{% trans "Afegir condició" %} <i class="fa fa-plus" aria-hidden="true"></i></button>
                 <table id="taulafiltre">
@@ -148,9 +160,9 @@
                 <table id="toponims_list" style="width:100%;"></table>
             </div>
         </div>
-    </div>
-    <div id="dialog-confirm" title="{% trans 'Confirmar sobreescriure filtre' %}" style="display:none;">
-        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{% trans 'msg_warn_overwrite_filter' %}</p>
+        <div id="dialog-confirm" title="{% trans 'Confirmar sobreescriure filtre' %}" style="display:none;">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{% trans 'msg_warn_overwrite_filter' %}</p>
+        </div>
     </div>
 </main>
 {% endblock %}
@@ -231,7 +243,7 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.CircleMarker.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.Circle.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/leaflet.plugins/leaflet-sidebar/L.Control.Sidebar.js' %}"></script>
+    <script src="{% static 'georef/javascript/leaflet.plugins/leaflet-sidebar-v2/leaflet-sidebar.js' %}"></script>
     <script src="{% static 'georef/javascript/OpenLayers2.12.js' %}"></script>
     <script src="{% static 'georef/javascript/wicket.min.js' %}"></script>
     <script src="{% static 'georef/javascript/cookies.js' %}"></script>
