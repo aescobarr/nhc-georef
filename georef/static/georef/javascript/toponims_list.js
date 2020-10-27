@@ -503,7 +503,8 @@ $(document).ready(function() {
         overlays_control_config: overlays_control_config,
         controlcapes_options: controlcapes_options,
         coordinates_options: coordinates_options,
-        wms_url: wms_url
+        wms_url: wms_url,
+        attribution_position: 'bottomleft'
     };
 
     var toponimsdarreraversio_formatter = function(data){
@@ -568,11 +569,6 @@ $(document).ready(function() {
 
     setTimeout(function(){ filterMap(); }, 1000);
 
-    /*var sidebar = L.control.sidebar('sidebar', {
-        position: 'left'
-    });
-
-    map.map.addControl(sidebar);*/
     var sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
 
 });

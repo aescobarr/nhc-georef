@@ -55,13 +55,18 @@
                 editable: false,
                 overlays: [],
                 show_coordinates: true,
-                show_centroid_after_edit: false
+                show_centroid_after_edit: false,
+                attribution_position: 'bottomright'
             },
             options);
 
         var map;
 
-        map = new L.Map(options.div);
+        map = new L.Map(options.div,{attributionControl: false});
+
+        L.control.attribution({
+            position: options.attribution_position
+        }).addTo(map);
 
         var baseMaps = [
             {
