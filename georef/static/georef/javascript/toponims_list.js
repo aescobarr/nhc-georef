@@ -1,3 +1,5 @@
+var sidebar;
+
 var exportPDF = function(){
     var params = table.ajax.params();
     window.location.href = _toponims_list_pdf + '?' + jQuery.param(params);
@@ -569,7 +571,20 @@ $(document).ready(function() {
 
     setTimeout(function(){ filterMap(); }, 1000);
 
-    var sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
+    sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
+
+    sidebar.on('opening', function(e) {
+        setCookie('sb_t', 'open');
+    });
+
+    sidebar.on('closing', function(e) {
+        setCookie('sb_t', 'closed');
+    });
+
+    var open = getCookie('sb_t');
+    if(open != '' && open == 'open'){
+        sidebar.open('home');
+    }
 
 });
 

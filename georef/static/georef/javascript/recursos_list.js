@@ -1,3 +1,5 @@
+var sidebar;
+
 var exportXLS = function(){
     var params = table.ajax.params();
     window.location.href = _recursos_list_xls + '?' + jQuery.param(params);
@@ -469,9 +471,21 @@ $(document).ready(function() {
 
     map = new djangoRef.Map.createMap(map_options);
 
-    var sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
+    sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
 
     //$('[data-toggle="tooltip"]').tooltip();
+    sidebar.on('opening', function(e) {
+        setCookie('sb_r', 'open');
+    });
+
+    sidebar.on('closing', function(e) {
+        setCookie('sb_r', 'closed');
+    });
+
+    var open = getCookie('sb_r');
+    if(open != '' && open == 'open'){
+        sidebar.open('home');
+    }
 });
 
 $(window).bind('beforeunload', function(){
