@@ -13,7 +13,7 @@ function crearTaulaFiltre(jsonStringFiltre){
 }
 
 function createSelect(valors,idselected,idselect,onchange){
-    var htmlSelect = '<select class="input-field"';
+    var htmlSelect = '<select class="input-field select-taula"';
     if(idselect!=null && idselect!=undefined)
         htmlSelect += " id='"+idselect+"'";
     if(idselect!=null && idselect!=undefined)
@@ -114,7 +114,7 @@ function mostrarGeoJSON(valor){
 }
 
 function centrarMapaADigitalitzacio(valor){
-    map.fitBounds(djangoRef.Map.editableLayers.getBounds());
+    map.map.fitBounds(djangoRef.Map.editableLayers.getBounds());
 }
 
 function createImportCartoButton(valor){

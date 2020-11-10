@@ -76,7 +76,7 @@ function insertCondicioFiltre(operador,condicio,valor,not,indexTaulaNovaFila){
     var selectCondicio = createSelect(valorsCondicions,condicio,'select_condicio_'+indexTaulaNovaFila,'javascript:canviCondicio('+indexTaulaNovaFila+');');
     var valorCondicio = createValor(condicio,valor);
     var checkNot = createCheckNot(not);
-    var botoEsborrar = '<button id="addCondicio" onclick="javascript:esborrarFilaFiltre('+indexTaulaNovaFila+');return false;" type="button" class="btn btn-danger">Esborrar <i class="fa fa-times" aria-hidden="true"></i></button>';
+    var botoEsborrar = '<button id="addCondicio" onclick="javascript:esborrarFilaFiltre('+indexTaulaNovaFila+');return false;" type="button" class="btn btn-danger">' + gettext('Esborrar') + '<i class="fa fa-times" aria-hidden="true"></i></button>';
     var fila = "<td>"+selectOperador+"</td>";
     fila += "<td>"+checkNot+"</td>";
     fila += "<td>"+selectCondicio+"</td>";

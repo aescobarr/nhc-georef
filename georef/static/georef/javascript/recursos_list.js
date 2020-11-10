@@ -411,11 +411,24 @@ $(document).ready(function() {
         });
     }
 
+    /* Move control capes to bottom left position */
+    var controlcapes_options = {
+        position: "bottomleft"
+    };
+
+    /* Move coordinates to bottom left position */
+    var coordinates_options = {
+        position:"bottomleft"
+    };
+
     map_options = {
         editable:true,
         overlays: overlay_list,
         overlays_control_config: overlays_control_config,
-        wms_url: wms_url
+        controlcapes_options: controlcapes_options,
+        coordinates_options: coordinates_options,
+        wms_url: wms_url,
+        attribution_position: 'bottomleft'
     };
 
     var recursosgeoreferenciacio_formatter = function(data){
@@ -455,6 +468,8 @@ $(document).ready(function() {
     map_options.consultable = [recursos.layer];
 
     map = new djangoRef.Map.createMap(map_options);
+
+    var sidebar = L.control.sidebar('sidebar',{position:'right'}).addTo(map.map);
 
     //$('[data-toggle="tooltip"]').tooltip();
 });

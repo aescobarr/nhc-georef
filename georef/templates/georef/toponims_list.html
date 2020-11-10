@@ -47,8 +47,11 @@
             height: 45px;
         }
         #sidebar{
-            top: 90px;
+            top: 70px;
             margin-right: 10px;
+        }
+        .navbar {
+	        margin-bottom: 0px;
         }
     </style>
 {% endblock %}
@@ -120,6 +123,7 @@
             <div class="sidebar-content">
                 <div class="sidebar-pane" id="home">
                     <h1 class="sidebar-header">{% trans 'Topònims' %}<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                    <div class="col-xs-12" style="height:25px;"></div>
                     <div class="row">
                         <div class="col-md-2">
                             <a class="imatge_shp" href="#" onclick="javascript:exportSHP(); return false;"></a>
@@ -151,7 +155,7 @@
                             <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_clear_filter' %}" id="doClear" type="button" class="btn btn-danger">{% trans "Netejar filtre" %} <i class="fa fa-close" aria-hidden="true"></i></button>
                         </div>
                         <div class="row container no_side_margin">
-                            <label class="iconainfo"  data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_filter_load' %}" for="saveDoFilter">{% trans "Carregar filtre" %}</label>
+                            <label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'help_btn_filter_load' %}" for="saveDoFilter">{% trans "Carregar filtre" %}</label>
                             <input id="autoc_filtres" type="text">
                             {% if user.profile.is_admin or user.profile.can_edit_filtre or user.is_superuser %}
                             <button data-toggle="tooltip" data-placement="right" title="{% trans 'help_btn_filter_save' %}" id="saveDoFilter" type="button" class="btn btn-primary">{% trans "Desar i filtrar" %} <i class="fa fa-thumb-tack" aria-hidden="true"></i><i class="fa fa-filter" aria-hidden="true"></i></button>
