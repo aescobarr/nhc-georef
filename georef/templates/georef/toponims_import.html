@@ -75,9 +75,9 @@
     </main>
 {% endblock %}
 {% block extra_js %}
-    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
-    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
-    <script src="{% static 'georef/javascript/utils.js'%}"></script>
+    <script src="{% static 'georef/javascript/cookies.js'%}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/utils.js'%}?{{ revision }}"></script>
     <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
-    <script src="{% static 'georef/javascript/toponims_import.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponims_import.js' %}?{{ revision }}"></script>
 {% endblock %}

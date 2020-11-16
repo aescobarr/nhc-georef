@@ -81,6 +81,6 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/tree_util.js' %}"></script>
-    <script src="{% static 'georef/javascript/toponim_create.js' %}"></script>
+    <script src="{% static 'georef/javascript/tree_util.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/toponim_create.js' %}?{{ revision }}"></script>
 {% endblock %}

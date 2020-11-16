@@ -91,10 +91,14 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Draw.static/src/edit/handler/Edit.Circle.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.min.js' %}"></script>
     <script src="{% static 'georef/javascript/turf.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
-    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
-    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
+    <script src="{% static 'georef/javascript/leaflet-bing-layer.min.js' %}"></script>
+    <script>
+        var bing_key = '{{ bing }}';
+    </script>
+    <script src="{% static 'georef/javascript/djangoref_map.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/cookies.js'%}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}?{{ revision }}"></script>
     <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
-    <script src="{% static 'georef/javascript/recurs_autocomplete.js' %}"></script>
-    <script src="{% static 'georef/javascript/recurs_create.js' %}"></script>
+    <script src="{% static 'georef/javascript/recurs_autocomplete.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/recurs_create.js' %}?{{ revision }}"></script>
 {% endblock %}

@@ -304,7 +304,7 @@ $(document).ready(function() {
     var importa_shapefile = function(filepath){
         $.ajax({
             url: _import_shapefile_url,
-            data: 'path=' + encodeURI(filepath) + '&smp=t',
+            data: 'path=' + encodeURI(filepath) + '&smp=f',
             //data: 'path=' + encodeURI(filepath),
             method: 'GET',
             beforeSend: function(xhr, settings) {
@@ -315,16 +315,16 @@ $(document).ready(function() {
             },
             success: function( data, textStatus, jqXHR ) {
                 toastr.success('Importació amb èxit!');
-                map.editableLayers.clearLayers();
+                djangoRef.Map.editableLayers.clearLayers();
                 var geoJson = JSON.parse(data.detail);
                 var geoJSONLayer = L.geoJson(geoJson);
                 geoJSONLayer.eachLayer(
                     function(l){
-                        map.editableLayers.addLayer(l);
+                        djangoRef.Map.editableLayers.addLayer(l);
                     }
                 );
-                if(map.editableLayers.getBounds().isValid()){
-                    map.map.fitBounds(map.editableLayers.getBounds());
+                if(djangoRef.Map.editableLayers.getBounds().isValid()){
+                    djangoRef.Map.map.fitBounds(djangoRef.Map.editableLayers.getBounds());
                 }
             },
             error: function(jqXHR, textStatus, errorThrown){

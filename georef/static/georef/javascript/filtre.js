@@ -40,6 +40,8 @@ function createValor(condicio,valor){
         return createSelect(valorsAquatic,valor);
     }else if('nomautor'==condicio){
         return createSelect(valorsAutors,valor);
+    }else if('versio'==condicio){
+        return createSelect(valorsVersio,valor);
     }else if('geografic'==condicio){
         return createImportCartoButton(valor);
     }else{
@@ -210,7 +212,7 @@ function extreureValorJSON(tdCondicio,tdValor){
         var inputTxt = tdValor.children[0];
         var txt = inputTxt.value;
         json = '"valor":"'+txt+'"';
-    }else if('tipus'==idCondicio || 'pais'==idCondicio || 'aquatic'==idCondicio || 'nomautor'==idCondicio){
+    }else if('tipus'==idCondicio || 'pais'==idCondicio || 'aquatic'==idCondicio || 'nomautor'==idCondicio || 'versio'==idCondicio){
         var idValor = extreureIdSelect(tdValor);
         var etiquetaValor = extreureValorSelect(tdValor);
         json = '"valor":"'+idValor+'","text_valor":"'+ etiquetaValor +'"';

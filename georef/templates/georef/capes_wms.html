@@ -75,8 +75,8 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/cookies.js'%}"></script>
-    <script src="{% static 'georef/javascript/csrf_utils.js'%}"></script>
-    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}"></script>
-    <script src="{% static 'georef/javascript/capes_wms.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js'%}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js'%}?{{ revision }}"></script>
+    <script src="{% static 'ajaxuploader/js/fileuploader.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/capes_wms.js' %}?{{ revision }}"></script>
 {% endblock %}

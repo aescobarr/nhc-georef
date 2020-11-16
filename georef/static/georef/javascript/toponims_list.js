@@ -383,7 +383,7 @@ $(document).ready(function() {
     var importa_shapefile = function(filepath){
         $.ajax({
             url: _import_shapefile_url,
-            data: 'path=' + encodeURI(filepath) + '&smp=t',
+            data: 'path=' + encodeURI(filepath) + '&smp=f',
             //data: 'path=' + encodeURI(filepath),
             method: 'GET',
             beforeSend: function(xhr, settings) {
@@ -402,6 +402,9 @@ $(document).ready(function() {
                         djangoRef.Map.editableLayers.addLayer(l);
                     }
                 );
+                if(djangoRef.Map.editableLayers.getBounds().isValid()){
+                    djangoRef.Map.map.fitBounds(djangoRef.Map.editableLayers.getBounds());
+                }
             },
             error: function(jqXHR, textStatus, errorThrown){
                 toastr.error(gettext('Error important fitxer') + ':' + jqXHR.responseJSON.detail);
@@ -587,7 +590,6 @@ $(document).ready(function() {
     }
 
 });
-
 
 $(window).bind('beforeunload', function(){
     var state = djangoRef.Map.getState();

@@ -75,8 +75,12 @@
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.GridLayer.GoogleMutant/Leaflet.GoogleMutant.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.StyledLayerControl/src/styledLayerControl.js' %}"></script>
     <script src="{% static 'georef/javascript/leaflet.plugins/Leaflet.Coordinates-master/dist/Leaflet.Coordinates-0.1.5.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
-    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
-    <script src="{% static 'georef/javascript/djangoref_map.js' %}"></script>
-    <script src="{% static 'georef/javascript/georef_layers.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/leaflet-bing-layer.min.js' %}"></script>
+    <script>
+        var bing_key = '{{ bing }}';
+    </script>
+    <script src="{% static 'georef/javascript/djangoref_map.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/georef_layers.js' %}?{{ revision }}"></script>
 {% endblock %}

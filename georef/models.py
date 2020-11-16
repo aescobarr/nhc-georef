@@ -185,6 +185,12 @@ class Toponim(models.Model):
                     accum_query = append_chain_query(accum_query, ~Q(aquatic=condicio['valor']), condicio)
                 else:
                     accum_query = append_chain_query(accum_query, Q(aquatic=condicio['valor']), condicio)
+            elif condicio['condicio'] == 'versio':
+                versions_amb_qualificador = Toponimversio.objects.filter(idqualificador__id=condicio['valor']).distinct().values('idtoponim')
+                if condicio['not'] == 'S':
+                    accum_query = append_chain_query(accum_query, ~Q(id__in=versions_amb_qualificador), condicio)
+                else:
+                    accum_query = append_chain_query(accum_query, Q(id__in=versions_amb_qualificador), condicio)
             elif condicio['condicio'] == 'geografic':
                 # Es passa al constructor unicament el geometry del json
                 # geo = GEOSGeometry('{"type":"Polygon","coordinates":[[[-5.800781,32.546813],[12.480469,41.508577],[-6.855469,48.224673],[-5.800781,32.546813]]]}')

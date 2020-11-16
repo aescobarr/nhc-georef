@@ -29,7 +29,7 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/cookies.js' %}"></script>
-    <script src="{% static 'georef/javascript/csrf_utils.js' %}"></script>
-    <script src="{% static 'georef/javascript/toponimfilters_list.js' %}"></script>
+    <script src="{% static 'georef/javascript/cookies.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/csrf_utils.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/toponimfilters_list.js' %}?{{ revision }}"></script>
 {% endblock %}

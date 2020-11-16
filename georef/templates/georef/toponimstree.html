@@ -34,7 +34,7 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/toponimstree.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponimstree.js' %}?{{ revision }}"></script>
     <script>
         var selected_node = null;
     </script>

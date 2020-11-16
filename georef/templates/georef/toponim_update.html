@@ -144,8 +144,8 @@
 {% endblock %}
 {% block extra_js %}
     <script src="{% static 'jstree/dist/jstree.min.js' %}"></script>
-    <script src="{% static 'georef/javascript/toponim_update.js' %}"></script>
-    <script src="{% static 'georef/javascript/jquery.formset.js' %}"></script>
+    <script src="{% static 'georef/javascript/toponim_update.js' %}?{{ revision }}"></script>
+    <script src="{% static 'georef/javascript/jquery.formset.js' %}?{{ revision }}"></script>
     <script>
         $('.form-container').formset(
             {

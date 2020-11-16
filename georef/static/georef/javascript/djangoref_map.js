@@ -18,21 +18,50 @@
         {minZoom: 2, maxZoom: 12, attribution: osmAttrib}
     );
 
+    /*
     djangoRef.Map.roads = L.gridLayer.googleMutant({
-        type: 'roadmap' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+        type: 'roadmap'
     });
 
     djangoRef.Map.satellite = L.gridLayer.googleMutant({
-        type: 'satellite' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+        type: 'satellite'
     });
 
     djangoRef.Map.terrain = L.gridLayer.googleMutant({
-        type: 'terrain' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+        type: 'terrain'
     });
 
     djangoRef.Map.hybrid = L.gridLayer.googleMutant({
-        type: 'hybrid' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+        type: 'hybrid'
     });
+    */
+
+    djangoRef.Map.bing = L.tileLayer.bing(
+        {
+            'bingMapsKey':bing_key
+        }
+    );
+
+    djangoRef.Map.bing_road = L.tileLayer.bing(
+        {
+            'bingMapsKey':bing_key,
+            'imagerySet':'Road'
+        }
+    );
+
+    djangoRef.Map.bing_road_dark = L.tileLayer.bing(
+        {
+            'bingMapsKey':bing_key,
+            'imagerySet':'CanvasDark'
+        }
+    );
+
+    djangoRef.Map.bing_aerial_labels = L.tileLayer.bing(
+        {
+            'bingMapsKey':bing_key,
+            'imagerySet':'AerialWithLabels'
+        }
+    );
 
     djangoRef.Map.overlays = {};
 
@@ -75,8 +104,18 @@
                 layers: {
                     'Open Street Map': djangoRef.Map.osm
                 }
-            },
-            {
+            }
+            ,{
+                groupName: 'Bing Maps',
+                expanded: false,
+                layers: {
+                    'Bing aerial': djangoRef.Map.bing,
+                    'Bing aerial+roads': djangoRef.Map.bing_aerial_labels,
+                    'Bing roads': djangoRef.Map.bing_road,
+                    'Bing roads dark': djangoRef.Map.bing_road_dark
+                }
+            }
+            /*,{
                 groupName: 'Google Base Maps',
                 expanded: false,
                 layers: {
@@ -85,7 +124,7 @@
                     'Google terrain': djangoRef.Map.terrain,
                     'Google hybrid': djangoRef.Map.hybrid
                 }
-            }
+            }*/
         ];
 
         var overlays_control_config = options.overlays_control_config;
@@ -148,7 +187,7 @@
                             message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
                         },
                         shapeOptions: {
-                            color: '#bada55'
+                            color: '#da5d55'
                         }
                     },
                     circle: false, // Turns off this drawing tool
@@ -304,7 +343,12 @@
             }
         }
         if(state.base){
-            controlCapes.selectLayer(eval(state.base));
+            var l = eval(state.base);
+            if(l == null){
+                controlCapes.selectLayer(djangoRef.Map.osm);
+            }else{
+                controlCapes.selectLayer(eval(state.base));
+            }
         }
     };
 
@@ -316,7 +360,8 @@
                 overlay_list.push(k);
             }
         }
-        var base_layers = ['djangoRef.Map.roads','djangoRef.Map.satellite','djangoRef.Map.terrain','djangoRef.Map.hybrid','djangoRef.Map.osm'];
+        var base_layers = ['djangoRef.Map.bing','djangoRef.Map.bing_road','djangoRef.Map.bing_road_dark','djangoRef.Map.bing_aerial_labels','djangoRef.Map.osm'];
+        //var base_layers = ['djangoRef.Map.roads','djangoRef.Map.satellite','djangoRef.Map.terrain','djangoRef.Map.hybrid','djangoRef.Map.osm'];
         for( var i = 0; i < base_layers.length; i++){
             if(djangoRef.Map.map && djangoRef.Map.map.hasLayer(eval(base_layers[i]))){
                 base_layer = base_layers[i];
