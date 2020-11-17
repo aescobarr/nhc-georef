@@ -439,7 +439,7 @@ msgstr "Type"
 #: georef/static/georef/javascript/toponims_list.js:140
 #: georef/static/georef/javascript/users_list.js:53
 msgid "Organització"
-msgstr "Organitzation"
+msgstr "Organization"
 
 #: georef/static/georef/javascript/toponims_list.js:146
 msgid "No assignada"
