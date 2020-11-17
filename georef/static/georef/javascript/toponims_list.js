@@ -255,6 +255,7 @@ $(document).ready(function() {
             .dialog({
                 modal: true, title: gettext('Esborrant topònim...'), zIndex: 10000, autoOpen: true,
                 width: 'auto', resizable: false,
+                position:['left',20],
                 buttons: {
                     Yes: function () {
                         delete_toponim(id);

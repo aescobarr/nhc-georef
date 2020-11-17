@@ -95,6 +95,7 @@ class Toponim(models.Model):
     idtipustoponim = models.ForeignKey(Tipustoponim, models.CASCADE, db_column='idtipustoponim')
     idpais = models.ForeignKey(Pais, models.CASCADE, db_column='idpais', blank=True, null=True)
     idpare = models.ForeignKey('self', models.DO_NOTHING, db_column='idpare', blank=True, null=True)
+    sinonims = models.CharField(max_length=500, blank=True, null=True)
     # This field holds the organization to which the last toponym version author belongs
     # it is automatically updated when somebody edits/adds/deletes the versions, and should not be
     # edited directly
@@ -300,6 +301,8 @@ class Toponimversio(models.Model):
     coordenada_y_centroide = models.CharField(max_length=50, blank=True, null=True)
     last_version = models.BooleanField(default=False)
     #idgeometria = models.ForeignKey('Geometria', models.DO_NOTHING, db_column='idgeometria', blank=True, null=True)
+    altitud_profunditat_minima = models.IntegerField(blank=True, null=True)
+    altitud_profunditat_maxima = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

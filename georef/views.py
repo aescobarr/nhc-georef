@@ -82,6 +82,7 @@ from slugify import slugify
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.views import login
 from django.http import Http404
+from rest_framework.exceptions import ParseError
 
 def get_order_clause(params_dict, translation_dict=None):
     order_clause = []
@@ -907,6 +908,20 @@ def toponimstreenode(request):
             elem = get_node_from_toponim(toponim)
             data.append(elem)
         return Response(data=data, status=200)
+
+
+@api_view(['GET'])
+def toponim_node_search(request):
+    data = []
+    if request.method == 'GET':
+        term = request.query_params.get('term', None)
+        if term is None:
+            raise ParseError(detail='search term is mandatory')
+        toponims = Toponim.objects.filter(nom__icontains=term).order_by('nom')
+        for t in toponims:
+            data.append( {"id": t.id, "nom": t.nom_str, "node_list": format_denormalized_toponimtree(t.denormalized_toponimtree) + [t.id + "$" + t.nom] } )
+        return Response(data=data, status=200)
+
 
 
 '''

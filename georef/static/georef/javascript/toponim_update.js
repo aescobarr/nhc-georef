@@ -1,3 +1,4 @@
+var tree;
 var counter = 0;
 var node_load_callback = function(node,status){
     counter=counter+1;
@@ -7,6 +8,7 @@ var node_load_callback = function(node,status){
         }
     }
     //This condition should only activate on second-to-last node
+    //if(counter == node_list.length - 1){
     if(counter == node_list.length - 1){
         //true/true avoids full selection when selecting deepest node
         this.select_node(node_list[counter],true,false);
@@ -16,6 +18,61 @@ var node_load_callback = function(node,status){
         }
     }
 };
+
+var create_tree = function(){
+    return $('#jstree')
+        .on('loaded.jstree', function(event, data) {
+            if(node_list != null && node_list.length>1 && node_list[0]!='1'){
+                data.instance.load_node(node_list[0],node_load_callback);
+            }else{
+                data.instance.select_node(node_list[0]);
+            }
+        })
+        .on('select_node.jstree', function (e, data) {
+            $('#id_idpare').val(data.instance.get_top_selected()[0]);
+        })
+        .on('deselect_node.jstree', function (e, data) {
+            if(data.instance.get_top_selected().length > 1){
+                //top_selected_node = "";
+                $('#id_idpare').val('');
+            }else{
+                //top_selected_node = data.instance.get_top_selected()[0];
+                $('#id_idpare').val(data.instance.get_top_selected()[0]);
+            }
+        })
+        .jstree({
+            'plugins' : [
+                'checkbox'
+            ],
+            'core' : {
+                'multiple' : false,
+                'data' : {
+                    'url' : function (node) {
+                        return node.id === '#' ? '/toponimstree/' : '/toponimstree/?id=' + node.id;
+                    },
+                    'data' : function (node) {
+                        if(node.id=='#'){
+                            return { 'id' : node_ini };
+                        }else{
+                            return { 'id' : node.id };
+                        }
+                    }
+                }
+            }
+        });
+}
+
+var reload_tree = function(node_list_full){
+    node_list = [];
+    for(var i = 0; i < node_list_full.length; i++){
+        node_list.push(node_list_full[i].split('$')[0]);
+    }
+    var node_ini = "1";
+    init_ariadna(node_list_full);
+    tree.jstree("destroy");
+    counter = 0;
+    tree = create_tree();
+}
 
 var init_ariadna = function(nodes){
     $('#ariadna ul').empty();
@@ -349,46 +406,7 @@ $(document).ready(function() {
     });
 
 
-    $('#jstree')
-        .on('loaded.jstree', function(event, data) {
-            if(node_list != null && node_list.length>1 && node_list[0]!='1'){
-                data.instance.load_node(node_list[0],node_load_callback);
-            }else{
-                data.instance.select_node(node_list[0]);
-            }
-        })
-        .on('select_node.jstree', function (e, data) {
-            $('#id_idpare').val(data.instance.get_top_selected()[0]);
-        })
-        .on('deselect_node.jstree', function (e, data) {
-            if(data.instance.get_top_selected().length > 1){
-                //top_selected_node = "";
-                $('#id_idpare').val('');
-            }else{
-                //top_selected_node = data.instance.get_top_selected()[0];
-                $('#id_idpare').val(data.instance.get_top_selected()[0]);
-            }
-        })
-        .jstree({
-            'plugins' : [
-                'checkbox'
-            ],
-            'core' : {
-                'multiple' : false,
-                'data' : {
-                    'url' : function (node) {
-                        return node.id === '#' ? '/toponimstree/' : '/toponimstree/?id=' + node.id;
-                    },
-                    'data' : function (node) {
-                        if(node.id=='#'){
-                            return { 'id' : node_ini };
-                        }else{
-                            return { 'id' : node.id };
-                        }
-                    }
-                }
-            }
-        });
+    tree = create_tree();
 
     var uploader = new qq.FileUploader({
         action: _ajax_upload_url,
@@ -660,6 +678,27 @@ $(document).ready(function() {
             load_crs_label(ui.item.value);
             $('#autoc_vcr').val(listname);
             $('#id_idrecursgeoref').val(ui.item.value);
+            return false;
+        }
+    });
+
+    $( '#autoc_tree' ).autocomplete({
+        source: function(request,response){
+            $.getJSON( _toponim_node_search_url + '?term=' + request.term, function(data){
+                response($.map(data, function(item){
+                    return {
+                        label: item.nom,
+                        value: item.id,
+                        node_list: item.node_list
+                    };
+                }));
+            });
+        },
+        minLength: 3,
+        select: function( event, ui ) {
+            var listname = ui.item.label;
+            $( '#autoc_tree' ).val(listname);
+            reload_tree( ui.item.node_list );
             return false;
         }
     });

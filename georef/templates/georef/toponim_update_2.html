@@ -34,6 +34,10 @@
             max-height: 200px;
             overflow: auto;
         }
+
+        .ui-autocomplete-loading {
+            background: white url("{% static 'georef/css/icon/ui-anim_basic_16x16.gif' %}") right center no-repeat;
+        }
 </style>
     </style>
 {% endblock %}
@@ -43,6 +47,7 @@
         var _last_version_url = "{% url 'toponims_update_2' idtoponim -1 %}";
         var _sistref_list_url = "{% url 'sistrefassociat' %}";
         var _versio_capturada_url = "{% url 'recursgeoref-list' %}";
+        var _toponim_node_search_url = "{% url 'toponimnodesearch' %}";
     </script>
     <script>
         var node_list_full = {{ nodelist_full|safe }};
@@ -113,12 +118,19 @@
                                 <td>{{ form.aquatic }}</td>
                                 <td>{{ form.aquatic.errors }}</td>
                             </tr>
+                            <tr>
+                                <th><label for="{{ form.sinonims.id_for_label }}">{% trans 'Sinònims' %}:</label></th>
+                                <td>{{ form.sinonims }}</td>
+                                <td>{{ form.sinonims.errors }}</td>
+                            </tr>
                         </table>
                     </div>
                     {{ form.idpare.as_hidden }}
+                    {{ form.idpare.errors }}
                     <div class="col-sm-8">
                         <label>{% trans 'Jerarquia del topònim' %}:</label>
                         <div id="ariadna"><ul></ul></div>
+                        <div><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'node_search_tooltip' %}" for="autoc_tree">&nbsp;</label><input id="autoc_tree" type="text" value=""><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
                         <label>{% trans 'Topònim pare' %}:</label>
                         <div class="scroll_jstree" id="jstree"></div>
                     </div>
@@ -275,14 +287,14 @@
                                     <td>{{ toponimversio_form.coordenada_y_origen.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.coordenada_z_origen.id_for_label }}">{% trans 'Coordenada Z' %}:</label></th>
-                                    <td>{{ toponimversio_form.coordenada_z_origen }}</td>
-                                    <td>{{ toponimversio_form.coordenada_z_origen.errors }}</td>
+                                    <th><label for="{{ toponimversio_form.altitud_profunditat_maxima.id_for_label }}">{% trans 'Altitud profunditat màxima(m)' %}:</label></th>
+                                    <td>{{ toponimversio_form.altitud_profunditat_maxima }}</td>
+                                    <td>{{ toponimversio_form.altitud_profunditat_maxima.errors }}</td>
                                 </tr>
                                 <tr>
-                                    <th><label for="{{ toponimversio_form.precisio_z_origen.id_for_label }}">{% trans "Incertesa d'altitud(m)" %}:</label></th>
-                                    <td>{{ toponimversio_form.precisio_z_origen }}</td>
-                                    <td>{{ toponimversio_form.precisio_z_origen.errors }}</td>
+                                    <th><label for="{{ toponimversio_form.altitud_profunditat_minima.id_for_label }}">{% trans "Altitud profunditat mínima(m)" %}:</label></th>
+                                    <td>{{ toponimversio_form.altitud_profunditat_minima }}</td>
+                                    <td>{{ toponimversio_form.altitud_profunditat_minima.errors }}</td>
                                 </tr>
                             </table>
                         </div>

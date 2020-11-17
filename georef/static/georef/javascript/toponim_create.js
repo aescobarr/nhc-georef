@@ -1,4 +1,5 @@
 var counter = 0;
+var tree;
 var node_load_callback = function(node,status){
     counter=counter+1;
     if(counter < node_list.length ){
@@ -27,9 +28,8 @@ var validate_toponim_create = function(){
     return true;
 }
 
-$(document).ready(function() {
-
-    $('#jstree')
+var create_tree = function(){
+     return $('#jstree')
         .on('loaded.jstree', function(event, data) {
             if(node_list != null && node_list.length>1 && node_list[0]!='1'){
                 data.instance.load_node(node_list[0],node_load_callback);
@@ -78,4 +78,40 @@ $(document).ready(function() {
                 }
             }
         });
+}
+
+var reload_tree = function(node_list_full){
+    node_list = [];
+    for(var i = 0; i < node_list_full.length; i++){
+        node_list.push(node_list_full[i].split('$')[0]);
+    }
+    var node_ini = "1";
+    tree.jstree("destroy");
+    counter = 0;
+    tree = create_tree();
+}
+
+$(document).ready(function() {
+    tree = create_tree();
+
+    $( '#autoc_tree' ).autocomplete({
+        source: function(request,response){
+            $.getJSON( _toponim_node_search_url + '?term=' + request.term, function(data){
+                response($.map(data, function(item){
+                    return {
+                        label: item.nom,
+                        value: item.id,
+                        node_list: item.node_list
+                    };
+                }));
+            });
+        },
+        minLength: 3,
+        select: function( event, ui ) {
+            var listname = ui.item.label;
+            $( '#autoc_tree' ).val(listname);
+            reload_tree( ui.item.node_list );
+            return false;
+        }
+    });
 });

@@ -6,6 +6,7 @@ from django.forms import inlineformset_factory
 from datetimewidget.widgets import DateWidget
 from georef_addenda.models import Profile
 from djangoref import settings
+from georef.cyclic import check_if_cyclic
 
 
 class ChangePasswordForm(forms.Form):
@@ -29,6 +30,7 @@ class ToponimsForm(forms.Form):
     idtipustoponim = forms.ModelChoiceField(queryset=Tipustoponim.objects.extra(order_by=['nom']))
     idpais = forms.ModelChoiceField(queryset=Pais.objects.extra(order_by=['nom']))
     idpare = forms.ModelChoiceField(queryset=Toponim.objects.all())
+    sinonims = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 AQUATIC_CHOICES = (
@@ -41,6 +43,7 @@ class ToponimsUpdateForm(ModelForm):
     aquatic = forms.ChoiceField(choices=AQUATIC_CHOICES,widget=forms.RadioSelect, label='Aquàtic?', required=False)
     idtipustoponim = forms.ModelChoiceField(queryset=Tipustoponim.objects.all().order_by('nom'),widget=forms.Select, label='Tipus topònim')
     idpais = forms.ModelChoiceField(queryset=Pais.objects.all().order_by('nom'), widget=forms.Select, label='País', required=False)
+    sinonims = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Toponim
@@ -48,6 +51,20 @@ class ToponimsUpdateForm(ModelForm):
         widgets = {
             'idpare': forms.HiddenInput(),
         }
+
+    def clean_idpare(self):
+        cleaned_data = self.cleaned_data
+        idtoponim = self.instance.id
+        idpare = cleaned_data.get('idpare')
+        idpare_id = idpare.id
+        found = set()
+        found.add(idtoponim)
+        try:
+            check_if_cyclic(idpare_id, found)
+            return idpare
+        except:
+            raise forms.ValidationError('Aquest pare forma un cicle, operació no permesa')
+
 
 
 class ToponimversioForm(ModelForm):
@@ -65,7 +82,10 @@ class ToponimversioForm(ModelForm):
 
     class Meta:
         model = Toponimversio
-        fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen','coordenada_x_centroide','coordenada_y_centroide','precisio_h','observacions']
+        #fields = ['numero_versio', 'idqualificador','idrecursgeoref','nom','datacaptura','coordenada_x_origen','coordenada_y_origen','coordenada_z_origen','precisio_z_origen','coordenada_x_centroide','coordenada_y_centroide','precisio_h','observacions']
+        fields = ['numero_versio', 'idqualificador', 'idrecursgeoref', 'nom', 'datacaptura', 'coordenada_x_origen',
+                  'coordenada_y_origen', 'altitud_profunditat_maxima', 'altitud_profunditat_minima', 'coordenada_x_centroide',
+                  'coordenada_y_centroide', 'precisio_h', 'observacions']
         widgets = {
             'idrecursgeoref': forms.HiddenInput(),
         }

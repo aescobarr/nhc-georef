@@ -93,6 +93,7 @@ urlpatterns = [
 
     url(r'^graphs$', views.graphs, name='graphs'),
     url(r'^toponimstree$', views.toponimstree, name='toponimstree'),
+    url(r'^toponim_node_search$', views.toponim_node_search, name='toponimnodesearch'),
     url(r'^calculcentroides', views.calculcentroides, name='calculcentroides'),
     url(r'^computecentroid/(?P<file_name>[\w.]{0,256})$', views.compute_shapefile_centroid, name='compute_shapefile_centroid'),
     url(r'^computecentroid/$', views.compute_shapefile_centroid, name='compute_shapefile_centroid_noparams'),
