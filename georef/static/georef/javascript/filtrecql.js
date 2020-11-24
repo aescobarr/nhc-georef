@@ -20,6 +20,15 @@ function transformarCondicioPaisACQL(idpais){
     return filtre;
 }
 
+function transformarCondicioVersioACQL(idversio){
+    var filtre = new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: 'idq',
+        value: idversio
+    });
+    return filtre;
+}
+
 function transformarCondicioOrgACQL(idorg){
     var filtre = new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
@@ -101,6 +110,12 @@ function transformarCondicioFiltreJSONACQL(filtreAnterior,operador,condicio,valo
             filtreNou = transformarNotCQL(transformarCondicioAquaticACQL(valor));
         }else{
             filtreNou = transformarCondicioAquaticACQL(valor);
+        }
+    }else if('versio'==condicio){
+        if('S'==not){
+            filtreNou = transformarNotCQL(transformarCondicioVersioACQL(valor));
+        }else{
+            filtreNou = transformarCondicioVersioACQL(valor);
         }
     }else if('geografic'==condicio || 'geografic_geo'==condicio){
         var wktReader = new OpenLayers.Format.WKT();
