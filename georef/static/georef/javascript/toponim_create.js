@@ -28,6 +28,35 @@ var validate_toponim_create = function(){
     return true;
 }
 
+var init_ariadna = function(nodes){
+    $('#ariadna ul').empty();
+    for(var i = 0; i < nodes.length; i++){
+        var id = nodes[i].split('$')[0];
+        var nom = nodes[i].split('$')[1];
+        var linkVisualitzar;
+        if(i == 0){
+            linkVisualitzar = '<li><a href="/toponims/update/' + id + '/-1" title="'+nom+'">' + nom + '</a></li>';
+        }else{
+            linkVisualitzar = '<li><a href="/toponims/update/' + id + '/-1" title="'+nom+'"> <- ' + nom + '</a></li>';
+        }
+        $('#ariadna ul').append(linkVisualitzar);
+    }
+};
+
+var process_selection_data_for_ariadna = function(data){
+    var text_path = data.instance.get_path(data.node,false,false);
+    var text_path_clean = [];
+    for(var i = 0; i < text_path.length; i++){
+        text_path_clean.push( text_path[i].split(' - ')[0] );
+    }
+    var path = data.instance.get_path(data.node,false,true);
+    var new_data = [];
+    for(var i = 0; i < text_path_clean.length; i++){
+        new_data.push( path[i] + '$' + text_path_clean[i] );
+    }
+    return new_data;
+}
+
 var create_tree = function(){
      return $('#jstree')
         .on('loaded.jstree', function(event, data) {
@@ -37,10 +66,20 @@ var create_tree = function(){
                 data.instance.select_node(node_list[0]);
             }
         })
+        .on('changed.jstree', function (e, data) {
+            if(data.instance.get_top_selected()[0]==null){
+                init_ariadna([]);
+            }else{
+                var new_data = process_selection_data_for_ariadna(data);
+                init_ariadna(new_data);
+            }
+        })
         .on('select_node.jstree', function (e, data) {
             $('#id_idpare').val(data.instance.get_top_selected()[0]);
             $('#seleccio').empty();
             $('#seleccio').append('Seleccionat: ' + data.node.text);
+            var new_data = process_selection_data_for_ariadna(data);
+            init_ariadna(new_data);
         })
         .on('deselect_node.jstree', function (e, data) {
             if(data.instance.get_top_selected().length > 1){
@@ -48,10 +87,13 @@ var create_tree = function(){
                 $('#id_idpare').val('');
                 $('#seleccio').empty();
                 $('#seleccio').append('Seleccionat: cap');
+                init_ariadna([]);
             }else{
                 $('#id_idpare').val(data.instance.get_top_selected()[0]);
                 $('#seleccio').empty();
-                $('#seleccio').append('Seleccionat: ' + data.node.text);
+                //$('#seleccio').append('Seleccionat: ' + data.node.text);
+                $('#seleccio').append('Seleccionat: cap');
+                init_ariadna([]);
             }
         })
         .jstree({
@@ -111,6 +153,7 @@ $(document).ready(function() {
             var listname = ui.item.label;
             $( '#autoc_tree' ).val(listname);
             reload_tree( ui.item.node_list );
+            init_ariadna( ui.item.node_list );
             return false;
         }
     });
