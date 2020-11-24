@@ -30,6 +30,17 @@ def toponim_exists(line):
         return None
 
 
+def get_georeferencer_by_name_simple(name):
+    name_parts = name.split(' ')
+    name_fusioned = ('').join( [u.strip().lower() for u in name_parts] )
+    for u in User.objects.all():
+        username_parts = u.first_name.strip().lower().split(' ') + u.last_name.strip().lower().split(' ')
+        username_fusioned = ('').join( username_parts )
+        if name_fusioned == username_fusioned:
+            return u
+    return None
+
+
 def get_georeferencer_by_name(name):
     name_parts = name.split(' ')
     filter_clause = []
@@ -323,7 +334,7 @@ def process_line(line, line_string, errors, toponims_exist, toponims_to_create, 
             errorsLiniaActual.append("Georeferenciador en blanc a la columna 16")
             register_error(line_counter, "Georeferenciador en blanc a la columna 16", problemes)            
         else:
-            georeferenciador = get_georeferencer_by_name(line[15].strip())
+            georeferenciador = get_georeferencer_by_name_simple(line[15].strip())
             if georeferenciador is None:
                 errorsALinia = True
                 errorsLiniaActual.append("No trobo el georeferenciador " + line[15] +  ", columna 16")
