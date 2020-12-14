@@ -20,6 +20,9 @@
         .toponimversio_edit tbody tr td {
             width: 100%;
         }
+        .toponimversio_edit tbody tr th {
+            min-width: 175px;
+        }
         .toponimversio_edit tbody tr td select{
             width: 100%;
         }
@@ -27,7 +30,7 @@
             width: 100%;
         }
         #map{
-            height: 350px;
+            height: 900px;
         }
 
         .leaflet-control-layers {
@@ -196,7 +199,43 @@
                     </div>
                     {{ versio.id.as_hidden }}
                     <div class="row">
-                        <div class="col-sm-5">
+                        <div class="col-sm-12">
+                            <div id="map">
+                                <div id="boto-digit-point">
+                                    <a id="kb_digit" class="custom-digit-point" href="#" title="{% trans 'toponim_kb_digitize_tooltip' %}">
+                                        <!-- "Digitalitza un punt per teclat" -->
+                                        <span class="sr-only"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="fileuploader"></div>
+                            <div id="dialog-uncertainty-radius" title="{% trans 'toponim_uncert_radius_tooltip' %}">
+                                <!-- "Entra el radi d'incertesa del punt, en metres" -->
+                                <p class="validateTips"></p>
+                                <label for="radi">{% trans 'Radi' %}</label>
+                                <input type="text" name="radi" id="radi" value="" class="text ui-widget-content ui-corner-all">
+                            </div>
+                            <div id="dialog-digitize-kb" title="{% trans 'Digitalització de punt via teclat' %}">
+                                <p class="validateTipsKb"></p>
+                                <table>
+                                    <tr>
+                                        <td><label for="inc_radius_kb">{% trans 'Radi incertesa(m)' %}</label></td>
+                                        <td><input type="text" name="inc_radius_kb" id="inc_radius_kb" value="" class="text ui-widget-content ui-corner-all"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="coord_x_kb">{% trans 'Coordenada x (longitud)' %}</label></td>
+                                        <td><input type="text" name="coord_x_kb" id="coord_x_kb" value="" class="text ui-widget-content ui-corner-all"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="coord_y_kb">{% trans 'Coordenada y (latitud)' %}</label></td>
+                                        <td><input type="text" name="coord_y_kb" id="coord_y_kb" value="" class="text ui-widget-content ui-corner-all"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
                             <table class="toponimversio_edit">
                                 <tr>
                                     <th><label class="iconainfo" data-toggle="tooltip" data-placement="left" title="{% trans 'toponym_numbering_tooltip' %}" for="{{ toponimversio_form.numero_versio.id_for_label }}">{% trans 'Número versió' %}:</label></th>
@@ -233,43 +272,6 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-sm-7">
-                            <div id="map">
-                                <div id="boto-digit-point">
-                                    <a id="kb_digit" class="custom-digit-point" href="#" title="{% trans 'toponim_kb_digitize_tooltip' %}">
-                                        <!-- "Digitalitza un punt per teclat" -->
-                                        <span class="sr-only"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="fileuploader"></div>
-                            <div id="dialog-uncertainty-radius" title="{% trans 'toponim_uncert_radius_tooltip' %}">
-                                <!-- "Entra el radi d'incertesa del punt, en metres" -->
-                                <p class="validateTips"></p>
-                                <label for="radi">{% trans 'Radi' %}</label>
-                                <input type="text" name="radi" id="radi" value="" class="text ui-widget-content ui-corner-all">
-                            </div>
-                            <div id="dialog-digitize-kb" title="{% trans 'Digitalització de punt via teclat' %}">
-                                <p class="validateTipsKb"></p>
-                                <table>
-                                    <tr>
-                                        <td><label for="inc_radius_kb">{% trans 'Radi incertesa(m)' %}</label></td>
-                                        <td><input type="text" name="inc_radius_kb" id="inc_radius_kb" value="" class="text ui-widget-content ui-corner-all"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="coord_x_kb">{% trans 'Coordenada x (longitud)' %}</label></td>
-                                        <td><input type="text" name="coord_x_kb" id="coord_x_kb" value="" class="text ui-widget-content ui-corner-all"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="coord_y_kb">{% trans 'Coordenada y (latitud)' %}</label></td>
-                                        <td><input type="text" name="coord_y_kb" id="coord_y_kb" value="" class="text ui-widget-content ui-corner-all"></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
                     </div>
                     <div class="row">
                         <div class="col-sm-5">
