@@ -2,7 +2,7 @@
 
 Georef is a tool for georeferencing site names, originally created for the Museu de Ciencies Naturals de Barcelona - [MCNB](https://museuciencies.cat/). It allows storage, indexing and querying of georeferenced site names, including geometry, and supports multiple versions of the site names. Georef is built using [Django](https://www.djangoproject.com/).
 
-The application exposes an API which allows to query the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/nhc-georef).
+The application exposes an API which allows to query the underlying data. The API is a separate project and can be found [here](https://github.com/aescobarr/nhc-georef-api).
 
 ## Getting Started
 
