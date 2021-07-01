@@ -134,7 +134,7 @@ def generic_datatable_list_endpoint(request, search_field_list, queryClass, clas
     both types of requests
     '''
 
-    '''    
+    '''
     draw = request.query_params.get('draw', -1)
     start = request.query_params.get('start', 0)
     '''
@@ -827,13 +827,13 @@ def graphs(request):
 
     cursor.execute("""
         select count(idtoponim), u.last_name || ', ' || u.first_name
-        from 
+        from
         toponimversio t,
         auth_user u
-        where 
+        where
         iduser is not null AND
         t.iduser = u.id
-        group by u.last_name || ', ' || u.first_name order by 1 desc     
+        group by u.last_name || ', ' || u.first_name order by 1 desc
     """)
 
     toponims_georeferenciador = cursor.fetchall()
@@ -841,7 +841,7 @@ def graphs(request):
     cursor.execute("""
         select
         p.nom, count(t.id) from
-        toponim t, pais p 
+        toponim t, pais p
         where idpais is not null AND t.idpais = p.id group by p.nom order by 2 desc
     """)
 
@@ -849,7 +849,7 @@ def graphs(request):
 
     cursor.execute("""
         select tp.nom, count(t.id)
-        from 
+        from
         toponim t,
         tipustoponim tp
         where idpais is not null AND
@@ -861,7 +861,7 @@ def graphs(request):
 
     cursor.execute("""
         select aquatic,count(id)
-        from 
+        from
         toponim t
         group by aquatic
     """)
@@ -870,10 +870,10 @@ def graphs(request):
 
     cursor.execute("""
         select t.nom, count(r.id)
-        from 
+        from
         recursgeoref r,
         tipusrecursgeoref t
-        where 
+        where
         r.idtipusrecursgeoref = t.id
         group by t.nom order by 2 desc
     """)
@@ -1541,6 +1541,9 @@ def user_profile(request, user_id=None):
                   {'user_id': this_user.id, 'user_form': user_form, 'profile_form': profile_form,
                    'nodelist_full': nodelist_full})
 
+def about(request):
+    version_string = '.'.join((settings.MAJOR, settings.MINOR, settings.PATCH))
+    return render(request, 'georef/about.html', {'version': version_string})
 
 @login_required
 def change_my_password(request):

@@ -192,3 +192,8 @@ from djangoref.settings_local import *
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 JAVASCRIPT_VERSION = 1
+
+#Semver versioning - https://semver.org/
+MAJOR="1"
+MINOR="0"
+PATCH="0"

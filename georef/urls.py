@@ -117,4 +117,5 @@ urlpatterns = [
     url(r'ajax-process-shapefile$', views.process_shapefile, name='process_shapefile'),
     url(r'^jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^about/', views.about, name='about'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
