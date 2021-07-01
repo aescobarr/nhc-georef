@@ -1542,8 +1542,7 @@ def user_profile(request, user_id=None):
                    'nodelist_full': nodelist_full})
 
 def about(request):
-    version_string = '.'.join((settings.MAJOR, settings.MINOR, settings.PATCH))
-    return render(request, 'georef/about.html', {'version': version_string})
+    return render(request, 'georef/about.html', {})
 
 @login_required
 def change_my_password(request):

@@ -95,6 +95,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'georef.context_processors.revision_number_processor',
+                'georef.context_processors.version_number_processor',
             ],
         },
     },
